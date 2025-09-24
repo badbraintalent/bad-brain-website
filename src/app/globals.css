@@ -30,6 +30,7 @@ body {
   color: var(--foreground);
   /* font-family: 'Inter', sans-serif; */
   font-family: 'STIX Two Text', serif;
+  font-size: 1.25rem; /* 20px if user's base is 16px */
   font-weight: 400;
   letter-spacing: -0.03em; /* Even tighter letter spacing */
   line-height: 1.15; /* Ultra tight line spacing */

@@ -30,10 +30,10 @@ export default function ConsultingPage() {
               />
               <h1 className="text-5xl font-semibold mb-6">CONSULTING</h1>
             </div>
-            <p className="text-xl leading-relaxed mb-6">
+            <p className="text-2xl leading-relaxed mb-6">
               <strong>Bad Brain Consulting</strong> helps <strong>brands, agencies, and networks</strong> navigate the <strong>creator economy</strong>.
             </p>
-            <p className="text-lg text-white/90">
+            <p className="text-xl text-white/90">
               We help organisations answer the <strong>big strategic questions</strong>, like how do we <strong>scale with creators</strong>? How do we <strong>reduce duplication and wasted spend</strong>? How do we <strong>unlock greater ROI</strong>?
             </p>
           </div>

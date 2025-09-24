@@ -90,7 +90,7 @@ priority
 {/* Floating content badge */}
 <div className="absolute bottom-6 left-6 right-6">
 <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
-<p className=" text-base text-white/90 leading-relaxed mb-3">
+<p className=" text-xl text-white/90 leading-relaxed mb-3">
 Bad Brain helps brands, agencies and creators work smarter in a space where{' '}
 <strong>strategy, storytelling and scale</strong>{' '}
 all need to align.
@@ -102,7 +102,7 @@ onClick={() => {
 const servicesSection = document.getElementById('services');
 servicesSection?.scrollIntoView({ behavior: 'smooth' });
 }}
-className="inline-flex items-centerfont-medium text-brand-yellow hover:text-white transition-all duration-300 group text-base cursor-pointer"
+className="inline-flex items-centerfont-medium text-brand-yellow hover:text-white transition-all duration-300 group text-xl cursor-pointer"
 >
 Explore Our Services
 <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
