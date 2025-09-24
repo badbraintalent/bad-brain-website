@@ -42,20 +42,20 @@ const Navigation = () => {
             {navigation.map((item) => (
               <div key={item.name} className="relative group">
                 {item.submenu ? (
-                  <button className="text-gray-700 hover:text-brand-blue px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/30">
+                  <button className="text-gray-700 hover:text-brand-blue px-6 py-4 rounded-xl text-base font-medium transition-all duration-300 hover:bg-white/30">
                     {item.name}
                   </button>
                 ) : item.name === 'Contact' ? (
                   <Link
                     href={item.href}
-                    className="bg-brand-blue text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-brand-blue/90 transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="bg-brand-blue text-white px-6 py-3 rounded-xl text-base font-medium hover:bg-brand-blue/90 transition-all duration-300 shadow-sm hover:shadow-md"
                   >
                     {item.name}
                   </Link>
                 ) : (
                   <Link
                     href={item.href}
-                    className="text-gray-700 hover:text-brand-blue px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/30"
+                    className="text-gray-700 hover:text-brand-blue px-6 py-4 rounded-xl text-base font-medium transition-all duration-300 hover:bg-white/30"
                   >
                     {item.name}
                   </Link>
@@ -97,51 +97,51 @@ const Navigation = () => {
       </div>
 
       {/* Mobile menu */}
-      {isOpen && (
-        <div className="md:hidden bg-brand-yellow/95 backdrop-blur-md border-t border-gray-100">
-          <div className="px-4 pt-4 pb-6 space-y-2">
-            {navigation.map((item) => (
-              <div key={item.name} className="space-y-2">
-                {item.submenu ? (
-                  <>
-                    <div className="text-gray-700 block px-4 py-3 rounded-xl text-base font-medium">
-                      {item.name}
-                    </div>
-                    <div className="ml-4 space-y-1">
-                      {item.submenu.map((subitem) => (
-                        <Link
-                          key={subitem.name}
-                          href={subitem.href}
-                          className="text-gray-600 hover:text-brand-blue block px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/30 transition-all duration-200"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {subitem.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </>
-                ) : item.name === 'Contact' ? (
-                  <Link
-                    href={item.href}
-                    className="bg-brand-blue text-white block text-center px-6 py-3 rounded-xl text-base font-medium hover:bg-brand-blue/90 transition-all duration-300"
-                    onClick={() => setIsOpen(false)}
-                  >
+      <div className={`md:hidden bg-brand-yellow/95 backdrop-blur-md border-t border-gray-100 transition-all duration-300 ease-in-out overflow-hidden ${
+        isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+      }`}>
+        <div className="px-4 pt-4 pb-6 space-y-2">
+          {navigation.map((item) => (
+            <div key={item.name} className="space-y-2">
+              {item.submenu ? (
+                <>
+                  <div className="text-gray-700 block px-4 py-3 rounded-xl text-base font-medium">
                     {item.name}
-                  </Link>
-                ) : (
-                  <Link
-                    href={item.href}
-                    className="text-gray-700 hover:text-brand-blue block px-4 py-3 rounded-xl text-base font-medium hover:bg-white/30 transition-all duration-200"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
+                  </div>
+                  <div className="ml-4 space-y-1">
+                    {item.submenu.map((subitem) => (
+                      <Link
+                        key={subitem.name}
+                        href={subitem.href}
+                        className="text-gray-600 hover:text-brand-blue block px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/30 transition-all duration-200"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {subitem.name}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              ) : item.name === 'Contact' ? (
+                <Link
+                  href={item.href}
+                  className="bg-brand-blue text-white block text-center px-6 py-3 rounded-xl text-base font-medium hover:bg-brand-blue/90 transition-all duration-300"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <Link
+                  href={item.href}
+                  className="text-gray-700 hover:text-brand-blue block px-4 py-3 rounded-xl text-base font-medium hover:bg-white/30 transition-all duration-200"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              )}
+            </div>
+          ))}
         </div>
-      )}
+      </div>
     </nav>
   )
 }
