@@ -14,8 +14,8 @@ const AboutSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="font-stix text-4xl sm:text-5xl font-semibold text-gray-900 mb-8">
-            <span className="text-brand-blue font-bold">Bad Brain Media</span> is a specialist agency built for the <span className="text-brand-blue font-bold">creator economy</span>.
+          <h2 className="font-stix text-4xl sm:text-5xl font-normal text-gray-900 mb-8">
+            <strong>Bad Brain Media</strong> is a specialist agency built for the <strong>creator economy</strong>.
           </h2>
         </motion.div>
 
@@ -47,24 +47,24 @@ const AboutSection = () => {
             viewport={{ once: true }}
             className="bg-brand-yellow p-8 rounded-lg shadow-xs"
           >
-            <h3 className="font-stix text-2xl font-semibold text-gray-900 mb-6">
-              Our <span className="text-brand-blue">Approach</span>
+            <h3 className="font-stix text-2xl font-normal text-gray-900 mb-6">
+              Our <strong>Approach</strong>
             </h3>
             <p className="text-lg text-gray-700 leading-relaxed mb-6">
-              Every part of the business is built with <strong className="text-brand-blue">creators in mind</strong> - and optimised for what your business or brand needs, wherever you sit in the ecosystem.
+              Every part of the business is built with <strong>creators in mind</strong> - and optimised for what your business or brand needs, wherever you sit in the ecosystem.
             </p>
             <div className="space-y-4">
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-brand-blue rounded-full mr-3 flex-shrink-0"></div>
-                <p className="text-gray-700"><strong className="text-brand-blue">Strategy</strong> and <strong className="text-brand-blue">storytelling</strong> alignment</p>
+                <p className="text-gray-700"><strong>Strategy</strong> and <strong>storytelling</strong> alignment</p>
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-brand-blue rounded-full mr-3 flex-shrink-0"></div>
-                <p className="text-gray-700">Scalable <strong className="text-brand-blue">content production</strong></p>
+                <p className="text-gray-700">Scalable <strong>content production</strong></p>
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-brand-blue rounded-full mr-3 flex-shrink-0"></div>
-                <p className="text-gray-700"><strong className="text-brand-blue">Creator-first</strong> mindset</p>
+                <p className="text-gray-700"><strong>Creator-first</strong> mindset</p>
               </div>
             </div>
           </motion.div>

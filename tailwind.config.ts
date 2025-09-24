@@ -20,6 +20,10 @@ const config: Config = {
         'stix': ['STIX Two Text', 'serif'],
         'inter': ['Inter', 'sans-serif'],
         'sans': ['Inter', 'sans-serif'],
+        'serif': ['STIX Two Text', 'serif'], // Ensure serif uses STIX
+        // Utility classes for easy reverting
+        'body-inter': ['Inter', 'sans-serif'], // Use this to revert body text
+        'body-stix': ['STIX Two Text', 'serif'], // Explicit STIX for body
       },
     },
   },

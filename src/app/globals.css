@@ -1,6 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;600&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
+/*
+FONT STRATEGY:
+- Default: All text now uses STIX Two Text
+- To revert body text to Inter: Use 'font-body-inter' class
+- To explicitly use STIX: Use 'font-body-stix' or 'font-stix' class
+- Inter is still available via 'font-inter' class
+*/
+
 :root {
   --background: #F8F5D7;
   --foreground: #171717;
@@ -20,15 +28,35 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', sans-serif;
+  /* font-family: 'Inter', sans-serif; */
+  font-family: 'STIX Two Text', serif;
   font-weight: 400;
+  letter-spacing: -0.03em; /* Even tighter letter spacing */
+  line-height: 1.15; /* Ultra tight line spacing */
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1:not([class*="font-normal"]), h2, h3, h4, h5, h6 {
   font-family: 'STIX Two Text', serif;
   font-weight: 600;
+  letter-spacing: -0.04em; /* Even tighter for headings */
+  line-height: 0.95; /* Ultra tight line height for headings */
 }
 
 p:not([class*="font-"]), div:not([class*="font-"]) {
-  font-family: 'Inter', sans-serif;
+  /* font-family: 'Inter', sans-serif; */
+  font-family: 'STIX Two Text', serif;
+  letter-spacing: -0.025em; /* Much tighter letter spacing for body text */
+  line-height: 1.2; /* Ultra tight line height for body text */
+}
+
+/* Extra tight spacing for large display text */
+.text-5xl, .text-6xl, .text-7xl, .text-8xl {
+  letter-spacing: -0.05em; /* Very tight for dramatic effect */
+  line-height: 0.9; /* Maximum tight line height */
+}
+
+/* Tight spacing for large headings */
+.text-3xl, .text-4xl {
+  letter-spacing: -0.035em; /* Tighter medium headings */
+  line-height: 0.95; /* Ultra tight line height */
 }
