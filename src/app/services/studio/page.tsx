@@ -15,13 +15,12 @@ export default function StudioPage() {
             <div>
               <div className="mb-8">
                 <Image
-                  src="/images/logo/logo.svg"
-                  alt="Bad Brain"
-                  width={120}
-                  height={40}
-                  className="h-10 w-auto mb-4"
+                  src="/images/services/studio.svg"
+                  alt="Bad Brain Studio"
+                  width={1200}
+                  height={360}
+                  className="h-60 w-auto"
                 />
-                <h1 className="text-5xl font-semibold text-brand-blue mb-6">STUDIO</h1>
               </div>
               <p className="text-xl text-gray-900 leading-relaxed">
                 <strong>Bad Brain Studio</strong> translates your brand&apos;s <strong>core creative strategy</strong> into a <strong>fully integrated suite of content</strong> to meet the demands of modern digital marketing.

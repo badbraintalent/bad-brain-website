@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { track } from '@vercel/analytics'
@@ -50,9 +51,15 @@ className="group"
 >
 <div className="bg-brand-blue p-8 rounded-lg shadow-xs relative overflow-hidden h-full">
 <div className="relative z-10">
-<h3 className="font-stix text-2xl lg:text-3xl font-normal text-white mb-6">
-Bad Brain <span className="font-bold">CONSULTING</span>
-</h3>
+<div className="mb-6 flex justify-center">
+<Image
+src="/images/services/consulting.svg"
+alt="Bad Brain Consulting"
+width={800}
+height={240}
+className="h-40 w-auto filter brightness-0 invert"
+/>
+</div>
 <p className=" text-lg text-white/90 leading-relaxed mb-8">
 We help <strong>brands, agencies, and networks</strong> design and implement <strong>cross-functional creator strategies</strong> that reduce duplication, improve efficiency and deliver outcomes.
 </p>
@@ -77,9 +84,15 @@ viewport={{ once: true }}
 className="group"
 >
 <div className="bg-white p-8 rounded-lg shadow-xs relative h-full border border-gray-100">
-<h3 className="font-stix text-2xl lg:text-3xl font-normal text-gray-900 mb-6">
-Bad Brain <span className="font-bold">STUDIO</span>
-</h3>
+<div className="mb-6 flex justify-center">
+<Image
+src="/images/services/studio.svg"
+alt="Bad Brain Studio"
+width={800}
+height={240}
+className="h-40 w-auto"
+/>
+</div>
 <p className=" text-lg text-gray-700 leading-relaxed mb-8">
 Translates your <strong>core creative strategy</strong> into a <strong>fully integrated suite of content</strong> - built for a video and social-first world.
 </p>
@@ -103,9 +116,15 @@ viewport={{ once: true }}
 className="group"
 >
 <div className="bg-brand-yellow p-8 rounded-lg shadow-xs relative h-full">
-<h3 className="font-stix text-2xl lg:text-3xl font-normal text-gray-900 mb-6">
-Bad Brain <span className="font-bold">TALENT</span>
-</h3>
+<div className="mb-6 flex justify-center">
+<Image
+src="/images/services/talent.svg"
+alt="Bad Brain Talent"
+width={800}
+height={240}
+className="h-40 w-auto"
+/>
+</div>
 <p className=" text-lg text-gray-700 leading-relaxed mb-8">
 <strong>Representation and development services</strong> for up and coming content creators. We help identify <strong>brand partners</strong> and secure <strong>paid opportunities</strong>.
 </p>

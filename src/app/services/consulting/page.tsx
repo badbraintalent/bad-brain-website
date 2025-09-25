@@ -22,13 +22,12 @@ export default function ConsultingPage() {
           <div className="text-center max-w-4xl mx-auto">
             <div className="mb-8">
               <Image
-                src="/images/logo/logo.svg"
-                alt="Bad Brain"
-                width={120}
-                height={40}
-                className="h-10 w-auto filter brightness-0 invert mb-4 mx-auto"
+                src="/images/services/consulting.svg"
+                alt="Bad Brain Consulting"
+                width={1200}
+                height={360}
+                className="h-60 w-auto filter brightness-0 invert mx-auto"
               />
-              <h1 className="text-5xl font-semibold mb-6">CONSULTING</h1>
             </div>
             <p className="text-2xl leading-relaxed mb-6">
               <strong>Bad Brain Consulting</strong> helps <strong>brands, agencies, and networks</strong> navigate the <strong>creator economy</strong>.
@@ -52,9 +51,26 @@ export default function ConsultingPage() {
               For <strong>start-ups and smaller businesses</strong>, the challenge is knowing where to begin: how to build and scale a programme from scratch with limited resources. For <strong>established brands</strong>, the challenge is <strong>scale</strong>: multiple teams, agencies, and budgets all chasing creators without a unified approach. The result? Fragmentation, duplication, and missed opportunities.
             </p>
 
-            <p>
-              <strong>Bad Brain Consulting</strong> helps brands, agencies, and networks step back and see the <strong>bigger picture</strong>. We design <strong>cross-functional creator strategies</strong> that cut through complexity, improve efficiency, and deliver clearer results. Whether you&apos;re starting small or managing a global programme, we provide the frameworks and insights to make creator marketing work harder for your business.
-            </p>
+            {/* Final section with integrated graphic */}
+            <div className="grid md:grid-cols-2 gap-12 items-center mt-16">
+              <div className="relative">
+                <Image
+                  src="/images/graphic-5.svg"
+                  alt="Creator strategy framework illustration"
+                  width={500}
+                  height={400}
+                  className="w-full h-auto"
+                />
+              </div>
+              <div>
+                <p className="text-xl font-medium text-gray-900 mb-6">
+                  <strong>Bad Brain Consulting</strong> helps brands, agencies, and networks step back and see the <strong>bigger picture</strong>.
+                </p>
+                <p>
+                  We design <strong>cross-functional creator strategies</strong> that cut through complexity, improve efficiency, and deliver clearer results. Whether you&apos;re starting small or managing a global programme, we provide the frameworks and insights to make creator marketing work harder for your business.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

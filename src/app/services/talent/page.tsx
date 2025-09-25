@@ -31,13 +31,12 @@ export default function TalentPage() {
             <div>
               <div className="mb-8">
                 <Image
-                  src="/images/logo/logo.svg"
-                  alt="Bad Brain"
-                  width={120}
-                  height={40}
-                  className="h-10 w-auto filter brightness-0 invert mb-4"
+                  src="/images/services/talent.svg"
+                  alt="Bad Brain Talent"
+                  width={1200}
+                  height={360}
+                  className="h-60 w-auto filter brightness-0 invert"
                 />
-                <h1 className="text-5xl font-semibold mb-6">TALENT</h1>
               </div>
               <p className="text-xl leading-relaxed">
                 <strong>Bad Brain Talent</strong> supports, develops and represents <strong>up and coming original content creators</strong>. We help identify <strong>brand partners</strong>, secure <strong>paid opportunities</strong>, and handle the admin that comes with running a growing business.
@@ -71,7 +70,7 @@ export default function TalentPage() {
                 <strong>The need for representation is clear</strong> - but too often, <strong>traditional management means losing control</strong>. Forced deals, overexposure, and strategies that serve the agency, not the creator.
               </p>
             </div>
-            <div className="bg-brand-yellow p-8 rounded-lg">
+            <div className="bg-brand-yellow p-8 rounded-lg shadow-xs">
               <h3 className="text-2xl font-semibold text-gray-900 mb-6"><strong>Bad Brain Talent does things differently.</strong></h3>
               <p className="text-lg text-gray-700 mb-6">
                 Our <strong>tiered model gives creators control</strong>, with support that flexes to fit their needs - from <strong>inbox management to full-scale representation</strong>.
@@ -88,13 +87,13 @@ export default function TalentPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-16">
-            <div className="bg-white p-8 rounded-lg">
+            <div className="bg-white p-8 rounded-lg shadow-xs">
               <h3 className="text-2xl font-semibold text-gray-900 mb-6">For Brands</h3>
               <p className="text-lg text-gray-700">
                 Access to <strong>trusted talent</strong> with the <strong>right structures in place</strong>.
               </p>
             </div>
-            <div className="bg-white p-8 rounded-lg">
+            <div className="bg-white p-8 rounded-lg shadow-xs">
               <h3 className="text-2xl font-semibold text-gray-900 mb-6">For Creators</h3>
               <p className="text-lg text-gray-700">
                 The <strong>freedom to focus</strong> on what they do best: <strong>creating</strong>.
@@ -154,7 +153,7 @@ export default function TalentPage() {
           <h2 className="text-4xl font-semibold text-gray-900 mb-16 text-center">Services</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {services.map((service, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+              <div key={index} className="bg-white p-6 rounded-lg shadow-xs border border-gray-100">
                 {/* <div className="flex items-start"> */}
                   {/* <Image
                     src="/images/logo/logo.svg"
