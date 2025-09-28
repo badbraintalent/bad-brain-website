@@ -3,7 +3,6 @@
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import Image from 'next/image'
-import { track } from '@vercel/analytics'
 
 export default function TalentPage() {
   const services = [
@@ -29,7 +28,7 @@ export default function TalentPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="mb-8">
+              <div className="mb-8 flex justify-center md:justify-start">
                 <Image
                   src="/images/services/talent.svg"
                   alt="Bad Brain Talent"
@@ -38,10 +37,10 @@ export default function TalentPage() {
                   className="h-60 w-auto filter brightness-0 invert"
                 />
               </div>
-              <p className="text-xl leading-relaxed">
+              <p className="text-2xl leading-relaxed text-center">
                 <strong>Bad Brain Talent</strong> supports, develops and represents <strong>up and coming original content creators</strong>. We help identify <strong>brand partners</strong>, secure <strong>paid opportunities</strong>, and handle the admin that comes with running a growing business.
               </p>
-              <p className="text-lg mt-6 text-white/90">
+              <p className="text-xl mt-6 text-white/90 text-center">
                 We enable creators to put more time, energy and focus on what matters most - <strong>their content and their audience</strong>.
               </p>
             </div>
@@ -115,7 +114,6 @@ export default function TalentPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-center block group hover:transform hover:scale-105 transition-all duration-300 cursor-pointer"
-                onClick={() => track('Creator Link Click', { creator: creator.name, platform: creator.platform })}
               >
                 <div className="mb-4 relative overflow-hidden rounded-lg">
                   <Image

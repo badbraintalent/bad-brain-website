@@ -27,7 +27,7 @@ src="/images/logo/logo.svg"
 alt="Bad Brain"
 width={400}
 height={120}
-className="h-24 sm:h-32 lg:h-40 w-auto"
+className="h-28 sm:h-36 lg:h-44 w-auto"
 priority
 />
 </motion.div>
@@ -39,16 +39,16 @@ animate={{ opacity: 1, y: 0 }}
 transition={{ duration: 0.8, delay: 0.2 }}
 className="space-y-6"
 >
-<h1 className="font-stix text-5xl sm:text-6xl font-normal text-gray-900">
+{/* <h1 className="font-stix text-5xl sm:text-6xl font-normal text-gray-900">
 Hey, we&apos;re{' '}
 <span className="font-stix">Bad Brain.</span>
-</h1>
+</h1> */}
 
 <div className="max-w-2xl mx-auto lg:mx-0">
-<p className="font-stix text-2xl sm:text-3xl lg:text-4xl font-normal text-gray-900 mb-6">
-We&apos;re a specialist agency built for the{' '}
+<h1 className="font-stix text-2xl sm:text-3xl lg:text-4xl font-normal text-gray-900 mb-6">
+Hey, we&apos;re Bad Brain. We&apos;re a specialist agency built for the{' '}
 <span>creator economy.</span>
-</p>
+</h1>
 </div>
 </motion.div>
 
@@ -58,7 +58,7 @@ animate={{ opacity: 1, y: 0 }}
 transition={{ duration: 0.8, delay: 0.4 }}
 className="relative"
 >
-<div className="font-normal text-3xl text-gray-700 space-y-3 max-w-xl mx-auto lg:mx-0">
+<div className="font-normal text-2xl sm:text-3xl lg:text-4xl text-gray-700 space-y-3 max-w-xl mx-auto lg:mx-0">
 <p className="font-stix">We <strong>consult</strong>.</p>
 <p className="font-stix">We produce <strong>content</strong>.</p>
 <p className="font-stix">We develop <strong>talent</strong>.</p>
@@ -78,14 +78,14 @@ className="w-full lg:w-[500px] lg:flex-shrink-0"
 {/* Creative Image Frame */}
 <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-500">
 <Image
-src="/images/creator-editing-new.jpg"
-alt="Creator editing content in a professional setup"
+src="/images/hero-new.jpg"
+alt="Professional workspace setup"
 fill
 className="object-cover"
 priority
 />
 {/* Subtle gradient overlay */}
-<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent lg:from-black/80 lg:via-black/20 from-black/90 via-black/30"></div>
 
 {/* Floating content badge */}
 <div className="absolute bottom-6 left-6 right-6">

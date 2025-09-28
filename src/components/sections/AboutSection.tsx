@@ -14,8 +14,8 @@ const AboutSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="font-stix text-4xl sm:text-5xl font-normal text-gray-900 mb-8">
-            <strong>Bad Brain Media</strong> is a specialist agency built for the <strong>creator economy</strong>.
+          <h2 className="font-stix text-4xl sm:text-5xl text-gray-900 mb-8">
+            Bad Brain Media is a specialist agency built for the creator economy.
           </h2>
         </motion.div>
 
@@ -53,20 +53,20 @@ const AboutSection = () => {
             <p className="text-lg text-gray-700 leading-relaxed mb-6">
               Every part of the business is built with <strong>creators in mind</strong> - and optimised for what your business or brand needs, wherever you sit in the ecosystem.
             </p>
-            <div className="space-y-4">
-              <div className="flex items-center">
+            <ul className="space-y-3 list-none">
+              <li className="flex items-center">
                 <div className="w-2 h-2 bg-brand-blue rounded-full mr-3 flex-shrink-0"></div>
-                <p className="text-gray-700"><strong>Strategy</strong> and <strong>storytelling</strong> alignment</p>
-              </div>
-              <div className="flex items-center">
+                <span className="text-base text-gray-700 text-lg"><strong>Strategy</strong> and <strong>storytelling</strong> alignment</span>
+              </li>
+              <li className="flex items-center">
                 <div className="w-2 h-2 bg-brand-blue rounded-full mr-3 flex-shrink-0"></div>
-                <p className="text-gray-700">Scalable <strong>content production</strong></p>
-              </div>
-              <div className="flex items-center">
+                <span className="text-base text-gray-700 text-lg">Scalable <strong>content production</strong></span>
+              </li>
+              <li className="flex items-center">
                 <div className="w-2 h-2 bg-brand-blue rounded-full mr-3 flex-shrink-0"></div>
-                <p className="text-gray-700"><strong>Creator-first</strong> mindset</p>
-              </div>
-            </div>
+                <span className="text-base text-gray-700 text-lg"><strong>Creator-first</strong> mindset</span>
+              </li>
+            </ul>
           </motion.div>
         </div>
       </div>

@@ -48,7 +48,7 @@ const Navigation = () => {
                 ) : item.name === 'Contact' ? (
                   <Link
                     href={item.href}
-                    className="bg-brand-blue text-white px-6 py-3 rounded-xl text-base font-medium hover:bg-brand-blue/90 transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="bg-brand-blue ml-4 text-white px-6 py-3 rounded-xl text-base font-medium hover:bg-brand-blue/90 transition-all duration-300 shadow-sm hover:shadow-md"
                   >
                     {item.name}
                   </Link>

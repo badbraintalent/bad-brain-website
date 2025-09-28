@@ -3,7 +3,6 @@
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import Image from 'next/image'
-import { track } from '@vercel/analytics'
 
 export default function ContactPage() {
   return (
@@ -40,7 +39,6 @@ export default function ContactPage() {
             <a
               href="mailto:info@badbrain.media"
               className="inline-block bg-brand-yellow text-gray-900 px-8 py-4 rounded-md text-xl font-semibold hover:bg-white transition-colors duration-300"
-              onClick={() => track('Email Click', { location: 'Contact Page' })}
             >
               📨 info@badbrain.media
             </a>

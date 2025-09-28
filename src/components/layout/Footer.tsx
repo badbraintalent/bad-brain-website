@@ -3,7 +3,6 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { track } from '@vercel/analytics'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -31,7 +30,6 @@ const Footer = () => {
               <a
                 href="mailto:info@badbrain.media"
                 className="text-md font-semibold hover:text-brand-yellow transition-colors duration-200"
-                onClick={() => track('Email Click', { location: 'Footer' })}
               >
                 info@badbrain.media
               </a>

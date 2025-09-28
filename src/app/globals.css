@@ -50,6 +50,11 @@ p:not([class*="font-"]), div:not([class*="font-"]) {
   line-height: 1.2; /* Ultra tight line height for body text */
 }
 
+strong, em {
+  font-family: 'STIX Two Text', serif;
+  font-weight: 600;
+}
+
 /* Extra tight spacing for large display text */
 .text-5xl, .text-6xl, .text-7xl, .text-8xl {
   letter-spacing: -0.05em; /* Very tight for dramatic effect */

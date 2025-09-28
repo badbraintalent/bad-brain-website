@@ -13,7 +13,7 @@ export default function StudioPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="mb-8">
+              <div className="mb-8 flex justify-center md:justify-start">
                 <Image
                   src="/images/services/studio.svg"
                   alt="Bad Brain Studio"
@@ -22,10 +22,10 @@ export default function StudioPage() {
                   className="h-60 w-auto"
                 />
               </div>
-              <p className="text-xl text-gray-900 leading-relaxed">
+              <p className="text-2xl text-gray-900 leading-relaxed text-center">
                 <strong>Bad Brain Studio</strong> translates your brand&apos;s <strong>core creative strategy</strong> into a <strong>fully integrated suite of content</strong> to meet the demands of modern digital marketing.
               </p>
-              <p className="text-lg mt-6 text-gray-700">
+              <p className="text-xl mt-6 text-gray-700 text-center">
                 Our studio offering combines <strong>creator, digital, and traditional production capabilities</strong> to deliver <strong>true creative diversity</strong>.
               </p>
             </div>
@@ -63,7 +63,7 @@ export default function StudioPage() {
       <VideoShowcase />
 
       {/* The Approach */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-semibold text-gray-900 mb-8">The Approach</h2>
