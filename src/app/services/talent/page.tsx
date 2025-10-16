@@ -26,32 +26,22 @@ export default function TalentPage() {
       {/* Hero Section */}
       <section className="bg-brand-blue text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="mb-8 flex justify-center md:justify-start">
-                <Image
-                  src="/images/services/talent.svg"
-                  alt="Bad Brain Talent"
-                  width={1200}
-                  height={360}
-                  className="h-60 w-auto filter brightness-0 invert"
-                />
-              </div>
-              <p className="text-2xl leading-relaxed text-center">
-                <strong>Bad Brain Talent</strong> supports, develops and represents <strong>up and coming original content creators</strong>. We help identify <strong>brand partners</strong>, secure <strong>paid opportunities</strong>, and handle the admin that comes with running a growing business.
-              </p>
-              <p className="text-xl mt-6 text-white/90 text-center">
-                We enable creators to put more time, energy and focus on what matters most - <strong>their content and their audience</strong>.
-              </p>
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="mb-8">
+              <Image
+                src="/images/services/talent.svg"
+                alt="Bad Brain Talent"
+                width={1200}
+                height={360}
+                className="h-80 w-auto filter brightness-0 invert mx-auto"
+              />
             </div>
-            <div className="relative">
-              <div className="bg-white/10 p-8 rounded-lg backdrop-blur-sm">
-                <h3 className="text-2xl font-semibold mb-6">The Challenge</h3>
-                <p className="text-white/90 leading-relaxed">
-                  <strong>The demand for creator content never slows.</strong> Audiences expect more - more formats, more frequency, more from the people they follow.
-                </p>
-              </div>
-            </div>
+            <p className="text-2xl leading-relaxed mb-6">
+              <strong>Bad Brain Talent</strong> supports, develops and represents <strong>up and coming original content creators</strong>. We help identify <strong>brand partners</strong>, secure <strong>paid opportunities</strong>, and handle the admin that comes with running a growing business.
+            </p>
+            <p className="text-xl text-white/90">
+              We enable creators to put more time, energy and focus on what matters most - <strong>their content and their audience</strong>.
+            </p>
           </div>
         </div>
       </section>
@@ -59,22 +49,34 @@ export default function TalentPage() {
       {/* Problem Statement */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-16">
+          <div className="grid md:grid-cols-2 gap-20">
             <div>
+              <div className="bg-white/10 p-8 rounded-lg border-2 border-gray-200 mb-8">
+                <h3 className="text-2xl font-semibold text-gray-900 mb-6">The Challenge</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  <strong>The demand for creator content never slows.</strong> Audiences expect more - more formats, more frequency, more from the people they follow.
+                </p>
+              </div>
+
               <h2 className="text-3xl font-semibold text-gray-900 mb-8">The Reality</h2>
-              <p className="text-lg text-gray-700 mb-6">
-                <strong>With that growing pressure</strong>, keeping up with content can leave little room for managing brand deals, career development, and long-term growth.
-              </p>
-              <p className="text-lg text-gray-700 mb-6">
-                <strong>The need for representation is clear</strong> - but too often, <strong>traditional management means losing control</strong>. Forced deals, overexposure, and strategies that serve the agency, not the creator.
-              </p>
+
+              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+                <p>
+                  <strong>With that growing pressure</strong>, keeping up with content can leave little room for managing brand deals, career development, and long-term growth.
+                </p>
+
+                <p>
+                  <strong>The need for representation is clear</strong> - but too often, <strong>traditional management means losing control</strong>. Forced deals, overexposure, and strategies that serve the agency, not the creator.
+                </p>
+              </div>
             </div>
+
             <div className="bg-brand-yellow p-8 rounded-lg shadow-xs">
               <h3 className="text-2xl font-semibold text-gray-900 mb-6"><strong>Bad Brain Talent does things differently.</strong></h3>
-              <p className="text-lg text-gray-700 mb-6">
+              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
                 Our <strong>tiered model gives creators control</strong>, with support that flexes to fit their needs - from <strong>inbox management to full-scale representation</strong>.
               </p>
-              <p className="text-lg text-gray-700">
+              <p className="text-lg text-gray-700 leading-relaxed">
                 We handle <strong>deal negotiation, brand outreach, and business development</strong>, helping creators diversify their income and build <strong>sustainable businesses</strong> for the long term.
               </p>
             </div>
@@ -83,18 +85,18 @@ export default function TalentPage() {
       </section>
 
       {/* Value Proposition */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-16">
-            <div className="bg-white p-8 rounded-lg shadow-xs">
-              <h3 className="text-2xl font-semibold text-gray-900 mb-6">For Brands</h3>
-              <p className="text-lg text-gray-700">
+      <section className="py-20 bg-brand-blue text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-12">
+            <div>
+              <h3 className="text-2xl font-semibold mb-6">For Brands</h3>
+              <p className="text-xl">
                 Access to <strong>trusted talent</strong> with the <strong>right structures in place</strong>.
               </p>
             </div>
-            <div className="bg-white p-8 rounded-lg shadow-xs">
-              <h3 className="text-2xl font-semibold text-gray-900 mb-6">For Creators</h3>
-              <p className="text-lg text-gray-700">
+            <div>
+              <h3 className="text-2xl font-semibold mb-6">For Creators</h3>
+              <p className="text-xl">
                 The <strong>freedom to focus</strong> on what they do best: <strong>creating</strong>.
               </p>
             </div>

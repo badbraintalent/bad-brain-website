@@ -66,3 +66,7 @@ strong, em {
   letter-spacing: -0.035em; /* Tighter medium headings */
   line-height: 0.95; /* Ultra tight line height */
 }
+
+.text-xl {
+  line-height: 1.2; /* Ultra tight line height */
+}

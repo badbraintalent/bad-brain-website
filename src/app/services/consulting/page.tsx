@@ -26,7 +26,7 @@ export default function ConsultingPage() {
                 alt="Bad Brain Consulting"
                 width={1200}
                 height={360}
-                className="h-60 w-auto filter brightness-0 invert mx-auto"
+                className="h-80 w-auto filter brightness-0 invert mx-auto"
               />
             </div>
             <p className="text-2xl leading-relaxed mb-6">
@@ -52,7 +52,7 @@ export default function ConsultingPage() {
             </p>
 
             {/* Final section with integrated graphic */}
-            <div className="grid md:grid-cols-2 gap-12 items-center mt-16">
+            <div className="grid md:grid-cols-2 gap-20 items-center mt-16">
               <div className="relative">
                 <Image
                   src="/images/graphic-5.svg"
@@ -66,7 +66,7 @@ export default function ConsultingPage() {
                 <p className="text-xl font-medium text-gray-900 mb-6">
                   <strong>Bad Brain Consulting</strong> helps brands, agencies, and networks step back and see the <strong>bigger picture</strong>.
                 </p>
-                <p>
+                <p className="text-lg text-gray-700 leading-relaxed">
                   We design <strong>cross-functional creator strategies</strong> that cut through complexity, improve efficiency, and deliver clearer results. Whether you&apos;re starting small or managing a global programme, we provide the frameworks and insights to make creator marketing work harder for your business.
                 </p>
               </div>

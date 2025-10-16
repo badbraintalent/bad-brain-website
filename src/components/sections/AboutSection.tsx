@@ -28,11 +28,27 @@ const AboutSection = () => {
             className="space-y-6"
           >
             <p className="text-lg text-gray-700 leading-relaxed">
-              After more than a decade working at the forefront of <strong>influencer and creator marketing</strong> - from early activations to global, multi-market programmes - we&apos;ve seen the space evolve from <strong>social add-on to strategic priority</strong>.
+              After more than a decade working at the forefront of <strong>influencer and creator marketing</strong> - from local, small-scale activations to global, multi-market programmes - we&apos;ve seen the industry evolve from an after-thought of social media into an <strong>essential go-to-market strategy</strong>.
             </p>
 
             <p className="text-lg text-gray-700 leading-relaxed">
-              Now, we help <strong>brands, agencies, and networks</strong> navigate this shift with solutions designed for the way the industry actually works today.
+              Despite the changes that creator marketing have brought to the industry, challenges remain:
+            </p>
+
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Countless approaches to campaign activation <strong>leave marketing teams conflicted and start-ups unsure where to begin</strong>…
+            </p>
+
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Creators themselves are <strong>weighed down by relentless production schedules</strong>, leaving little room to grow their business…
+            </p>
+
+            <p className="text-lg text-gray-700 leading-relaxed">
+              …and all of this while both <strong>brands and creators debate how to harness Generative AI</strong> without eroding creativity or authenticity.
+            </p>
+
+            <p className="text-lg text-gray-700 leading-relaxed">
+              <strong>That&apos;s where Bad Brain comes in…</strong>
             </p>
 
             <p className="text-lg text-gray-700 leading-relaxed">
