@@ -3,6 +3,7 @@
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 
 export default function TalentPage() {
   const services = [
@@ -48,38 +49,70 @@ export default function TalentPage() {
 
       {/* Problem Statement */}
       <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-20">
-            <div>
-              <div className="bg-white/10 p-8 rounded-lg border-2 border-gray-200 mb-8">
-                <h3 className="text-2xl font-semibold text-gray-900 mb-6">The Challenge</h3>
-                <p className="text-gray-700 leading-relaxed">
-                  <strong>The demand for creator content never slows.</strong> Audiences expect more - more formats, more frequency, more from the people they follow.
-                </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left: Image */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="rounded-lg overflow-hidden"
+            >
+              <div className="relative w-full aspect-square">
+                <Image
+                  src="/images/services/talent-creator.jpg"
+                  alt="Creator working on content"
+                  fill
+                  className="object-cover object-center"
+                />
               </div>
+            </motion.div>
 
-              <h2 className="text-3xl font-semibold text-gray-900 mb-8">The Reality</h2>
+            {/* Right: Consolidated Text Panel */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="bg-brand-yellow p-8 rounded-lg shadow-xs"
+            >
+              <div className="space-y-8">
+                {/* The Challenge */}
+                <div>
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-6">The Challenge</h3>
+                  <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
+                    <p>
+                      <strong>The demand for creator content never slows.</strong> Audiences expect more - more formats, more frequency, more from the people they follow.
+                    </p>
 
-              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
-                <p>
-                  <strong>With that growing pressure</strong>, keeping up with content can leave little room for managing brand deals, career development, and long-term growth.
-                </p>
+                    <p>
+                      <strong>With that growing pressure</strong>, keeping up with content can leave little room for managing brand deals, career development, and long-term growth.
+                    </p>
 
-                <p>
-                  <strong>The need for representation is clear</strong> - but too often, <strong>traditional management means losing control</strong>. Forced deals, overexposure, and strategies that serve the agency, not the creator.
-                </p>
+                    <p>
+                      <strong>The need for representation is clear</strong> - but too often, <strong>traditional management means losing control</strong>. Forced deals, overexposure, and strategies that serve the agency, not the creator.
+                    </p>
+                  </div>
+                </div>
+
+                <hr className="border-gray-300" />
+
+                {/* Bad Brain Talent Approach */}
+                <div>
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-6">Bad Brain Talent does things differently</h3>
+                  <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
+                    <p>
+                      Our <strong>tiered model gives creators control</strong>, with support that flexes to fit their needs - from <strong>inbox management to full-scale representation</strong>.
+                    </p>
+
+                    <p>
+                      We handle <strong>deal negotiation, brand outreach, and business development</strong>, helping creators diversify their income and build <strong>sustainable businesses</strong> for the long term.
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="bg-brand-yellow p-8 rounded-lg shadow-xs">
-              <h3 className="text-2xl font-semibold text-gray-900 mb-6"><strong>Bad Brain Talent does things differently.</strong></h3>
-              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                Our <strong>tiered model gives creators control</strong>, with support that flexes to fit their needs - from <strong>inbox management to full-scale representation</strong>.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                We handle <strong>deal negotiation, brand outreach, and business development</strong>, helping creators diversify their income and build <strong>sustainable businesses</strong> for the long term.
-              </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -89,13 +122,13 @@ export default function TalentPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-12">
             <div>
-              <h3 className="text-2xl font-semibold mb-6">For Brands</h3>
+              <h3 className="text-4xl font-semibold mb-6">For Brands</h3>
               <p className="text-xl">
                 Access to <strong>trusted talent</strong> with the <strong>right structures in place</strong>.
               </p>
             </div>
             <div>
-              <h3 className="text-2xl font-semibold mb-6">For Creators</h3>
+              <h3 className="text-4xl font-semibold mb-6">For Creators</h3>
               <p className="text-xl">
                 The <strong>freedom to focus</strong> on what they do best: <strong>creating</strong>.
               </p>
