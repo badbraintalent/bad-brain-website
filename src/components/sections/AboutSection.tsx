@@ -32,7 +32,7 @@ const AboutSection = () => {
             </p>
 
             <p className="text-lg text-gray-700 leading-relaxed">
-              Despite the changes that creator marketing have brought to the industry, challenges remain:
+              Despite the benefits creators have brought to the marketing industry, challenges remain for brands looking to go further:
             </p>
 
             <p className="text-lg text-gray-700 leading-relaxed">
@@ -40,11 +40,11 @@ const AboutSection = () => {
             </p>
 
             <p className="text-lg text-gray-700 leading-relaxed">
-              Creators themselves are <strong>weighed down by relentless production schedules</strong>, leaving little room to grow their business…
+              Creators and artists are <strong>weighed down by relentless production schedules</strong>, leaving little room to grow their business or fan base…
             </p>
 
             <p className="text-lg text-gray-700 leading-relaxed">
-              …and all of this while both <strong>brands and creators debate how to harness Generative AI</strong> without eroding creativity or authenticity.
+              …and all of this while the <strong>social media that brands and creators once knew</strong>, evolves into an <strong>entertainment-first media channel</strong> that prioritises content over connection.
             </p>
 
             <p className="text-lg text-gray-700 leading-relaxed">

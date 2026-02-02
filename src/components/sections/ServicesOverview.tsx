@@ -38,7 +38,7 @@ className="text-center mb-20"
 </motion.div>
 
 {/* Equal Services Grid Layout */}
-<div className="grid lg:grid-cols-3 gap-8">
+<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
 
 {/* Consulting */}
 <motion.div
@@ -132,6 +132,39 @@ className="inline-flex items-centerfont-medium text-brand-blue hover:text-brand-
 Learn More
 <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
 </Link>
+</div>
+</motion.div>
+
+{/* Resonate */}
+<motion.div
+initial={{ opacity: 0, y: 30 }}
+whileInView={{ opacity: 1, y: 0 }}
+transition={{ duration: 0.8, delay: 0.3 }}
+viewport={{ once: true }}
+className="group"
+>
+<div className="bg-black p-8 rounded-lg shadow-xs relative overflow-hidden h-full">
+<div className="relative z-10">
+<div className="mb-6 flex justify-center">
+<Image
+src="/images/services/resonate.png"
+alt="Bad Brain Resonate"
+width={1000}
+height={300}
+className="h-48 w-auto object-contain"
+/>
+</div>
+<p className=" text-lg text-white/90 leading-relaxed mb-8">
+<strong>Social strategy tailor-made for musicians and labels.</strong> We use industry insight to help artists engage, nurture and grow audiences in a video-first, discovery-driven landscape.
+</p>
+<Link
+href="/services/resonate"
+className="inline-flex items-centerfont-medium text-white hover:text-white/80 transition-all duration-300 group"
+>
+Learn More
+<ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+</Link>
+</div>
 </div>
 </motion.div>
 
