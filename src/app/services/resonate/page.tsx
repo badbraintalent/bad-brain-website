@@ -54,17 +54,30 @@ export default function ResonatePage() {
 
       {/* What We Do */}
       <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="space-y-8 text-2xl text-gray-700 leading-relaxed"
+            className="grid lg:grid-cols-2 gap-12 items-stretch"
           >
-            <p>
-              Led by <strong>experts with real industry experience</strong>, Bad Brain Resonate delivers social strategy for artists and labels alike. We help turn your <strong>personality into presence</strong>, using proven, entertainment-first content strategies to build real fans and nurture lasting communities on platforms like TikTok.
-            </p>
+            <div className="flex items-center">
+              <p className="text-2xl text-gray-700 leading-relaxed">
+                Led by <strong>experts with real industry experience</strong>, Bad Brain Resonate delivers social strategy for artists and labels alike. We help turn your <strong>personality into presence</strong>, using proven, entertainment-first content strategies to build real fans and nurture lasting communities on platforms like TikTok.
+              </p>
+            </div>
+            <div className="flex flex-col">
+              <div className="rounded-lg overflow-hidden shadow-xl flex-1 relative min-h-[300px]">
+                <Image
+                  src="/images/resonate/jen-long.jpg"
+                  alt="Jen Long - Resonate Co-Founder"
+                  fill
+                  className="object-cover object-[center_70%]"
+                />
+              </div>
+              <p className="mt-4 text-gray-600 text-sm text-center">Jen Long; Resonate Co-Founder</p>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -104,18 +117,18 @@ export default function ResonatePage() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl font-semibold text-gray-900 mb-16 text-center">Experience</h2>
-            <div className="grid lg:grid-cols-2 gap-12 items-start">
+            <div className="grid lg:grid-cols-2 gap-12 items-stretch">
               {/* Photo */}
-              <div className="space-y-6">
-                <div className="rounded-lg overflow-hidden shadow-xl">
+              <div className="flex flex-col">
+                <div className="rounded-lg overflow-hidden shadow-xl flex-1 relative min-h-[400px]">
                   <Image
-                    src="/images/resonate/jen-long.jpg"
-                    alt="Jen Long - Resonate Co-Founder"
-                    width={600}
-                    height={800}
-                    className="w-full h-auto object-cover"
+                    src="/images/resonate/jasmine4t.jpg"
+                    alt="jasmine.4.t at Paradiso Amsterdam, 2025"
+                    fill
+                    className="object-cover"
                   />
                 </div>
+                <p className="mt-4 text-gray-600 text-sm text-center">jasmine.4.t at Paradiso Amsterdam, 2025 - Photo by Jessica Carroll</p>
               </div>
               {/* Bio */}
               <div className="space-y-6">
@@ -126,7 +139,7 @@ export default function ResonatePage() {
                   Post-BBC, Jen helped launch live music platform <strong>DICE as Music Editor</strong> before moving into artist management and consultancy. Since 2017, she has worked closely with artists and music businesses while simultaneously leading partnerships for <strong>The Line of Best Fit</strong>, bridging editorial, culture and strategy.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  In 2023, Jen founded <strong>Take Care Management</strong>, where she continues to work with a focused roster including jasmine.4.t, recently named one of <strong>BBC 6 Music&apos;s Artists of the Year</strong>. At Bad Brain Resonate, she brings this deep industry perspective to help artists turn visibility into longevity and audiences into genuine fans.
+                  In 2023, Jen founded <strong>Take Care Management</strong>, where she continues to work with a focused roster including <strong>jasmine.4.t</strong>, recently named one of <strong>BBC 6 Music&apos;s Artists of the Year</strong>. At Bad Brain Resonate, she brings this deep industry perspective to help artists turn visibility into longevity and audiences into genuine fans.
                 </p>
                 <div className="bg-brand-yellow p-6 rounded-lg mt-8">
                   <p className="text-gray-800">
