@@ -9,21 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'brand-yellow': '#F8F5D7',
-        'brand-blue': '#507989',
+        'brand-yellow': '#f5f5f5',
+        'brand-blue': '#737373',
         brand: {
-          yellow: '#F8F5D7',
-          blue: '#507989',
+          yellow: '#f5f5f5',
+          blue: '#737373',
         },
       },
       fontFamily: {
-        'stix': ['STIX Two Text', 'serif'],
-        'inter': ['Inter', 'sans-serif'],
-        'sans': ['Inter', 'sans-serif'],
-        'serif': ['STIX Two Text', 'serif'], // Ensure serif uses STIX
-        // Utility classes for easy reverting
-        'body-inter': ['Inter', 'sans-serif'], // Use this to revert body text
-        'body-stix': ['STIX Two Text', 'serif'], // Explicit STIX for body
+        'stix': ['system-ui', '-apple-system', 'sans-serif'],
+        'inter': ['system-ui', '-apple-system', 'sans-serif'],
+        'sans': ['system-ui', '-apple-system', 'sans-serif'],
+        'serif': ['system-ui', '-apple-system', 'sans-serif'],
+        'body-inter': ['system-ui', '-apple-system', 'sans-serif'],
+        'body-stix': ['system-ui', '-apple-system', 'sans-serif'],
       },
     },
   },

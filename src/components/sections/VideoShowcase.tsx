@@ -1,8 +1,6 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
-import VideoPlayer from '@/components/ui/VideoPlayer'
 
 const VideoShowcase = () => {
   const videos = [
@@ -12,63 +10,51 @@ const VideoShowcase = () => {
   ]
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl sm:text-5xl font-semibold text-gray-900 mb-8">
-              See Our Work in Action
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From creator-led content to studio production, explore how we bring brands and creators together
-            </p>
-          </motion.div> */}
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {videos.map((video, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="group"
-            >
-              <div className="rounded-lg shadow-xs hover:shadow-xl transition-shadow duration-300">
-                <VideoPlayer
-                  src={video.src}
-                  className="aspect-video mb-4"
-                  autoPlay={false}
-                  muted={true}
-                  loop={true}
-                />
-                {/* <h3 className="text-lg font-semibold text-gray-900 text-center">
-                  {video.title}
-                </h3> */}
+    <section className="video-showcase-section py-20 bg-white border-t border-gray-200">
+      <div className="video-showcase-grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          {/* Left column — videos, slide in from left one after another */}
+          <div className="flex flex-col gap-8">
+            {videos.map((video, index) => (
+              <div key={index} className={`video-card-${index + 1}`}>
+                <div className="border border-gray-300">
+                  <video
+                    src={video.src}
+                    className="w-full aspect-video"
+                    controls
+                    muted
+                    loop
+                    autoPlay
+                    playsInline
+                    preload="metadata"
+                  />
+                </div>
+                <p className="text-sm text-gray-500 mt-2">{video.title}</p>
               </div>
-            </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
-          <a
-            href="/work"
-            className="inline-flex items-center px-8 py-4 bg-brand-blue text-white rounded-md text-lg font-semibold hover:bg-brand-blue/90 transition-all duration-300"
-          >
-            View All Work
-          </a>
-        </motion.div> */}
+          {/* Right column — text content, slides in from right staggered */}
+          <div className="flex flex-col gap-6 md:sticky md:top-24">
+            <p className="video-text-1 text-base text-gray-500">
+              After more than a decade working at the forefront of <strong className="text-gray-900">influencer and creator marketing</strong> - from local, small-scale activations to global, multi-market programmes - we&apos;ve seen the industry evolve from an after-thought of social media into an <strong className="text-gray-900">essential go-to-market strategy</strong>.
+            </p>
+            <p className="video-text-2 text-base text-gray-500">
+              Despite the benefits creators have brought to the marketing industry, challenges remain for brands looking to go further:
+            </p>
+            <ul className="video-text-3 text-base text-gray-500 space-y-3 list-none">
+              <li>Countless approaches to campaign activation <strong className="text-gray-900">leave marketing teams conflicted and start-ups unsure where to begin</strong>&hellip;</li>
+              <li>Creators and artists are <strong className="text-gray-900">weighed down by relentless production schedules</strong>, leaving little room to grow their business or fan base&hellip;</li>
+              <li>&hellip;and all of this while the <strong className="text-gray-900">social media that brands and creators once knew</strong>, evolves into an <strong className="text-gray-900">entertainment-first media channel</strong> that prioritises content over connection.</li>
+            </ul>
+            <p className="video-text-4 text-base text-gray-900 font-medium">
+              That&apos;s where Bad Brain comes in&hellip;
+            </p>
+            <p className="text-base text-gray-500">
+              Whether you need to build a creator strategy from the ground up, optimise your existing approach, build a cohesive suite of content, or you are a creator yourself and looking for representation: <strong className="text-gray-900">Bad Brain offers integrated services</strong> across <strong className="text-gray-900">consulting, production, and talent development</strong>.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   )

@@ -1,72 +1,885 @@
-@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;600&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
-/*
-FONT STRATEGY:
-- Default: All text now uses STIX Two Text
-- To revert body text to Inter: Use 'font-body-inter' class
-- To explicitly use STIX: Use 'font-body-stix' or 'font-stix' class
-- Inter is still available via 'font-inter' class
-*/
+/* WIREFRAME BASE STYLES — generic, monochrome, system fonts */
 
 :root {
-  --background: #F8F5D7;
-  --foreground: #171717;
-  --brand-yellow: #F8F5D7;
-  --brand-blue: #507989;
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --brand-yellow: #f5f5f5;
+  --brand-blue: #737373;
+  scroll-behavior: smooth;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand-yellow: var(--brand-yellow);
-  --color-brand-blue: var(--brand-blue);
-  --font-stix: 'STIX Two Text', serif;
-  --font-inter: 'Inter', sans-serif;
+  --color-brand-yellow: #f5f5f5;
+  --color-brand-blue: #737373;
+  --font-stix: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-inter: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  /* font-family: 'Inter', sans-serif; */
-  font-family: 'STIX Two Text', serif;
-  font-size: 1.25rem; /* 20px if user's base is 16px */
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
   font-weight: 400;
-  letter-spacing: -0.03em; /* Even tighter letter spacing */
-  line-height: 1.15; /* Ultra tight line spacing */
+  letter-spacing: normal;
+  line-height: 1.5;
 }
 
-h1:not([class*="font-normal"]), h2, h3, h4, h5, h6 {
-  font-family: 'STIX Two Text', serif;
-  font-weight: 600;
-  letter-spacing: -0.04em; /* Even tighter for headings */
-  line-height: 0.95; /* Ultra tight line height for headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 700;
+  letter-spacing: normal;
+  line-height: 1.2;
 }
 
-p:not([class*="font-"]), div:not([class*="font-"]) {
-  /* font-family: 'Inter', sans-serif; */
-  font-family: 'STIX Two Text', serif;
-  letter-spacing: -0.025em; /* Much tighter letter spacing for body text */
-  line-height: 1.2; /* Ultra tight line height for body text */
+p, div {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: normal;
+  line-height: 1.5;
 }
 
 strong, em {
-  font-family: 'STIX Two Text', serif;
-  font-weight: 600;
+  font-family: inherit;
+  font-weight: 700;
 }
 
-/* Extra tight spacing for large display text */
-.text-5xl, .text-6xl, .text-7xl, .text-8xl {
-  letter-spacing: -0.05em; /* Very tight for dramatic effect */
-  line-height: 0.9; /* Maximum tight line height */
+/* Register --fill so the browser can interpolate it as a percentage */
+@property --fill {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
 }
 
-/* Tight spacing for large headings */
-.text-3xl, .text-4xl {
-  letter-spacing: -0.035em; /* Tighter medium headings */
-  line-height: 0.95; /* Ultra tight line height */
+/* Nav overlay */
+.nav-overlay-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - 4rem);
+  height: calc(100dvh - 4rem);
+  padding-top: 50px;
+  padding-bottom: 50px;
+  overflow: hidden;
 }
 
-.text-xl {
-  line-height: 1.2; /* Ultra tight line height */
+.nav-overlay-list > div {
+  line-height: 0;
+}
+
+/* Each row slides up + fades in with a stagger delay */
+.nav-item-row {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--stagger, 0) * 0.07s + 0.15s);
+}
+
+.nav-item-row-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fill text gradient — starts unfilled, fills on hover */
+.nav-fill-item {
+  display: inline;
+  font-size: clamp(1.5rem, 3.8vw, 3.5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  --fill: 0%;
+  background: linear-gradient(
+    to right,
+    #c0c0c0 var(--fill),
+    #333 var(--fill)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: --fill 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-fill-item:hover {
+  --fill: 100%;
+}
+
+/* Parallax Hero — negative text mask with scroll-driven background fill */
+
+/* Tall section creates scroll room; named view-timeline drives the animation.
+   Negative margin pulls the section up behind the sticky nav so
+   the hero starts flush at the viewport top — no jump on scroll. */
+.parallax-hero {
+  --nav-height: 65px;
+  position: relative;
+  width: 100%;
+  height: calc(200vh + var(--nav-height));
+  height: calc(200dvh + var(--nav-height));
+  margin-top: calc(-1 * var(--nav-height));
+  /* view-timeline removed — fill animation is now JS-driven (see ParallaxHero.tsx) */
+}
+
+/* Sticky wrapper pins video + layers to viewport while scrolling */
+.parallax-hero-sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.parallax-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Solid background fades in on scroll. Opacity driven by JS scroll listener
+   (see ParallaxHero.tsx useEffect) — CSS scroll-driven animations have
+   fill-mode bugs in Firefox for view-timelines at the top of the page. */
+.parallax-hero-bg-fill {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: #e5e5e5;
+  opacity: 0;
+}
+
+/* "Bad Brain" text — styles applied via inline styles + Tailwind in ParallaxHero.tsx
+   (Turbopack hot-reload doesn't pick up new CSS classes added externally) */
+
+/* Services cards — scroll-driven slide-in from off-screen.
+   The section itself needs overflow:hidden to prevent horizontal scroll
+   while cards are still off-screen. Cards use view-timeline on the
+   section wrapper and staggered animation-range values so the middle
+   two (Studio, Talent) arrive first, then the outer two follow. */
+
+/* overflow:clip hides off-screen cards without creating a scroll container
+   (overflow:hidden would make view-timeline track against this element
+   instead of the page scrollport, breaking the animation) */
+.services-scroll-section {
+  overflow: clip;
+}
+
+.services-scroll-grid {
+  view-timeline-name: --services;
+  view-timeline-axis: block;
+}
+
+/* Middle-left: Studio — swings from left, arrives first */
+.service-card-mid-left {
+  animation-name: swing-from-left;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: --services;
+  animation-range: entry 0% cover 35%;
+}
+
+/* Middle-right: Talent — swings from right, arrives first */
+.service-card-mid-right {
+  animation-name: swing-from-right;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: --services;
+  animation-range: entry 0% cover 35%;
+}
+
+/* Outer-left: Consulting — swings from left, arrives second */
+.service-card-outer-left {
+  animation-name: swing-from-left;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: --services;
+  animation-range: entry 20% cover 50%;
+}
+
+/* Outer-right: Resonate — swings from right, arrives second */
+.service-card-outer-right {
+  animation-name: swing-from-right;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: --services;
+  animation-range: entry 20% cover 50%;
+}
+
+@keyframes swing-from-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-100vw) rotate(45deg) scale(0.85);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes swing-from-right {
+  0% {
+    opacity: 0;
+    transform: translateX(100vw) rotate(-45deg) scale(0.85);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+}
+
+/* Slot machine video columns — three columns of videos scrolling
+   continuously in alternating directions. Each column overflows the
+   section vertically. The track is doubled so the loop is seamless. */
+
+.slot-machine {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  height: 500px;
+  overflow: hidden;
+}
+
+.slot-column {
+  position: relative;
+  overflow: visible;
+}
+
+.slot-track {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.slot-video-wrapper {
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slot-video {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* --slot-start offsets each column's initial position so they
+   don't all show the same frame. The offset is added to the
+   base translateY so each column looks staggered. */
+
+/* Scroll up: 0 → -50%, offset by --slot-start */
+.slot-scroll-up {
+  animation: slot-up 25s linear infinite;
+  transform: translateY(var(--slot-start, 0%));
+}
+
+/* Scroll down: -50% → 0, offset by --slot-start */
+.slot-scroll-down {
+  animation: slot-down 25s linear infinite;
+  transform: translateY(calc(-50% + var(--slot-start, 0%)));
+}
+
+@keyframes slot-up {
+  0% {
+    transform: translateY(var(--slot-start, 0%));
+  }
+  100% {
+    transform: translateY(calc(-50% + var(--slot-start, 0%)));
+  }
+}
+
+@keyframes slot-down {
+  0% {
+    transform: translateY(calc(-50% + var(--slot-start, 0%)));
+  }
+  100% {
+    transform: translateY(var(--slot-start, 0%));
+  }
+}
+
+/* Video Showcase — scroll-driven slide-in from right.
+   Text elements and video cards slide in from off-screen right,
+   staggered so they arrive one after another. Straight horizontal
+   movement (no rotation), using the grid wrapper's view-timeline. */
+
+.video-showcase-section {
+  overflow: clip;
+}
+
+.video-showcase-grid {
+  view-timeline-name: --video-showcase;
+  view-timeline-axis: block;
+}
+
+/* Shared slide-from-right animation */
+@keyframes slide-from-right {
+  0% {
+    opacity: 0;
+    transform: translateX(80vw);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Text elements — staggered, arrive early */
+.video-text-1 {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --video-showcase;
+  animation-range: entry 0% cover 25%;
+}
+
+.video-text-2 {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --video-showcase;
+  animation-range: entry 5% cover 28%;
+}
+
+.video-text-3 {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --video-showcase;
+  animation-range: entry 10% cover 31%;
+}
+
+.video-text-4 {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --video-showcase;
+  animation-range: entry 15% cover 34%;
+}
+
+/* Video cards — arrive from the left, staggered sequentially */
+.video-card-1 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --video-showcase;
+  animation-range: entry 5% cover 30%;
+}
+
+.video-card-2 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --video-showcase;
+  animation-range: entry 15% cover 38%;
+}
+
+.video-card-3 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --video-showcase;
+  animation-range: entry 25% cover 46%;
+}
+
+/* Social Showcase — scroll-driven entrance animations.
+   Text slides in from the left, staggered. The slot machine
+   scales up from compressed + faded. Uses the grid wrapper's
+   view-timeline for scroll-driven timing. */
+
+.social-showcase-section {
+  overflow: clip;
+}
+
+.social-showcase-grid {
+  view-timeline-name: --social-showcase;
+  view-timeline-axis: block;
+}
+
+@keyframes slide-from-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-60vw);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(40px);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Text elements — stagger from left */
+.social-text-1 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --social-showcase;
+  animation-range: entry 0% cover 22%;
+}
+
+.social-text-2 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --social-showcase;
+  animation-range: entry 5% cover 26%;
+}
+
+.social-text-3 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --social-showcase;
+  animation-range: entry 10% cover 30%;
+}
+
+.social-text-4 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --social-showcase;
+  animation-range: entry 15% cover 34%;
+}
+
+/* Slot machine — scales up from compact */
+.social-slots {
+  animation: scale-reveal cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --social-showcase;
+  animation-range: entry 5% cover 30%;
+}
+
+/* Testimonials — scroll-driven fade-up animations + infinite marquee.
+   Each element uses view() to track its own viewport entry. */
+
+@keyframes testimonial-heading-in {
+  0% {
+    opacity: 0;
+    transform: translateY(200px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.testimonial-heading {
+  animation-name: testimonial-heading-in;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: cover 15% cover 60%;
+}
+
+.testimonial-hero {
+  animation-name: testimonial-heading-in;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: cover 10% cover 55%;
+}
+
+.testimonial-col-1 {
+  animation-name: testimonial-heading-in;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: cover 10% cover 55%;
+}
+
+.testimonial-col-2 {
+  animation-name: testimonial-heading-in;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: cover 15% cover 60%;
+}
+
+.testimonial-col-3 {
+  animation-name: testimonial-heading-in;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: cover 20% cover 65%;
+}
+
+.testimonial-marquee-wrapper {
+  animation-name: testimonial-heading-in;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  animation-timeline: view();
+  animation-range: cover 10% cover 55%;
+}
+
+.testimonial-marquee-track {
+  animation: marquee-scroll 20s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ============================================================
+   Consulting page — diagnostic layout
+   Hero: load animations (stagger up)
+   Problem: scroll-driven view() per element
+   Services manifest: named view-timeline with stagger
+   ============================================================ */
+
+@keyframes consulting-up-in {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.consulting-hero-label {
+  animation: consulting-up-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
+}
+
+
+/* Problem section — scroll-driven */
+.consulting-pull-quote {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+.consulting-problem-copy {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+/* Services manifest — named timeline stagger */
+.consulting-services-section {
+  overflow: clip;
+}
+
+.consulting-services-list {
+  view-timeline-name: --consulting-services;
+  view-timeline-axis: block;
+}
+
+.consulting-services-header {
+  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.consulting-service-1 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --consulting-services;
+  animation-range: entry 0% cover 28%;
+}
+
+.consulting-service-2 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --consulting-services;
+  animation-range: entry 5% cover 33%;
+}
+
+.consulting-service-3 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --consulting-services;
+  animation-range: entry 10% cover 38%;
+}
+
+.consulting-service-4 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --consulting-services;
+  animation-range: entry 15% cover 43%;
+}
+
+.consulting-service-5 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --consulting-services;
+  animation-range: entry 20% cover 48%;
+}
+
+.consulting-service-6 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --consulting-services;
+  animation-range: entry 25% cover 53%;
+}
+
+/* ============================================================
+   Talent page — scroll-driven animations
+   Problem: scroll-driven view() per element
+   Roster: dark section, alternating left/right per row
+   Services: named view-timeline, slides from right
+   ============================================================ */
+
+/* Problem section */
+.talent-pull-quote {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+.talent-problem-copy {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+/* Roster section */
+.talent-roster-section {
+  overflow: clip;
+}
+
+.talent-roster-header {
+  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.talent-roster-list {
+  view-timeline-name: --talent-roster;
+  view-timeline-axis: block;
+}
+
+/* Columns lift up from below, left-to-right stagger */
+.talent-roster-1 {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-roster;
+  animation-range: entry 0% cover 40%;
+}
+
+.talent-roster-2 {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-roster;
+  animation-range: entry 8% cover 48%;
+}
+
+.talent-roster-3 {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-roster;
+  animation-range: entry 16% cover 56%;
+}
+
+.talent-roster-4 {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-roster;
+  animation-range: entry 24% cover 64%;
+}
+
+.talent-roster-5 {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-roster;
+  animation-range: entry 32% cover 72%;
+}
+
+.talent-roster-6 {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-roster;
+  animation-range: entry 40% cover 80%;
+}
+
+.talent-roster-7 {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-roster;
+  animation-range: entry 48% cover 88%;
+}
+
+.talent-roster-8 {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-roster;
+  animation-range: entry 56% cover 96%;
+}
+
+/* Services section */
+.talent-services-section {
+  overflow: clip;
+}
+
+.talent-services-header {
+  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.talent-services-list {
+  view-timeline-name: --talent-services;
+  view-timeline-axis: block;
+}
+
+/* Services slide from right — opposite to consulting's left */
+.talent-service-1 {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-services;
+  animation-range: entry 0% cover 30%;
+}
+
+.talent-service-2 {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-services;
+  animation-range: entry 10% cover 38%;
+}
+
+.talent-service-3 {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-services;
+  animation-range: entry 20% cover 46%;
+}
+
+.talent-service-4 {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --talent-services;
+  animation-range: entry 30% cover 54%;
+}
+
+/* ============================================================
+   Studio page — scroll-driven animations
+   Problem: per-element view()
+   Approach: named timeline, slides from left (consulting style)
+   ============================================================ */
+
+.studio-pull-quote {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+.studio-problem-copy {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.studio-approach-section {
+  overflow: clip;
+}
+
+.studio-approach-header {
+  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.studio-approach-list {
+  view-timeline-name: --studio-approach;
+  view-timeline-axis: block;
+}
+
+.studio-approach-1 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --studio-approach;
+  animation-range: entry 0% cover 35%;
+}
+
+.studio-approach-2 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --studio-approach;
+  animation-range: entry 10% cover 43%;
+}
+
+.studio-approach-3 {
+  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: --studio-approach;
+  animation-range: entry 20% cover 51%;
+}
+
+/* ============================================================
+   Resonate page — scroll-driven animations
+   Problem section + approach: per-element view()
+   Services: named timeline, slides from right
+   ============================================================ */
+
+.resonate-pull-quote {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+.resonate-problem-copy {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.resonate-approach-left {
+  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.resonate-approach-copy {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.resonate-approach-header {
+  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.resonate-photo {
+  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.resonate-bio {
+  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.resonate-services-section {
+  overflow: clip;
+}
+
+.resonate-services-header {
+  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+.resonate-services-list {
+  view-timeline-name: --resonate-services;
+  view-timeline-axis: block;
+}
+
+/* 11 service rows, slides from right, tighter stagger */
+.resonate-service-1  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 0%  cover 25%; }
+.resonate-service-2  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 5%  cover 28%; }
+.resonate-service-3  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 10% cover 31%; }
+.resonate-service-4  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 15% cover 34%; }
+.resonate-service-5  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 20% cover 37%; }
+.resonate-service-6  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 25% cover 40%; }
+.resonate-service-7  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 30% cover 43%; }
+.resonate-service-8  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 35% cover 46%; }
+.resonate-service-9  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 40% cover 49%; }
+.resonate-service-10 { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 45% cover 52%; }
+.resonate-service-11 { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 50% cover 55%; }
+
+/* Wireframe placeholder utility */
+.wireframe-placeholder {
+  background: #e5e5e5;
+  border: 1px dashed #a3a3a3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #737373;
+  font-size: 0.875rem;
 }
