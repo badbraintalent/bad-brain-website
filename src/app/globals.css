@@ -1,50 +1,255 @@
 @import "tailwindcss";
 
-/* WIREFRAME BASE STYLES — generic, monochrome, system fonts */
+/* ============================================================
+   BAD BRAIN BRAND FOUNDATION
+   5 core colours · ABC Gravity Wide (display) · ABC Walter Neue (body)
+   Line-height 100%, letter-spacing -4% (body relaxed for legibility)
+   ============================================================ */
 
 :root {
   --background: #ffffff;
-  --foreground: #1a1a1a;
-  --brand-yellow: #f5f5f5;
-  --brand-blue: #737373;
+  --foreground: #000000;
+  --bb-black: #000000;
+  --bb-blue: #00aeef;
+  --bb-mint: #adffcb;
+  --bb-grey: #c7d7e0;
+  --bb-fill: #eaeaea; /* sub-brand logo fill exception */
   scroll-behavior: smooth;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand-yellow: #f5f5f5;
-  --color-brand-blue: #737373;
-  --font-stix: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-inter: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --color-bb-blue: var(--bb-blue);
+  --color-bb-mint: var(--bb-mint);
+  --color-bb-grey: var(--bb-grey);
+  --color-bb-fill: var(--bb-fill);
+  --font-display: var(--font-gravity), system-ui, sans-serif;
+  --font-body: var(--font-walter), system-ui, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
-  letter-spacing: normal;
-  line-height: 1.5;
+/* Base type lives in @layer base so Tailwind font-* utilities can
+   still override it (unlayered rules would beat the utilities layer). */
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+    font-synthesis: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 400; /* Gravity Wide ships one weight — avoid faux bold */
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  strong, em {
+    font-family: inherit;
+    font-weight: 600;
+  }
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  font-weight: 700;
-  letter-spacing: normal;
-  line-height: 1.2;
+/* Sticker title — inverted fill + outside stroke at 30% of type size
+   (guidelines pg 14/36). -webkit-text-stroke is centred so the width is
+   doubled, then the fill paints over the inner half. */
+.title-outline {
+  --title-stroke: 0.3em;
+  color: #fff;
+  -webkit-text-stroke: calc(var(--title-stroke) * 2) #000;
+  paint-order: stroke fill;
 }
 
-p, div {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  letter-spacing: normal;
-  line-height: 1.5;
+/* ============================================================
+   MICRO-INTERACTIONS — quantised "12fps" motion language.
+   Where most sites tween smoothly, we step. Every interaction
+   below uses steps() or a snappy spring so the whimsy stays Y2K.
+   ============================================================ */
+
+/* Global texture */
+::selection {
+  background: var(--bb-mint);
+  color: #000;
 }
 
-strong, em {
-  font-family: inherit;
-  font-weight: 700;
+:focus-visible {
+  outline: 3px solid var(--bb-blue);
+  outline-offset: 3px;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+::-webkit-scrollbar-track {
+  background: #ededed;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bb-blue);
+  border: 3px solid #ededed;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #000;
+}
+html {
+  scrollbar-color: var(--bb-blue) #ededed; /* Firefox */
+}
+
+/* Cursor pixel trail (spawned by PixelTrail.tsx) */
+@keyframes trail-fade {
+  0% { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.4); }
+}
+.trail-pixel {
+  position: fixed;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+  z-index: 80;
+  animation: trail-fade 360ms steps(4) both;
+}
+
+/* Logo boop — quick spring throw of the horns */
+@keyframes boop {
+  0% { transform: rotate(0deg) scale(1); }
+  30% { transform: rotate(-10deg) scale(1.08); }
+  60% { transform: rotate(6deg) scale(1.04); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+.boop:hover {
+  animation: boop 380ms steps(8) both;
+}
+
+/* Arrow double-hop — replaces plain translate on group hover */
+@keyframes arrow-hop {
+  0% { transform: translateX(0); }
+  40% { transform: translateX(7px); }
+  70% { transform: translateX(2px); }
+  100% { transform: translateX(5px); }
+}
+.group:hover .arrow-hop {
+  animation: arrow-hop 380ms steps(6) both;
+}
+
+/* Physical sticker button — lifts on hover, slams on press */
+.btn-phys {
+  transition: transform 120ms steps(3), box-shadow 120ms steps(3);
+}
+.btn-phys:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 #000;
+}
+.btn-phys:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 0 #000;
+}
+
+/* Dithered stepped underline — draws in chunks, not a slide */
+.px-underline {
+  position: relative;
+}
+.px-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 6px);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 240ms steps(8);
+}
+.px-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* Marquee: slows to half speed on hover so the names are readable. Done in
+   Testimonials.tsx via the Web Animations API (playbackRate) rather than a CSS
+   animation-duration swap, which would jump the scroll position on hover. */
+
+/* Pixel corner brackets — appear around form fields on focus */
+.px-corners {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms steps(3);
+  --c: var(--bb-blue);
+  background-image:
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c)),
+    linear-gradient(var(--c), var(--c)), linear-gradient(var(--c), var(--c));
+  background-repeat: no-repeat;
+  background-size: 14px 3px, 3px 14px, 14px 3px, 3px 14px, 14px 3px, 3px 14px, 14px 3px, 3px 14px;
+  background-position: 0 0, 0 0, 100% 0, 100% 0, 0 100%, 0 100%, 100% 100%, 100% 100%;
+}
+.px-field:focus-within .px-corners {
+  opacity: 1;
+}
+
+/* The corner brackets ARE the focus treatment for form fields, so suppress the
+   global :focus-visible outline here — otherwise focus doubles up as two
+   concentric blue rectangles (solid outline nested inside the brackets). */
+.px-field :focus-visible {
+  outline: none;
+}
+
+/* A faint field wash on focus reinforces the corner brackets as the focus cue
+   (keyboard users get a clearer signal than corner marks alone). */
+.px-field {
+  transition: background-color 160ms steps(3);
+}
+.px-field:focus-within {
+  background-color: rgba(0, 174, 239, 0.05);
+}
+
+/* Window-card minimise — stepped collapse */
+.win-content {
+  transform-origin: top;
+  transition: transform 240ms steps(4), opacity 240ms steps(4);
+}
+.win-minimized .win-content {
+  transform: scaleY(0);
+  opacity: 0;
+}
+
+/* COPIED ✓ sticker pop */
+@keyframes copied-pop {
+  0% { opacity: 0; transform: translateY(4px) scale(0.7); }
+  30% { opacity: 1; transform: translateY(-2px) scale(1.05); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.copied-badge {
+  animation: copied-pop 240ms steps(4) both;
+}
+
+/* Indeterminate stepped loading sweep — route loading.tsx top bar */
+@keyframes load-sweep {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(520%); }
+}
+
+/* Calm stepped window-open — fade + small rise, no bounce (404 + form dialog) */
+@keyframes win-open {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Reduced motion: drop entrance/marquee animations entirely so
+   scroll-driven elements render in their final, visible state. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Register --fill so the browser can interpolate it as a percentage */
@@ -88,16 +293,16 @@ strong, em {
 /* Fill text gradient — starts unfilled, fills on hover */
 .nav-fill-item {
   display: inline;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3.8vw, 3.5rem);
-  font-weight: 900;
   text-transform: uppercase;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
   --fill: 0%;
   background: linear-gradient(
     to right,
-    #c0c0c0 var(--fill),
-    #333 var(--fill)
+    var(--bb-blue) var(--fill),
+    #000 var(--fill)
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -105,7 +310,7 @@ strong, em {
   text-decoration: none;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  transition: --fill 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: --fill 0.45s steps(6);
 }
 
 .nav-fill-item:hover {
@@ -152,12 +357,21 @@ strong, em {
   position: absolute;
   inset: 0;
   z-index: 3;
-  background: #e5e5e5;
+  /* Brand pixel field fades in over the video on scroll; the
+     mix-blend-difference wordmark inverts it into acid Y2K colours. */
+  background: url('/images/brand/fields/bg_16x9_1.png') center / cover;
+  image-rendering: pixelated;
   opacity: 0;
 }
 
 /* "Bad Brain" text — styles applied via inline styles + Tailwind in ParallaxHero.tsx
    (Turbopack hot-reload doesn't pick up new CSS classes added externally) */
+
+/* Blinking REC/cursor indicator (studio hero timecode, nav menu underscore) */
+@keyframes rec-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.15; }
+}
 
 /* Services cards — scroll-driven slide-in from off-screen.
    The section itself needs overflow:hidden to prevent horizontal scroll
@@ -170,75 +384,6 @@ strong, em {
    instead of the page scrollport, breaking the animation) */
 .services-scroll-section {
   overflow: clip;
-}
-
-.services-scroll-grid {
-  view-timeline-name: --services;
-  view-timeline-axis: block;
-}
-
-/* Middle-left: Studio — swings from left, arrives first */
-.service-card-mid-left {
-  animation-name: swing-from-left;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  animation-fill-mode: both;
-  animation-timeline: --services;
-  animation-range: entry 0% cover 35%;
-}
-
-/* Middle-right: Talent — swings from right, arrives first */
-.service-card-mid-right {
-  animation-name: swing-from-right;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  animation-fill-mode: both;
-  animation-timeline: --services;
-  animation-range: entry 0% cover 35%;
-}
-
-/* Outer-left: Consulting — swings from left, arrives second */
-.service-card-outer-left {
-  animation-name: swing-from-left;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  animation-fill-mode: both;
-  animation-timeline: --services;
-  animation-range: entry 20% cover 50%;
-}
-
-/* Outer-right: Resonate — swings from right, arrives second */
-.service-card-outer-right {
-  animation-name: swing-from-right;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  animation-fill-mode: both;
-  animation-timeline: --services;
-  animation-range: entry 20% cover 50%;
-}
-
-@keyframes swing-from-left {
-  0% {
-    opacity: 0;
-    transform: translateX(-100vw) rotate(45deg) scale(0.85);
-  }
-  60% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) rotate(0deg) scale(1);
-  }
-}
-
-@keyframes swing-from-right {
-  0% {
-    opacity: 0;
-    transform: translateX(100vw) rotate(-45deg) scale(0.85);
-  }
-  60% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) rotate(0deg) scale(1);
-  }
 }
 
 /* Slot machine video columns — three columns of videos scrolling
@@ -266,7 +411,7 @@ strong, em {
 
 .slot-video-wrapper {
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* border replaced by brand pixel-frame overlays (see SocialShowcase) */
 }
 
 .slot-video {
@@ -549,12 +694,6 @@ strong, em {
   }
 }
 
-.consulting-hero-label {
-  animation: consulting-up-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 0.1s;
-}
-
-
 /* Problem section — scroll-driven */
 .consulting-pull-quote {
   animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -651,58 +790,12 @@ strong, em {
   animation-range: entry 0% cover 40%;
 }
 
-.talent-roster-list {
-  view-timeline-name: --talent-roster;
-  view-timeline-axis: block;
-}
-
-/* Columns lift up from below, left-to-right stagger */
-.talent-roster-1 {
+/* roster.exe window lifts in once as it enters the viewport (the window is
+   tall, so the range ends at entry rather than cover) */
+.roster-window-in {
   animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-roster;
-  animation-range: entry 0% cover 40%;
-}
-
-.talent-roster-2 {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-roster;
-  animation-range: entry 8% cover 48%;
-}
-
-.talent-roster-3 {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-roster;
-  animation-range: entry 16% cover 56%;
-}
-
-.talent-roster-4 {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-roster;
-  animation-range: entry 24% cover 64%;
-}
-
-.talent-roster-5 {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-roster;
-  animation-range: entry 32% cover 72%;
-}
-
-.talent-roster-6 {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-roster;
-  animation-range: entry 40% cover 80%;
-}
-
-.talent-roster-7 {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-roster;
-  animation-range: entry 48% cover 88%;
-}
-
-.talent-roster-8 {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-roster;
-  animation-range: entry 56% cover 96%;
+  animation-timeline: view();
+  animation-range: entry 0% entry 60%;
 }
 
 /* Services section */
@@ -855,31 +948,3 @@ strong, em {
   animation-range: entry 0% cover 40%;
 }
 
-.resonate-services-list {
-  view-timeline-name: --resonate-services;
-  view-timeline-axis: block;
-}
-
-/* 11 service rows, slides from right, tighter stagger */
-.resonate-service-1  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 0%  cover 25%; }
-.resonate-service-2  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 5%  cover 28%; }
-.resonate-service-3  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 10% cover 31%; }
-.resonate-service-4  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 15% cover 34%; }
-.resonate-service-5  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 20% cover 37%; }
-.resonate-service-6  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 25% cover 40%; }
-.resonate-service-7  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 30% cover 43%; }
-.resonate-service-8  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 35% cover 46%; }
-.resonate-service-9  { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 40% cover 49%; }
-.resonate-service-10 { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 45% cover 52%; }
-.resonate-service-11 { animation: slide-from-right cubic-bezier(0.22,1,0.36,1) both; animation-timeline: --resonate-services; animation-range: entry 50% cover 55%; }
-
-/* Wireframe placeholder utility */
-.wireframe-placeholder {
-  background: #e5e5e5;
-  border: 1px dashed #a3a3a3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #737373;
-  font-size: 0.875rem;
-}

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import PixelDitherFrame from '@/components/ui/PixelDitherFrame'
 
 // Extended type to allow CSS scroll-driven animation properties not yet in @types/react
 type ScrollCSS = React.CSSProperties & {
@@ -11,44 +12,12 @@ type ScrollCSS = React.CSSProperties & {
   animationRange?: string
 }
 
-/* ── Identity marks — match the service page heroes ── */
-const ConsultingMark = () => (
-  <svg width="18" height="18" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.2">
-    <rect x="2" y="2" width="24" height="24" />
-    <rect x="7" y="7" width="14" height="14" />
-    <rect x="11" y="11" width="6" height="6" />
-  </svg>
-)
-
-const StudioMark = () => (
-  <svg width="18" height="18" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.2">
-    <circle cx="14" cy="14" r="12" />
-    <circle cx="14" cy="14" r="7" />
-    <circle cx="14" cy="14" r="3" />
-  </svg>
-)
-
-const TalentMark = () => (
-  <svg width="18" height="18" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.2">
-    <rect x="4" y="4" width="20" height="20" transform="rotate(45 14 14)" />
-    <rect x="7.5" y="7.5" width="13" height="13" transform="rotate(45 14 14)" />
-    <rect x="11" y="11" width="6" height="6" transform="rotate(45 14 14)" />
-  </svg>
-)
-
-const ResonateMark = () => (
-  <svg width="18" height="13" viewBox="0 0 28 20" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
-    <line x1="1" y1="3" x2="27" y2="3" />
-    <line x1="4" y1="10" x2="24" y2="10" />
-    <line x1="8" y1="17" x2="20" y2="17" />
-  </svg>
-)
-
+/* ── Official sub-brand logomarks (interconnected-dot system) ── */
 const services = [
   {
     num: '01',
-    name: 'Consulting',
-    Mark: ConsultingMark,
+    name: 'Blueprint',
+    logo: '/images/brand/marks/Blueprint.svg',
     desc: (
       <>
         We help <strong>brands, agencies, and networks</strong> design and implement{' '}
@@ -56,12 +25,12 @@ const services = [
         improve efficiency and deliver outcomes.
       </>
     ),
-    href: '/services/consulting',
+    href: '/services/blueprint',
   },
   {
     num: '02',
     name: 'Studio',
-    Mark: StudioMark,
+    logo: '/images/brand/marks/Studio.svg',
     desc: (
       <>
         Translates your <strong>core creative strategy</strong> into a{' '}
@@ -73,8 +42,8 @@ const services = [
   },
   {
     num: '03',
-    name: 'Talent',
-    Mark: TalentMark,
+    name: 'Connect',
+    logo: '/images/brand/marks/Connect.svg',
     desc: (
       <>
         <strong>Representation and development services</strong> for up and coming
@@ -82,12 +51,12 @@ const services = [
         secure <strong>paid opportunities</strong>.
       </>
     ),
-    href: '/services/talent',
+    href: '/services/connect',
   },
   {
     num: '04',
     name: 'Resonate',
-    Mark: ResonateMark,
+    logo: '/images/brand/marks/Resonate.svg',
     desc: (
       <>
         <strong>Social strategy tailor-made for musicians and labels.</strong> We
@@ -104,7 +73,7 @@ const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
 const ServicesOverview = () => {
   return (
-    <section id="services" className="services-scroll-section bg-white border-t border-gray-200">
+    <section id="services" className="services-scroll-section bg-white border-t border-black/10">
       {/*
         Inner wrapper carries the named view-timeline so all children
         animate relative to this block entering the viewport —
@@ -119,13 +88,13 @@ const ServicesOverview = () => {
       >
 
         {/* ── Editorial header ── */}
-        <div className="pt-20 pb-14 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 border-b border-gray-200">
+        <div className="pt-20 pb-14 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 border-b border-black/10">
 
           {/* Large heading — slides in from left as section enters */}
           <h2
-            className="text-gray-900 font-black leading-none tracking-tight"
+            className="text-black leading-none"
             style={{
-              fontSize: 'clamp(2.8rem, 6.5vw, 5.5rem)',
+              fontSize: 'clamp(2.6rem, 6.5vw, 5.5rem)',
               animationName: 'slide-from-left',
               animationTimingFunction: EASE,
               animationFillMode: 'both',
@@ -138,7 +107,7 @@ const ServicesOverview = () => {
 
           {/* Caption — slides in from right, slightly offset */}
           <p
-            className="text-gray-400 sm:text-right leading-snug"
+            className="text-black/40 sm:text-right leading-snug"
             style={{
               fontSize: '0.72rem',
               letterSpacing: '0.08em',
@@ -151,13 +120,13 @@ const ServicesOverview = () => {
               animationRange: 'entry 5% cover 28%',
             } as ScrollCSS}
           >
-            Across consulting,<br />production &amp; talent development
+            Across strategy,<br />production &amp; creator development
           </p>
         </div>
 
         {/* ── Numbered service rows — staggered slide-in keyed to section timeline ── */}
         <div className="pb-6">
-          {services.map(({ num, name, Mark, desc, href }, i) => {
+          {services.map(({ num, name, logo, desc, href }, i) => {
             // Alternate slide direction per row
             const dir = i % 2 === 0 ? 'slide-from-left' : 'slide-from-right'
             // Each row uses its own view() timeline so it tracks independently.
@@ -167,7 +136,7 @@ const ServicesOverview = () => {
             return (
               <div
                 key={name}
-                className="border-b border-gray-200"
+                className="relative group border-b border-black/10"
                 style={{
                   animationName: dir,
                   animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
@@ -176,11 +145,13 @@ const ServicesOverview = () => {
                   animationRange: 'entry 0% contain 35%',
                 } as ScrollCSS}
               >
+                {/* Animated pixel frame — pixels fade in staggered on hover */}
+                <PixelDitherFrame cols={140} rows={14} seed={i + 11} />
                 <div className="py-10 sm:py-12 grid grid-cols-[2.75rem_1fr] sm:grid-cols-[2.75rem_1fr_auto] gap-x-6 gap-y-0 items-start">
 
                   {/* Row number — mono, faint */}
                   <span
-                    className="text-gray-300 pt-px"
+                    className="text-black/55 pt-px"
                     style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.68rem', lineHeight: '1.8rem' }}
                   >
                     {num}
@@ -188,38 +159,43 @@ const ServicesOverview = () => {
 
                   {/* Main content block */}
                   <div className="flex flex-col gap-4">
-                    {/* Service name + mark inline */}
-                    <div className="flex items-center gap-3">
+                    {/* Service name + official sub-brand logomark */}
+                    <div className="flex items-center gap-5">
                       <h3
-                        className="text-gray-900 font-bold tracking-tight leading-none"
+                        className="text-black leading-none"
                         style={{ fontSize: 'clamp(1.6rem, 3vw, 2.4rem)' }}
                       >
                         {name}
                       </h3>
-                      <span className="text-gray-300 flex-shrink-0" style={{ marginTop: '2px' }}>
-                        <Mark />
-                      </span>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={logo}
+                        alt={`Bad Brain ${name} logo`}
+                        className="h-12 md:h-16 w-auto flex-shrink-0"
+                      />
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-500 leading-relaxed" style={{ fontSize: '0.875rem', maxWidth: '42rem' }}>
+                    <p className="text-black/60 leading-relaxed" style={{ fontSize: '0.875rem', maxWidth: '42rem' }}>
                       {desc}
                     </p>
 
-                    {/* CTA — mobile only */}
+                    {/* CTA — mobile only. after:inset-0 stretches the hit area
+                        over the whole row (it already hover-reacts as one). */}
                     <Link
                       href={href}
-                      className="text-gray-900 underline underline-offset-4 sm:hidden"
+                      className="text-bb-blue underline underline-offset-4 sm:hidden after:absolute after:inset-0"
                       style={{ fontSize: '0.8rem' }}
                     >
                       Learn More →
                     </Link>
                   </div>
 
-                  {/* CTA — desktop right column */}
+                  {/* CTA — desktop right column; after:inset-0 makes the whole
+                      row the click target (one stretched link per breakpoint) */}
                   <Link
                     href={href}
-                    className="hidden sm:block text-gray-900 underline underline-offset-4 whitespace-nowrap pt-1"
+                    className="hidden sm:block text-bb-blue underline underline-offset-4 whitespace-nowrap pt-1 after:absolute after:inset-0"
                     style={{ fontSize: '0.8rem' }}
                   >
                     Learn More →

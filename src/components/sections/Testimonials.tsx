@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 /* ── Generic but realistic SVG logo marks ── */
 
@@ -26,25 +26,9 @@ const FluxLogo = () => (
   </svg>
 )
 
-const AurexLogo = () => (
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.2">
-    <polygon points="14,2 25.4,8.5 25.4,19.5 14,26 2.6,19.5 2.6,8.5" />
-    <line x1="14" y1="2" x2="14" y2="26" />
-    <line x1="2.6" y1="8.5" x2="25.4" y2="19.5" />
-    <line x1="25.4" y1="8.5" x2="2.6" y2="19.5" />
-  </svg>
-)
-
 const KineticLogo = () => (
   <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5">
     <path d="M8 4V24M8 14L20 4M8 14L20 24" />
-  </svg>
-)
-
-const PrismLogo = () => (
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.2">
-    <rect x="5" y="5" width="13" height="13" transform="rotate(45 11.5 11.5)" />
-    <rect x="10" y="10" width="13" height="13" transform="rotate(45 16.5 16.5)" />
   </svg>
 )
 
@@ -82,32 +66,59 @@ const gridTestimonials = [
   },
 ]
 
-const allClients = [
-  { company: 'NOVA', Logo: NovaLogo },
-  { company: 'MERIDIAN', Logo: MeridianLogo },
-  { company: 'FLUX', Logo: FluxLogo },
-  { company: 'AUREX', Logo: AurexLogo },
-  { company: 'KINETIC', Logo: KineticLogo },
-  { company: 'PRISM', Logo: PrismLogo },
+/* Real client logos, rendered monochrome black to sit quietly on the blue
+   band (Smoking Gun's red would otherwise fight it); hover flips to white.
+   Heights are per-logo since the wordmarks have very different aspects. */
+const clients = [
+  { company: 'Smoking Gun', src: '/images/clients/smoking-gun.png', height: 26 },
+  { company: 'BLDBRO', src: '/images/clients/bldbro.png', height: 52 },
+  { company: 'Learn Canadian', src: '/images/clients/learn-canadian.png', height: 34 },
 ]
+
+// Repeated so the track is wide enough; the render doubles it again into
+// two identical halves for the seamless -50% loop.
+const allClients = [...clients, ...clients]
 
 /* ── Component ── */
 
 const Testimonials = () => {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [hoveredLogo, setHoveredLogo] = useState<number | null>(null)
+  const [marqueeInView, setMarqueeInView] = useState(false)
+
+  // Run the marquee only while it's on-screen — an infinite compositor
+  // animation otherwise ticks for the whole session.
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+    const io = new IntersectionObserver(
+      ([entry]) => setMarqueeInView(entry.isIntersecting),
+      { threshold: 0 },
+    )
+    io.observe(track)
+    return () => io.disconnect()
+  }, [])
+
+  // Slow the logo marquee to half speed on hover. Driven via WAAPI so the speed
+  // changes seamlessly — playbackRate preserves the current position, whereas
+  // swapping animation-duration would snap the scroll to a new offset.
+  const setMarqueeRate = (rate: number) => {
+    trackRef.current?.getAnimations().forEach((a) => {
+      a.playbackRate = rate
+    })
+  }
+
   return (
-    <section className="testimonials-section bg-[#1a1a1a] text-white border-t border-[#333]">
+    <section className="testimonials-section bg-bb-blue text-black border-t border-black">
       <div className="testimonials-grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
 
-        {/* ── Heading ── */}
+        {/* ── Heading — sticker title over the flat blue block ── */}
         <div className="testimonial-heading mb-20 md:mb-28">
           <h2
-            className="text-right text-[#c0c0c0]"
+            className="title-outline text-right"
             style={{
-              fontFamily: "system-ui, -apple-system, sans-serif",
               fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
-              fontWeight: 400,
-              lineHeight: 1.05,
-              letterSpacing: '-0.02em',
+              lineHeight: 1.2,
             }}
           >
             What they<br />say.
@@ -115,12 +126,12 @@ const Testimonials = () => {
         </div>
 
         {/* ── Hero testimonial ── */}
-        <div className="testimonial-hero relative mb-20 md:mb-28 border-t border-[#333] pt-12 md:pt-16">
+        <div className="testimonial-hero relative mb-20 md:mb-28 border-t border-black/30 pt-12 md:pt-16">
           {/* Giant decorative quotation mark */}
           <span
-            className="absolute select-none pointer-events-none text-[#282828]"
+            className="absolute select-none pointer-events-none text-black/10"
             style={{
-              fontFamily: "system-ui, -apple-system, sans-serif",
+              fontFamily: 'var(--font-gravity), system-ui, sans-serif',
               fontSize: 'clamp(8rem, 18vw, 14rem)',
               lineHeight: 0.8,
               top: '-0.1em',
@@ -133,21 +144,19 @@ const Testimonials = () => {
 
           <blockquote className="relative">
             <p
-              className="text-[#e5e5e5] max-w-4xl"
+              className="text-black max-w-4xl"
               style={{
-                fontFamily: "system-ui, -apple-system, sans-serif",
                 fontSize: 'clamp(1.4rem, 3vw, 2.4rem)',
                 lineHeight: 1.3,
-                fontWeight: 400,
-                letterSpacing: '-0.01em',
+                letterSpacing: '-0.02em',
               }}
             >
               {heroTestimonial.quote}
             </p>
-            <footer className="mt-8 md:mt-10 flex items-center gap-3 justify-end text-[#737373]">
+            <footer className="mt-8 md:mt-10 flex items-center gap-3 justify-end text-black/60">
               <heroTestimonial.Logo />
               <div className="text-sm">
-                <span className="text-[#a3a3a3] font-medium">{heroTestimonial.name}</span>
+                <span className="text-black font-medium">{heroTestimonial.name}</span>
                 <span className="mx-2">/</span>
                 <span>{heroTestimonial.role}, {heroTestimonial.company}</span>
               </div>
@@ -156,22 +165,22 @@ const Testimonials = () => {
         </div>
 
         {/* ── Three-column grid ── */}
-        <div className="grid md:grid-cols-3 gap-0 border-t border-[#333]">
+        <div className="grid md:grid-cols-3 gap-0 border-t border-black/30">
           {gridTestimonials.map((t, i) => (
             <div
               key={i}
               className={`testimonial-col-${i + 1} py-10 md:py-12 px-0 md:px-8 ${
                 i === 0 ? '' : 'border-t md:border-t-0 md:border-l'
-              } border-[#333]`}
+              } border-black/30`}
             >
               <blockquote className="h-full flex flex-col justify-between">
-                <p className="text-[#a3a3a3] text-base leading-relaxed mb-8">
+                <p className="text-black/80 text-base leading-relaxed mb-8">
                   &ldquo;{t.quote}&rdquo;
                 </p>
-                <footer className="flex items-center gap-3 text-[#737373]">
+                <footer className="flex items-center gap-3 text-black/60">
                   <t.Logo />
                   <div className="text-xs">
-                    <span className="text-[#a3a3a3] font-medium block">{t.name}</span>
+                    <span className="text-black font-medium block">{t.name}</span>
                     <span>{t.role}, {t.company}</span>
                   </div>
                 </footer>
@@ -181,13 +190,37 @@ const Testimonials = () => {
         </div>
 
         {/* ── Logo marquee ── */}
-        <div className="testimonial-marquee-wrapper mt-20 md:mt-28 border-t border-[#333] pt-10 overflow-hidden">
-          <div className="testimonial-marquee-track flex items-center gap-16 whitespace-nowrap">
+        <div
+          className="testimonial-marquee-wrapper mt-20 md:mt-28 border-t border-black/30 pt-10 overflow-hidden"
+          onMouseEnter={() => setMarqueeRate(0.5)}
+          onMouseLeave={() => setMarqueeRate(1)}
+        >
+          <div
+            ref={trackRef}
+            className="testimonial-marquee-track flex items-center gap-16 whitespace-nowrap"
+            style={{ animationPlayState: marqueeInView ? 'running' : 'paused' }}
+          >
             {/* Doubled for seamless loop */}
             {[...allClients, ...allClients].map((client, i) => (
-              <div key={i} className="flex items-center gap-3 text-[#555] flex-shrink-0">
-                <client.Logo />
-                <span className="text-sm tracking-widest font-medium">{client.company}</span>
+              <div
+                key={i}
+                className="flex items-center flex-shrink-0"
+                onMouseEnter={() => setHoveredLogo(i)}
+                onMouseLeave={() => setHoveredLogo(null)}
+              >
+                <img
+                  src={client.src}
+                  alt={client.company}
+                  draggable={false}
+                  style={{
+                    height: client.height,
+                    width: 'auto',
+                    filter: hoveredLogo === i ? 'brightness(0) invert(1)' : 'brightness(0)',
+                    opacity: hoveredLogo === i ? 1 : 0.75,
+                    transform: hoveredLogo === i ? 'scale(1.12)' : 'scale(1)',
+                    transition: 'transform 160ms steps(3), filter 140ms steps(2), opacity 140ms steps(2)',
+                  }}
+                />
               </div>
             ))}
           </div>

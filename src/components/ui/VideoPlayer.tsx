@@ -18,7 +18,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   loop = true
 }) => {
   return (
-    <div className={`border border-gray-300 ${className}`}>
+    <div className={`border border-black/20 ${className}`}>
       <video
         src={src}
         controls

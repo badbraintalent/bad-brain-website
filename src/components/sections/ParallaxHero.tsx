@@ -1,103 +1,128 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 
-// Desktop: single line "BAD BRAIN", right-aligned, 90% viewport width
-const desktopTextStyle: React.CSSProperties = {
-  fontFamily: "system-ui, -apple-system, sans-serif",
-  fontSize: "max(3rem, 17.55vw)",
-  fontWeight: 900,
-  lineHeight: 0.88,
-  color: "white",
-  userSelect: "none",
-  display: "block",
-  letterSpacing: "-0.03em",
-  textTransform: "uppercase",
-  whiteSpace: "nowrap",
-};
+/* The full reel is ~7MB — far too heavy for phones on cellular (it dominated
+   the mobile Lighthouse LCP). Serve a 960px rendition below the lg breakpoint;
+   the poster paints the first frame while either file downloads. */
+const MAIN_VIDEO = "/videos/brand/hero-main.mp4";
+const MOBILE_VIDEO = "/videos/brand/hero-main-960.mp4";
+const POSTER = "/videos/brand/hero-main-poster.jpg";
 
-// Mobile: two lines "BAD" / "BRAIN", left-aligned, ~35vw each
-// "BAD" ≈ 60% viewport width, "BRAIN" ≈ 100% viewport width
-const mobileTextStyle: React.CSSProperties = {
-  fontFamily: "system-ui, -apple-system, sans-serif",
-  fontSize: "max(3rem, 35vw)",
-  fontWeight: 900,
-  lineHeight: 0.88,
-  color: "white",
-  userSelect: "none",
-  display: "block",
-  letterSpacing: "-0.03em",
-  textTransform: "uppercase",
-};
+// Full horizontal logo (mark + wordmark), all-white knockout art.
+const HERO_LOGO = "/images/brand/logo/BB_Horizontal.svg";
+
+/* The signature lockup: desktop bottom-right, mobile bottom-left. The img
+   itself carries mix-blend-difference so the white logo inverts whatever film
+   sits behind it and stays legible on any frame (counters read as the video).
+   Keeping the blend off the full-viewport wrapper limits the region the
+   compositor has to re-blend every video frame to the logo's own bounds.
+
+   Hidden at load — the film carries its own Bad Brain branding, so the lockup
+   only prints in on scroll (stepped bottom-up clip wipe driven by the same
+   scroll handler as the pixel-field fade; see the effect below). */
+function HeroLogo({ clipRef }: { clipRef: RefObject<HTMLDivElement | null> }) {
+  return (
+    <div
+      ref={clipRef}
+      className="absolute inset-0 pointer-events-none"
+      style={{ zIndex: 4, clipPath: "inset(100% 0 0 0)" }}
+    >
+      <div className="hidden md:flex absolute inset-0 items-end justify-end" style={{ paddingRight: "2.5vw" }}>
+        <img
+          src={HERO_LOGO}
+          alt="Bad Brain"
+          draggable={false}
+          className="mix-blend-difference"
+          style={{ width: "min(135vw, 2288px)", height: "auto", display: "block", transform: "translateY(41%)" }}
+        />
+      </div>
+      <div className="flex md:hidden absolute inset-0 items-end justify-start" style={{ paddingLeft: "2vw" }}>
+        <img
+          src={HERO_LOGO}
+          alt="Bad Brain"
+          draggable={false}
+          className="mix-blend-difference"
+          style={{ width: "min(125vw, 52rem)", height: "auto", display: "block", transform: "translateY(41%)" }}
+        />
+      </div>
+    </div>
+  );
+}
 
 const ParallaxHero = () => {
   const fillRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  // src is chosen client-side so SSR can't bake the wrong rendition into the
+  // HTML; until then the poster holds the frame.
+  const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
 
+  useEffect(() => {
+    setVideoSrc(window.matchMedia("(max-width: 1024px)").matches ? MOBILE_VIDEO : MAIN_VIDEO);
+  }, []);
+
+  // Scroll-driven pixel-field fade + logo print-in
   useEffect(() => {
     const fill = fillRef.current;
     const section = fill?.closest(".parallax-hero") as HTMLElement | null;
     if (!fill || !section) return;
-
+    // Cache layout reads (refreshed on resize) and coalesce scroll events to
+    // one rAF write; skip the write entirely when the clamped value hasn't
+    // changed so scrolling below the hero doesn't invalidate this layer.
+    let scrollable = 0;
+    let lastOpacity = -1;
+    let lastClip = -1;
+    let raf = 0;
+    const measure = () => {
+      scrollable = section.offsetHeight - window.innerHeight;
+    };
     const update = () => {
-      const scrollY = window.scrollY;
-      const scrollable = section.offsetHeight - window.innerHeight;
-      // Fade in between 33%–66% of the hero's scroll range
-      const start = scrollable * 0.33;
-      const end = scrollable * 0.66;
-      const progress = Math.max(0, Math.min(1, (scrollY - start) / (end - start)));
+      raf = 0;
+      // Nearly the whole pinned distance: starting late read as "scrolling
+      // does nothing", and finishing early left a long static period while
+      // the hero was still pinned.
+      const start = 0;
+      const end = scrollable * 0.9;
+      const linear = Math.max(0, Math.min(1, (window.scrollY - start) / (end - start)));
+      // Ease-out: linear opacity is imperceptible below ~0.1, which made the
+      // first wheel-turns feel dead — front-load the visible change instead.
+      const progress = 1 - Math.pow(1 - linear, 1.8);
+      // Logo prints in bottom-up over the same window, quantised to 12 steps
+      // so the wipe reads as frames rather than a soft fade.
+      const clip = Math.round(progress * 12) / 12;
+      if (clip !== lastClip) {
+        lastClip = clip;
+        const logo = logoRef.current;
+        if (logo) logo.style.clipPath = `inset(${(1 - clip) * 100}% 0 0 0)`;
+      }
+      if (progress === lastOpacity) return;
+      lastOpacity = progress;
       fill.style.opacity = String(progress);
     };
-
+    const onScroll = () => {
+      if (!raf) raf = window.requestAnimationFrame(update);
+    };
+    const onResize = () => {
+      measure();
+      onScroll();
+    };
+    measure();
     update();
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
     <section className="parallax-hero">
       <div className="parallax-hero-sticky">
-        <video
-          className="parallax-hero-video"
-          src="/videos/ee1173e5-69c8-4dd1-b1e4-ee9b5bbd0b0a.mp4"
-          muted loop autoPlay playsInline
-        />
+        <video className="parallax-hero-video" src={videoSrc} poster={POSTER} muted loop autoPlay playsInline />
         <div className="parallax-hero-bg-fill" ref={fillRef} />
-        {/* mix-blend-mode: difference inverts whatever is behind the white text.
-            Over video: inverted video colors. Over the grey fill: near-black text.
-            Supported everywhere since ~2014, no SVG masks needed. */}
-
-        {/* Desktop: single line, right-aligned.
-            clamp(min, target, max):
-              min  = 4.63vw → always cuts off ≥30% of text height
-              val  = 15.44vw - 20vh → targets text-top at 80vh
-              max  = 6.18vw → never cuts off >40% (text always ≥60% visible) */}
-        <div
-          className="hidden md:flex absolute inset-0 flex-col items-end justify-end pointer-events-none mix-blend-difference"
-          style={{
-            zIndex: 4,
-            paddingRight: "2.5vw",
-            transform: "translateY(clamp(4.63vw, calc(15.44vw - 20vh), 6.18vw))",
-          }}
-        >
-          <span style={desktopTextStyle}>Bad Brain</span>
-        </div>
-
-        {/* Mobile: two lines stacked, left-aligned.
-            clamp(min, target, max):
-              min  = 6.16vw → always cuts off ≥20% of last line
-              val  = 61.6vw - 20vh → targets text-top at 80vh
-              max  = 7vw → Bad always 100% visible, Brain always ≥77% visible */}
-        <div
-          className="flex md:hidden absolute inset-0 flex-col items-start justify-end pointer-events-none mix-blend-difference"
-          style={{
-            zIndex: 4,
-            paddingLeft: "2.5vw",
-            transform: "translateY(clamp(6.16vw, calc(61.6vw - 20vh), 7vw))",
-          }}
-        >
-          <span style={mobileTextStyle}>Bad</span>
-          <span style={mobileTextStyle}>Brain</span>
-        </div>
+        <HeroLogo clipRef={logoRef} />
       </div>
     </section>
   );

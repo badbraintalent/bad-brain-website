@@ -10,17 +10,17 @@ const VideoShowcase = () => {
   ]
 
   return (
-    <section className="video-showcase-section py-20 bg-white border-t border-gray-200">
+    <section className="video-showcase-section py-20 bg-white border-t border-black/10">
       <div className="video-showcase-grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* Left column — videos, slide in from left one after another */}
           <div className="flex flex-col gap-8">
             {videos.map((video, index) => (
               <div key={index} className={`video-card-${index + 1}`}>
-                <div className="border border-gray-300">
+                <div className="relative">
                   <video
                     src={video.src}
-                    className="w-full aspect-video"
+                    className="w-full aspect-video object-cover"
                     controls
                     muted
                     loop
@@ -28,30 +28,37 @@ const VideoShowcase = () => {
                     playsInline
                     preload="metadata"
                   />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/images/brand/frames/Image_frame_sq_${(index % 2) + 1}.png`}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                  />
                 </div>
-                <p className="text-sm text-gray-500 mt-2">{video.title}</p>
+                <p className="text-sm text-black/50 mt-2 uppercase tracking-[0.15em]">{video.title}</p>
               </div>
             ))}
           </div>
 
           {/* Right column — text content, slides in from right staggered */}
           <div className="flex flex-col gap-6 md:sticky md:top-24">
-            <p className="video-text-1 text-base text-gray-500">
-              After more than a decade working at the forefront of <strong className="text-gray-900">influencer and creator marketing</strong> - from local, small-scale activations to global, multi-market programmes - we&apos;ve seen the industry evolve from an after-thought of social media into an <strong className="text-gray-900">essential go-to-market strategy</strong>.
+            <p className="video-text-1 text-base text-black/50">
+              After more than a decade working at the forefront of <strong className="text-black">influencer and creator marketing</strong> - from local, small-scale activations to global, multi-market programmes - we&apos;ve seen the industry evolve from an after-thought of social media into an <strong className="text-black">essential go-to-market strategy</strong>.
             </p>
-            <p className="video-text-2 text-base text-gray-500">
+            <p className="video-text-2 text-base text-black/50">
               Despite the benefits creators have brought to the marketing industry, challenges remain for brands looking to go further:
             </p>
-            <ul className="video-text-3 text-base text-gray-500 space-y-3 list-none">
-              <li>Countless approaches to campaign activation <strong className="text-gray-900">leave marketing teams conflicted and start-ups unsure where to begin</strong>&hellip;</li>
-              <li>Creators and artists are <strong className="text-gray-900">weighed down by relentless production schedules</strong>, leaving little room to grow their business or fan base&hellip;</li>
-              <li>&hellip;and all of this while the <strong className="text-gray-900">social media that brands and creators once knew</strong>, evolves into an <strong className="text-gray-900">entertainment-first media channel</strong> that prioritises content over connection.</li>
+            <ul className="video-text-3 text-base text-black/50 space-y-3 list-none">
+              <li>Countless approaches to campaign activation <strong className="text-black">leave marketing teams conflicted and start-ups unsure where to begin</strong>&hellip;</li>
+              <li>Creators and artists are <strong className="text-black">weighed down by relentless production schedules</strong>, leaving little room to grow their business or fan base&hellip;</li>
+              <li>&hellip;and all of this while the <strong className="text-black">social media that brands and creators once knew</strong>, evolves into an <strong className="text-black">entertainment-first media channel</strong> that prioritises content over connection.</li>
             </ul>
-            <p className="video-text-4 text-base text-gray-900 font-medium">
+            <p className="video-text-4 text-base text-black font-medium">
               That&apos;s where Bad Brain comes in&hellip;
             </p>
-            <p className="text-base text-gray-500">
-              Whether you need to build a creator strategy from the ground up, optimise your existing approach, build a cohesive suite of content, or you are a creator yourself and looking for representation: <strong className="text-gray-900">Bad Brain offers integrated services</strong> across <strong className="text-gray-900">consulting, production, and talent development</strong>.
+            <p className="text-base text-black/50">
+              Whether you need to build a creator strategy from the ground up, optimise your existing approach, build a cohesive suite of content, or you are a creator yourself and looking for representation: <strong className="text-black">Bad Brain offers integrated services</strong> across <strong className="text-black">consulting, production, and talent development</strong>.
             </p>
           </div>
         </div>

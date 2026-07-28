@@ -4,6 +4,7 @@ import SocialShowcase from '@/components/sections/SocialShowcase'
 import ServicesOverview from '@/components/sections/ServicesOverview'
 import Testimonials from '@/components/sections/Testimonials'
 import ContactCTA from '@/components/sections/ContactCTA'
+import ChromeMoment from '@/components/sections/ChromeMoment'
 import Footer from '@/components/layout/Footer'
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
       <ServicesOverview />
       <Testimonials />
       <ContactCTA />
+      <ChromeMoment />
       <Footer />
     </main>
   );
