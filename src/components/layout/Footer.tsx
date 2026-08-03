@@ -28,7 +28,7 @@ const Footer = () => {
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-9">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-16 pb-9">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="md:col-span-2">
@@ -40,22 +40,22 @@ const Footer = () => {
                 className="boop h-12 w-auto invert"
               />
             </div>
-            <p className="text-base mb-6 text-white/70 max-w-lg">
+            <p className="text-body-md mb-6 text-white/70 max-w-lg">
               We&apos;re a specialist agency built for the creator economy.
               <br />We consult. We produce content. We develop talent.
             </p>
             <div>
-              <CopyEmail className="px-underline text-sm text-bb-mint hover:text-bb-blue" />
+              <CopyEmail className="px-underline text-body-sm text-bb-mint hover:text-bb-blue" />
             </div>
           </div>
 
           {/* Services */}
           <div>
-            <h3 className="font-display text-base mb-6 uppercase">Services</h3>
+            <h3 className="font-display text-body-md mb-6 uppercase">Services</h3>
             <ul className="space-y-3">
               {serviceLinks.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="px-underline text-white/70 hover:text-bb-blue text-sm">
+                  <Link href={item.href} className="px-underline text-white/70 hover:text-bb-blue text-body-sm">
                     {item.name}
                   </Link>
                 </li>
@@ -65,10 +65,10 @@ const Footer = () => {
 
           {/* Company */}
           <div>
-            <h3 className="font-display text-base mb-6 uppercase">Company</h3>
+            <h3 className="font-display text-body-md mb-6 uppercase">Company</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/contact" className="px-underline text-white/70 hover:text-bb-blue text-sm">
+                <Link href="/contact" className="px-underline text-white/70 hover:text-bb-blue text-body-sm">
                   Contact
                 </Link>
               </li>
@@ -76,8 +76,8 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-white/20 mt-12 pt-8 text-center">
-          <p className="text-white/50 text-sm">
+        <div className="border-t border-white/20 mt-8 md:mt-12 pt-8 text-center">
+          <p className="text-white/50 text-body-sm">
             &copy; {currentYear} Bad Brain Media. All rights reserved.
           </p>
         </div>

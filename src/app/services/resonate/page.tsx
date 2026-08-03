@@ -4,25 +4,97 @@ import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import WindowTitleBar from '@/components/ui/WindowTitleBar'
 import ServiceCTA from '@/components/sections/ServiceCTA'
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { enter } from '@/lib/y2k'
 
 const EQ_BARS = 16
 
-const services = [
-  'Strategic consultancy',
-  'Artist & label social media audits',
-  'Creative direction and ideation',
-  'Content calendars and release planning',
-  'Creator-ready production toolkits',
-  'Performance reviews and optimisation',
-  'Album and release campaigns',
-  'Ongoing social listening',
-  'Creator and UGC alignment',
-  'Ecosystem partnerships and amplification',
-  'Paid media strategy and scaling',
-  'Community management',
+/* Coverage-grid cell height. Taller than the old 220px service labels — the
+   client's items are full sentences, not two-word tags. */
+const CELL_H = '250px'
+
+/* Icon set migrated from the retired "Inside-out. Outside-in." approach block —
+   the client's copy replaces that framework, but the three marks map cleanly onto
+   Make / Move / Grow. Drawn edge-to-edge in a 40×40 box. */
+const iconProps = {
+  'aria-hidden': true,
+  viewBox: '0 0 40 40',
+  width: 40,
+  height: 40,
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.2,
+} as const
+
+/* Parts converging into one node — assembling a vision from pieces */
+const MakeIcon = () => (
+  <svg {...iconProps}>
+    <path d="M6 11L20 24M34 11L20 24M20 24v5" strokeLinecap="round" />
+    <rect x="0.6" y="0.6" width="10" height="10" rx="1" />
+    <rect x="29.4" y="0.6" width="10" height="10" rx="1" />
+    <rect x="15" y="28.8" width="10" height="10" rx="1" />
+  </svg>
+)
+
+/* Signal radiating outward — a track travelling beyond your own channels */
+const MoveIcon = () => (
+  <svg {...iconProps}>
+    <path d="M20 39V17" strokeLinecap="round" />
+    <path d="M20 17l-5-6" strokeLinecap="round" />
+    <path d="M11 20a12.7 12.7 0 0 1 18 0" strokeLinecap="round" />
+    <path d="M1 14a27 27 0 0 1 38 0" strokeLinecap="round" />
+  </svg>
+)
+
+/* Rising bars breaking out of the frame */
+const GrowIcon = () => (
+  <svg {...iconProps}>
+    <path d="M0.6 39.4h38.8" strokeLinecap="round" />
+    <rect x="1" y="28" width="8" height="11.4" />
+    <rect x="16" y="20" width="8" height="19.4" />
+    <rect x="31" y="12" width="8" height="27.4" />
+    <path d="M28 1h8v8M36 1L24 13" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+/* "What Resonate covers", client copy v1.3 — three clusters, eight items. The
+   grid below is 4×3: each row opens with the cluster's black header cell, so the
+   groups stay legible while every item keeps its brand-animation hover cell. */
+const coverage = [
+  {
+    name: 'Make',
+    Icon: MakeIcon,
+    items: [
+      'Build a creative vision that looks and sounds like you — across every channel.',
+      'Get content calendars and format ideas planned around your music.',
+      'Walk away with creator toolkits — formats, templates and rollout guides — to make social less of a grind.',
+    ],
+  },
+  {
+    name: 'Move',
+    Icon: MoveIcon,
+    items: [
+      'Get your tracks moving through TikTok — fans, creators, everyday users.',
+      'Open doors through the Bad Brain ecosystem — platforms, partnerships and industry connections.',
+      'Have social listening working in the background — so you know what’s moving before it trends.',
+    ],
+  },
+  {
+    name: 'Grow',
+    Icon: GrowIcon,
+    items: [
+      'Get rollout plans built around your release — pre-release, launch and beyond.',
+      'Use paid media to push what’s already landing to more of the right people.',
+    ],
+  },
 ]
+
+/* Flat item list — the video refs and the attract-mode spotlight both index off
+   this, so cluster grouping stays a presentation concern only. */
+const items = coverage.flatMap((g) => g.items)
+const itemOffsets = coverage.map((_, gi) =>
+  coverage.slice(0, gi).reduce((n, g) => n + g.items.length, 0)
+)
 
 // Official brand animations (compressed) — the only place these replace
 // client placeholder videos, per client direction.
@@ -56,7 +128,7 @@ export default function ResonatePage() {
       // random next cell, never the same one twice in a row; only the lit
       // cell's video plays — the outgoing one pauses on handoff
       const prev = current
-      current = (current + 1 + Math.floor(Math.random() * (services.length - 1))) % services.length
+      current = (current + 1 + Math.floor(Math.random() * (items.length - 1))) % items.length
       if (prev >= 0) videoRefs.current[prev]?.pause()
       void videoRefs.current[current]?.play().catch(() => {})
       setSpotlight(current)
@@ -147,6 +219,7 @@ export default function ResonatePage() {
         style={{
           height: 'calc(100svh - 65px)',
           minHeight: '700px',
+          maxHeight: '900px',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -180,34 +253,32 @@ export default function ResonatePage() {
           className="absolute inset-y-0 left-0 w-0.5 bg-black/40 pointer-events-none"
         />
 
-        {/* Main content — flex-1, headline fills, copy bottom-right */}
+        {/* Main content — flex-1, headline fills, copy bottom-right.
+            Gutter is px-6 lg:px-8 to match the nav container (and every other
+            section on this page); it was px-8 lg:px-12 and sat visibly inboard
+            of the wordmark above it. */}
         <div
-          className="relative flex-1 flex flex-col min-h-0 max-w-7xl mx-auto w-full px-8 lg:px-12"
-          style={{ paddingBottom: 'clamp(6rem, 10vw, 9rem)' }}
+          className="relative flex-1 flex flex-col min-h-0 max-w-7xl mx-auto w-full px-6 lg:px-8"
+          style={{ paddingBottom: 'clamp(3rem, 10vw, 9rem)' }}
         >
           {/* Headline + mark — one lockup, bottom-anchored together so the pair
               stays coupled at any viewport size (mark was previously pinned
               top-right and drifted away from the headline on big screens) */}
           <div className="flex-1 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8 pt-8 sm:pt-0 pb-10 min-h-0">
             <h1
-              className="title-outline uppercase"
+              className="title-outline uppercase text-display-2"
               style={{
-                fontSize: 'clamp(2.4rem, 5.2vw, 5.2rem)',
-                /* 30% outside-stroke per guideline pg 14. The stroke is doubled
-                   (centred webkit stroke = 0.6em), so a 2-line stack needs ~1.55
-                   leading or the puffy outlines of adjacent lines merge into a blob. */
-                lineHeight: 1.55,
                 ['--title-stroke' as never]: '0.3em',
               }}
             >
-              <span className="block" style={enter('0.28s')}>Rewrite</span>
-              <span className="block" style={enter('0.38s')}>the Rules.</span>
+              <span className="block" style={enter('0.28s')}>Find your</span>
+              <span className="block" style={enter('0.38s')}>people.</span>
             </h1>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/brand/marks/Resonate.svg"
               alt="Bad Brain Resonate"
-              className="order-first sm:order-last shrink-0 w-[10.8rem] lg:w-[16.8rem] h-auto sm:mb-6"
+              className="order-first sm:order-last min-w-0 w-[9rem] lg:w-[11rem] h-auto sm:mb-6"
               style={enter('0.5s')}
             />
           </div>
@@ -217,32 +288,32 @@ export default function ResonatePage() {
             className="flex flex-col lg:flex-row lg:items-start lg:justify-end gap-6"
             style={enter('0.62s')}
           >
-            <div className="bg-white border border-black/15" style={{ maxWidth: '28rem' }}>
+            <div className="bg-white border border-black/15 max-w-[28rem]">
               <WindowTitleBar name="resonate.exe" className="border-b border-black/15 px-3 py-2" />
               <div className="p-6">
-                <p className="text-black/60 text-sm leading-relaxed mb-6">
-                  Social media has{' '}
-                  <strong className="text-black font-semibold">rewritten the rules of music discovery</strong>{' '}
-                  — turning content into the primary way artists are found and followed. The opportunity is
-                  huge, but only for artists with a strategy that actually works.
+                <p className="text-black/60 text-body-sm mb-6">
+                  Build your audience with{' '}
+                  <strong className="text-black font-semibold">as much care as you make your music</strong>.
+                  We value connection over likes, fans over followers. Resonate helps you create strategies
+                  that stay true to you.
                 </p>
                 <a
-                  href="#approach"
+                  href="#now"
                   onClick={(e) => {
                     e.preventDefault()
-                    document.querySelector('#approach')?.scrollIntoView({ behavior: 'smooth' })
+                    document.querySelector('#now')?.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="inline-flex items-center gap-2 text-black/60 text-xs tracking-[0.2em] uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
+                  className="inline-flex items-center gap-2 text-black/60 text-label tracking-label uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
                 >
                   <span className="border-b border-black/20 pb-0.5 group-hover:border-bb-blue transition-colors">
-                    Our approach
+                    Learn more
                   </span>
                   <span className="arrow-hop inline-block">→</span>
                 </a>
               </div>
               {/* Player strip — live EQ + elapsed counter */}
               <div className="flex items-center gap-3 border-t border-black/15 px-3 py-2">
-                <span aria-hidden="true" className="text-black/60 text-[0.55rem] leading-none">▶</span>
+                <span aria-hidden="true" className="text-black/60 text-label leading-none">▶</span>
                 <span aria-hidden="true" className="flex items-end gap-[3px] h-3 flex-1">
                   {Array.from({ length: EQ_BARS }, (_, i) => (
                     <span
@@ -253,7 +324,7 @@ export default function ResonatePage() {
                     />
                   ))}
                 </span>
-                <span className="font-mono text-[0.55rem] tracking-[0.15em] text-black/40">
+                <span className="text-label tracking-label text-black/40">
                   <span ref={elapsedRef}>00:00</span> / 00:16
                 </span>
               </div>
@@ -262,18 +333,21 @@ export default function ResonatePage() {
         </div>
       </section>
 
-      {/* ── What We Do — staggered typographic split ── */}
-      <section className="bg-white overflow-clip">
+      {/* ── Right now — the discovery stat, carried by the staggered
+             typographic split that used to read "Personality / into presence".
+             border-t: the hero above is also white, so without a rule the two
+             panels ran together. Matches the nav's border-black/15. ── */}
+      <section id="now" className="bg-white overflow-clip border-t border-black/15">
 
-        {/* "PERSONALITY" — large, left-aligned, bleeds to the right edge */}
-        <div className="pt-20 px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
+        {/* Band 1: "80% of TikTok users" — the figure reads more balanced carrying
+            the subject with it than stranded alone at display size. */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-12 md:pt-20">
+          <div>
             <div className="resonate-pull-quote overflow-hidden">
               <p
-                className="font-display uppercase text-black whitespace-nowrap"
-                style={{ fontSize: 'clamp(2rem, 8vw, 7rem)', lineHeight: 0.88, letterSpacing: '-0.04em' }}
+                className="font-display uppercase text-black text-display-2 leading-hero"
               >
-                Personality
+                80% of TikTok users
               </p>
             </div>
           </div>
@@ -282,14 +356,17 @@ export default function ResonatePage() {
         {/* Divider */}
         <div className="border-t border-black/10 mt-5" />
 
-        {/* "into presence." — right-aligned, right edge on the container gutter */}
-        <div className="px-6 lg:px-8 py-8">
-          <div className="max-w-7xl mx-auto text-right">
+        {/* Band 2 — right-aligned, right edge on the container gutter, with the
+            attribution hung beneath it */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+          <div className="text-right">
             <p
-              className="font-display uppercase text-black inline-block"
-              style={{ fontSize: 'clamp(1.8rem, 4.5vw, 4.5rem)', lineHeight: 0.88, letterSpacing: '-0.04em' }}
+              className="font-display uppercase text-black inline-block text-display-2 leading-hero"
             >
-              into presence.
+              discover new music<br className="hidden sm:inline" /> via the platform.
+            </p>
+            <p className="text-label tracking-label-wide uppercase text-black/40 mt-5">
+              Source: TikTok
             </p>
           </div>
         </div>
@@ -297,29 +374,26 @@ export default function ResonatePage() {
         {/* Divider */}
         <div className="border-t border-black/10" />
 
-        {/* Body copy — two columns */}
-        <div className="px-6 lg:px-8 py-16">
-          <div className="max-w-7xl mx-auto">
-            <div className="resonate-problem-copy grid lg:grid-cols-2 gap-8 lg:gap-20 text-black/60 text-base leading-relaxed">
-              <div className="space-y-5">
+        {/* Body copy — two columns, under a "Right now" overline */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10 md:py-16">
+          <div>
+            <span className="text-label tracking-label-wide uppercase text-black/40 block mb-8">
+              Right now
+            </span>
+            <div className="resonate-problem-copy grid lg:grid-cols-2 gap-8 lg:gap-20 text-black/60 text-body-md">
+              <div>
                 <p>
-                  Led by{' '}
-                  <strong className="text-black font-semibold">experts with real industry experience</strong>,
-                  Bad Brain Resonate delivers social strategy for artists and labels alike — turning
-                  your personality into presence.
-                </p>
-                <p>
-                  We use proven,{' '}
-                  <strong className="text-black font-semibold">entertainment-first content strategies</strong>{' '}
-                  to build real fans and nurture lasting communities on platforms like TikTok.
+                  <strong className="text-black font-semibold">Discovery has never been more open.</strong>{' '}
+                  Anyone scrolling today could be hearing you for the first time, whether you&apos;re
+                  signed or not.
                 </p>
               </div>
               <div>
                 <p>
-                  By tapping into{' '}
-                  <strong className="text-black font-semibold">Bad Brain&apos;s wider ecosystem</strong>{' '}
-                  — creators we represent and brand-side relationships — we extend your music beyond your
-                  own channels and into culture.
+                  The part nobody tells you:{' '}
+                  <strong className="text-black font-semibold">not everybody is a potential fan</strong>.
+                  Being discovered by the right audience takes a plan, not just a phone and good
+                  intentions. We build it with you — starting with your sound, goals and whole story.
                 </p>
               </div>
             </div>
@@ -328,176 +402,32 @@ export default function ResonatePage() {
 
       </section>
 
-      {/* ── Approach — black block moment, three-column process grid ── */}
-      <section id="approach" className="bg-black border-t border-black relative overflow-hidden">
-        {/* Faint mint waveform — Y2K grain over the flat black (echoes the hero) */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/brand/halftones/resonate_16x9_green.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
-        />
-        {/* CRT scanlines — subtle retro-monitor texture over the waveform */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none z-0"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(to bottom, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 4px)',
-          }}
-        />
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-
-          {/* Header row: label left, heading right */}
-          <div className="resonate-approach-header flex items-baseline justify-between py-6 border-b border-white/20">
-            <span className="text-[0.65rem] tracking-[0.35em] uppercase text-white/50">Approach</span>
-            <p
-              className="font-display uppercase text-white"
-              style={{ fontSize: 'clamp(1rem, 2.5vw, 2rem)', letterSpacing: '-0.04em' }}
-            >
-              Inside&#8209;out. Outside&#8209;in.
-            </p>
-          </div>
-
-          {/* Three-column process pillars */}
-          <div className="resonate-approach-left grid lg:grid-cols-3">
-
-            <div className="resonate-approach-copy relative py-12 lg:pr-10 border-b lg:border-b-0 lg:border-r border-white/15">
-              <div className="h-px w-10 bg-bb-mint mb-6" />
-              {/* Drawn edge-to-edge in a 40×40 box so the icon column matches
-                  the w-10 rule above and left-aligns with the label below */}
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 40 40"
-                width="40"
-                height="40"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                className="text-bb-mint mb-4"
-              >
-                <path d="M20 39V17" strokeLinecap="round" />
-                <path d="M20 17l-5-6" strokeLinecap="round" />
-                <path d="M11 20a12.7 12.7 0 0 1 18 0" strokeLinecap="round" />
-                <path d="M1 14a27 27 0 0 1 38 0" strokeLinecap="round" />
-              </svg>
-              <span className="text-[0.55rem] tracking-[0.3em] uppercase text-bb-mint font-mono block mb-6">
-                01 / Channel
-              </span>
-              <p className="text-white/60 text-base leading-relaxed">
-                We help artists build strong, authentic content on their own channels, while using
-                strategic insight and partnerships to drive meaningful use of your songs in the
-                TikTok library among audiences aligned to your style.
-              </p>
-            </div>
-
-            <div className="resonate-approach-copy relative py-12 lg:px-10 border-b lg:border-b-0 lg:border-r border-white/15">
-              <div className="h-px w-10 bg-bb-mint mb-6" />
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 40 40"
-                width="40"
-                height="40"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                className="text-bb-mint mb-4"
-              >
-                <path d="M6 11L20 24M34 11L20 24M20 24v5" strokeLinecap="round" />
-                <rect x="0.6" y="0.6" width="10" height="10" rx="1" />
-                <rect x="29.4" y="0.6" width="10" height="10" rx="1" />
-                <rect x="15" y="28.8" width="10" height="10" rx="1" />
-              </svg>
-              <span className="text-[0.55rem] tracking-[0.3em] uppercase text-bb-mint font-mono block mb-6">
-                02 / Strategy
-              </span>
-              <p className="text-white/60 text-base leading-relaxed">
-                Our work spans everything from{' '}
-                <strong className="text-white font-semibold">focused consultancy and creative direction</strong>{' '}
-                to full, ongoing social strategy — sharpening content, defining repeatable formats,
-                and building momentum through planned releases, partnerships, and platform-native storytelling.
-              </p>
-            </div>
-
-            <div className="resonate-approach-copy relative py-12 lg:pl-10">
-              <div className="h-px w-10 bg-bb-mint mb-6" />
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 40 40"
-                width="40"
-                height="40"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                className="text-bb-mint mb-4"
-              >
-                <path d="M0.6 39.4h38.8" strokeLinecap="round" />
-                <rect x="1" y="28" width="8" height="11.4" />
-                <rect x="16" y="20" width="8" height="19.4" />
-                <rect x="31" y="12" width="8" height="27.4" />
-                <path d="M28 1h8v8M36 1L24 13" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-[0.55rem] tracking-[0.3em] uppercase text-bb-mint font-mono block mb-6">
-                03 / Results
-              </span>
-              <p className="text-white/60 text-base leading-relaxed">
-                The result:{' '}
-                <strong className="text-white font-semibold">sustainable growth</strong>,
-                deeper fan connection, and content that works harder without demanding everything from the artist.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ── Experience — magazine sidebar layout ── */}
-      <section className="bg-white">
+      {/* ── Experience — magazine sidebar layout ──
+             overflow-clip (not hidden — hidden breaks view-timeline lookup) because
+             .resonate-bio enters from translateX(80vw), which was pushing 312px of
+             horizontal scroll onto the page at 390px wide. */}
+      <section className="bg-white overflow-clip">
 
         {/* Section label */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="resonate-experience-header flex items-baseline justify-between py-6 border-b border-black/10">
-            <span className="text-[0.65rem] tracking-[0.35em] uppercase text-black/40">Experience</span>
+            <span className="text-label tracking-label-wide uppercase text-black/40">Experience</span>
           </div>
         </div>
 
-        {/* Sidebar + photo — contained to the same gutter as the bio below */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="resonate-photo grid lg:grid-cols-[280px_1fr]" style={{ minHeight: '520px' }}>
+        {/* Photo left, quote right — the mockup's `jen-top-b` layout (quote, then
+            name, then role beneath it). No inner gutter padding on the text
+            column: the tinted sidebar it replaced added px-6 lg:px-8 on top of
+            the container's own, so "Jen Long" sat visibly inboard of every other
+            line on the page. */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10 md:py-16">
+          <div className="resonate-photo grid lg:grid-cols-2 gap-10 lg:gap-16 lg:items-center">
 
-            {/* Left: name + career timeline */}
-            <div className="border-r border-black/10 px-6 lg:px-8 py-10 flex flex-col bg-black/[0.03]">
-              <p className="font-display text-black mb-1 pt-4"
-                 style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.8rem)' }}>
-                Jen Long
-              </p>
-              <p className="text-[0.6rem] tracking-[0.25em] uppercase text-black/40 mb-14">
-                Resonate Co-Founder
-              </p>
-              <div className="flex-1">
-                {[
-                  ['BBC Introducing', 'Radio 1 Presenter'],
-                  ['BBC Three', 'Lead Voice'],
-                  ['DICE', 'Music Editor'],
-                  ['The Line of Best Fit', 'Head of Partnerships'],
-                  ['Take Care Management', 'Founder — 2023'],
-                ].map(([org, role], i) => (
-                  <div key={org} className="group flex items-start gap-3 border-t border-black/10 py-5 hover:bg-bb-mint/10 transition-colors -mx-2 px-2">
-                    <span className="font-mono text-[0.6rem] tracking-[0.15em] text-bb-blue mt-0.5 shrink-0">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div>
-                      <p className="text-xs font-semibold text-black">{org}</p>
-                      <p className="text-[0.65rem] text-black/40 tracking-wide mt-0.5">{role}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: full-height photo */}
-            <div className="relative overflow-hidden bg-[#1a1a1a]" style={{ minHeight: '480px' }}>
+            {/* Left: portrait */}
+            <div
+              className="relative overflow-hidden bg-black order-first"
+              style={{ aspectRatio: '4 / 3' }}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/resonate/jen-long.jpg"
@@ -507,131 +437,231 @@ export default function ResonatePage() {
               />
             </div>
 
+            {/* Right: quote → name → role, one rhythm throughout */}
+            <div>
+              <blockquote
+                className="text-black text-body-lg"
+              >
+                <span aria-hidden="true" className="text-bb-blue">&ldquo;</span>There&apos;s nothing
+                better than watching an artist you believed in early start to connect with lots of
+                people who get it. That feeling never gets old.
+                <span aria-hidden="true" className="text-bb-blue">&rdquo;</span>
+              </blockquote>
+              <div className="h-px w-10 bg-bb-blue mt-8 mb-6" />
+              <p className="font-display text-black text-display-4">
+                Jen Long
+              </p>
+              <p className="text-label tracking-label uppercase text-black/40 mt-2">
+                Resonate Co-Founder
+              </p>
+            </div>
+
           </div>
         </div>
 
-        {/* Bio — two columns below */}
-        <div className="resonate-bio max-w-7xl mx-auto px-6 lg:px-8 py-16 border-t border-black/10">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 text-black/60 text-base leading-relaxed">
-            <div className="space-y-5">
-              <p>
-                Resonate Co-Founder{' '}
-                <strong className="text-black font-semibold">Jen Long</strong> brings nearly two
-                decades of frontline experience across broadcasting, platforms, and artist management.
-                She began her career at the BBC, presenting{' '}
-                <strong className="text-black font-semibold">BBC Introducing on Radio 1</strong> and
-                serving as the voice of BBC Three — giving her early insight into how artists break and
-                how audiences form.
-              </p>
-              <p>
-                Post-BBC, Jen helped launch live music platform{' '}
-                <strong className="text-black font-semibold">DICE as Music Editor</strong> before moving
-                into artist management. Since 2017, she has worked closely with artists while simultaneously
-                leading partnerships for{' '}
-                <strong className="text-black font-semibold">The Line of Best Fit</strong>.
-              </p>
-            </div>
-            <div className="space-y-5">
-              <p>
-                In 2023, Jen founded{' '}
-                <strong className="text-black font-semibold">Take Care Management</strong>, where she
-                continues to work with a focused roster including{' '}
-                <strong className="text-black font-semibold">jasmine.4.t</strong>, recently named one of
-                BBC 6 Music&apos;s Artists of the Year.
-              </p>
-              <div className="border border-black/20">
-                {/* OS-window title bar */}
-                <WindowTitleBar name="roster.txt" className="border-b border-black/15 px-3 py-2" />
-                <div className="p-6">
-                  <p className="text-black/60 text-sm">
-                    Jen&apos;s work spans a globally respected roster including{' '}
-                    <strong className="text-black">The Knife, Fever Ray, Big Red Machine, Austra,
-                    Hannah Georgas, Planningtorock</strong>, and more.
-                  </p>
-                </div>
+        {/* Career strands — the mockup's three columns */}
+        <div className="resonate-bio max-w-7xl mx-auto px-6 lg:px-8 py-10 md:py-16 border-t border-black/10">
+          <div className="grid md:grid-cols-3 gap-10 lg:gap-16">
+            {[
+              ['Broadcasting', <>
+                Presented <strong className="text-black font-semibold">BBC Introducing on Radio 1</strong>,
+                helping break new artists at a national level. Glastonbury festival coverage for BBC Three.
+              </>],
+              ['Industry', <>
+                <strong className="text-black font-semibold">Music Editor at DICE</strong>, helping launch
+                the platform. Contributing Editor and Partnerships at{' '}
+                <strong className="text-black font-semibold">The Line of Best Fit</strong> since 2009.
+              </>],
+              ['Management', <>
+                Founder, <strong className="text-black font-semibold">Take Care Management</strong>. Current
+                roster includes <strong className="text-black font-semibold">jasmine.4.t</strong> — BBC 6
+                Music Artist of the Year 2025, first UK signee to Saddest Factory Records.
+              </>],
+            ].map(([label, body], i) => (
+              <div key={label as string}>
+                <div className="h-px w-10 bg-bb-blue mb-6" />
+                <span className="text-label tracking-label-wide uppercase text-bb-blue block mb-4">
+                  {String(i + 1).padStart(2, '0')} / {label}
+                </span>
+                <p className="text-black/60 text-body-md">{body}</p>
               </div>
+            ))}
+          </div>
+
+          {/* Previous clients — kept in the roster.txt window it already had */}
+          <div className="border border-black/20 mt-10 md:mt-14">
+            <WindowTitleBar name="roster.txt" className="border-b border-black/15 px-3 py-2" />
+            <div className="px-6 py-5 flex flex-col sm:flex-row sm:items-baseline gap-3 sm:gap-8">
+              {/* items-baseline already puts this on the names' exact baseline
+                  (measured delta 0). The -2px is an optical correction: 8.8px caps
+                  next to 14px text share a baseline but not a cap-height, so the
+                  label reads as sitting low until its cap block is re-centred. */}
+              <span
+                className="text-label tracking-label-wide uppercase text-black/40 shrink-0"
+                style={{ transform: 'translateY(-2px)' }}
+              >
+                Previous clients
+              </span>
+              <p className="text-black text-body-sm">
+                The Knife <span className="text-black/25 px-1">·</span> Fever Ray{' '}
+                <span className="text-black/25 px-1">·</span> Big Red Machine{' '}
+                <span className="text-black/25 px-1">·</span> Austra{' '}
+                <span className="text-black/25 px-1">·</span> Hannah Georgas{' '}
+                <span className="text-black/25 px-1">·</span> Planningtorock
+              </p>
             </div>
           </div>
         </div>
 
       </section>
 
-      {/* ── Services — full-width brand-animation hover grid ── */}
+      {/* ── What Resonate covers — Make/Move/Grow clusters, each row opening
+             with a black header cell, items keeping the brand-animation hover ── */}
       <section className="bg-white resonate-services-section border-t border-black/10">
 
-        {/* Header — contained */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-0">
-          <div className="resonate-services-header flex items-baseline justify-between pb-6">
-            <span className="text-[0.65rem] tracking-[0.35em] uppercase text-black/60">Services</span>
-            <span className="text-[0.65rem] tracking-[0.2em] uppercase text-black/40">12 Offerings</span>
+        {/* Contained to the same gutter as every other section — the grid was
+            full-bleed, which made it the one element on the page not lining up
+            with the nav wordmark. */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-14 pb-14 md:pt-24 md:pb-24">
+          <div className="resonate-services-header flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 pb-6">
+            <h2
+              className="font-display uppercase text-black text-display-3"
+            >
+              What Resonate covers
+            </h2>
+            <span className="text-label tracking-label uppercase text-black/40">
+              For artists, labels and managers
+            </span>
           </div>
-        </div>
 
-        {/* Full-width 4×3 grid — spotlight (attract mode) lights one cell while
-            nobody hovers; real hovers pause the cycle and take over */}
+        {/* 4×3 grid — one row per cluster. Spotlight (attract mode) lights one
+            item cell while nobody hovers; real hovers pause the cycle and take
+            over. */}
         <div
           ref={servicesRef}
           className="grid grid-cols-2 lg:grid-cols-4 border-t border-l border-black/15"
           onMouseEnter={() => { gridHoverRef.current = true; setSpotlight(null) }}
           onMouseLeave={() => { gridHoverRef.current = false }}
         >
-          {services.map((service, i) => {
-            const lit = spotlight === i
-            return (
-            <div
-              key={service}
-              className="relative group overflow-hidden border-r border-b border-black/15"
-              style={{ height: '220px' }}
-              onMouseEnter={() => void videoRefs.current[i]?.play().catch(() => {})}
-              onMouseLeave={() => videoRefs.current[i]?.pause()}
-            >
-              {/* Faint waveform strip — echoes the hero halftone; each cell shows
-                  a different slice so the row reads like a track sequence */}
+          {coverage.map(({ name, Icon, items: clusterItems }, gi) => (
+            <Fragment key={name}>
+
+              {/* Cluster header cell — black, carrying the icon migrated from
+                  the retired approach block */}
               <div
-                aria-hidden="true"
-                className={`absolute inset-x-0 bottom-0 pointer-events-none transition-opacity duration-700 ${lit ? 'opacity-0' : 'opacity-70 group-hover:opacity-0'}`}
-                style={{
-                  backgroundImage: "url('/images/brand/halftones/resonate_16x9_gray.png')",
-                  /* zoom, strip height and slice vary per cell so the grid reads
-                     as twelve different waveform crops; y stays in the 40–60%
-                     band where the art actually lives, so no slice is blank */
-                  height: `${36 + (i * 17) % 32}px`,
-                  backgroundSize: `${240 + (i % 3) * 90}% auto`,
-                  backgroundPosition: `${(29 + i * 37) % 100}% ${44 + (i * 7) % 16}%`,
-                }}
-              />
-              {/* Brand animation — hidden until hover/spotlight, and only plays
-                  then too: no autoPlay, or all twelve clips decode continuously
-                  for the whole session even while invisible/off-screen */}
-              <video
-                ref={(el) => { videoRefs.current[i] = el }}
-                src={videoSrcs[i % videoSrcs.length]}
-                loop
-                muted
-                playsInline
-                preload="auto"
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${lit ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-              />
-              {/* Scrim — keeps the label legible over the bright animation */}
-              <div className={`absolute inset-0 bg-black transition-opacity duration-700 ${lit ? 'opacity-35' : 'opacity-0 group-hover:opacity-35'}`} />
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                <span className={`text-[0.6rem] font-mono tracking-[0.2em] mb-3 transition-colors duration-500 ${lit ? 'text-white/70' : 'text-bb-blue group-hover:text-white/70'}`}>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <p className={`text-base font-medium transition-colors duration-500 leading-snug ${lit ? 'text-white' : 'text-black/70 group-hover:text-white'}`}>
-                  {service}
-                </p>
+                className="relative flex flex-col justify-between bg-black overflow-hidden border-r border-b border-black/15 p-6"
+                style={{ height: CELL_H }}
+              >
+                {/* Same mint waveform grain the retired approach block used */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/brand/halftones/resonate_16x9_green.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+                />
+                {/* No cluster numeral — it would sit inches from the item cells'
+                    own 01/02/03 and read as duplicate numbering */}
+                <div className="relative">
+                  <div className="h-px w-10 bg-bb-mint" />
+                </div>
+                <div className="relative text-bb-mint">
+                  <Icon />
+                  <p
+                    className="font-display uppercase text-white mt-3 text-display-3"
+                  >
+                    {name}
+                  </p>
+                </div>
               </div>
-            </div>
-            )
-          })}
+
+              {/* Item cells */}
+              {clusterItems.map((item, li) => {
+                const i = itemOffsets[gi] + li
+                const lit = spotlight === i
+                return (
+                  <div
+                    key={item}
+                    className="relative group overflow-hidden border-r border-b border-black/15"
+                    style={{ height: CELL_H }}
+                    onMouseEnter={() => void videoRefs.current[i]?.play().catch(() => {})}
+                    onMouseLeave={() => videoRefs.current[i]?.pause()}
+                  >
+                    {/* Faint waveform strip — echoes the hero halftone; each cell
+                        shows a different slice so the row reads like a sequence */}
+                    <div
+                      aria-hidden="true"
+                      className={`absolute inset-x-0 bottom-0 pointer-events-none transition-opacity duration-700 ${lit ? 'opacity-0' : 'opacity-70 group-hover:opacity-0'}`}
+                      style={{
+                        backgroundImage: "url('/images/brand/halftones/resonate_16x9_gray.png')",
+                        /* zoom, strip height and slice vary per cell so the grid
+                           reads as eight different waveform crops; y stays in the
+                           40–60% band where the art lives, so no slice is blank */
+                        height: `${36 + (i * 17) % 32}px`,
+                        backgroundSize: `${240 + (i % 3) * 90}% auto`,
+                        backgroundPosition: `${(29 + i * 37) % 100}% ${44 + (i * 7) % 16}%`,
+                      }}
+                    />
+                    {/* Brand animation — hidden until hover/spotlight, and only
+                        plays then too: no autoPlay, or every clip decodes
+                        continuously for the whole session even while off-screen */}
+                    <video
+                      ref={(el) => { videoRefs.current[i] = el }}
+                      src={videoSrcs[i % videoSrcs.length]}
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${lit ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                    />
+                    {/* Scrim — keeps the label legible over the bright animation */}
+                    <div className={`absolute inset-0 bg-black transition-opacity duration-700 ${lit ? 'opacity-35' : 'opacity-0 group-hover:opacity-35'}`} />
+                    {/* Content — top-aligned: these are sentences, not labels, so
+                        a shared top edge across the row beats optical centring */}
+                    <div className="absolute inset-0 flex flex-col p-6">
+                      <span className={`text-label tracking-label mb-4 transition-colors duration-500 ${lit ? 'text-white/70' : 'text-bb-blue group-hover:text-white/70'}`}>
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <p className={`text-body-sm transition-colors duration-500 ${lit ? 'text-white' : 'text-black/70 group-hover:text-white'}`}>
+                        {item}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
+
+            </Fragment>
+          ))}
+
+          {/* Grow has one fewer item than the other two clusters, so the 4×3 is
+              one short. Held as black negative space rather than a hole at the
+              corner. FLAGGED WITH THE CLIENT for a ninth item — see
+              docs/CLIENT-QUESTIONS.md. (The wordmark was tried here first and
+              inverts to an illegible blob on black.) */}
+          <div
+            aria-hidden="true"
+            className="relative bg-black overflow-hidden border-r border-b border-black/15"
+            style={{ height: CELL_H }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/brand/halftones/resonate_16x9_green.png"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+            />
+          </div>
+        </div>
         </div>
 
       </section>
 
       {/* ── CTA — mint block moment ── */}
-      <ServiceCTA heading="Let the music work." bg="bg-bb-mint" hoverText="hover:text-bb-mint" />
+      <ServiceCTA
+        heading="Get discovered."
+        bg="bg-bb-mint"
+        hoverText="hover:text-bb-mint"
+        cta="Find your people"
+      />
 
       <Footer />
     </main>

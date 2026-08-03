@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import BootIntro from "@/components/ui/BootIntro";
 import DvdIdle from "@/components/ui/DvdIdle";
 import PixelTrail from "@/components/ui/PixelTrail";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // NOTE: ABC Gravity / ABC Walter Neue served as DINAMO web fonts (woff2 — ~3×
@@ -20,9 +21,29 @@ const walter = localFont({
   display: "swap",
 });
 
+const TITLE = "Bad Brain | Creator Economy Specialists";
+const DESCRIPTION =
+  "We're a specialist agency for brands, creators and artists. Four connected services for the entertainment era of social.";
+
 export const metadata: Metadata = {
-  title: "Bad Brain Media | Creator Economy Specialists",
-  description: "We're a specialist agency built for the creator economy. We consult. We produce content. We develop talent.",
+  // metadataBase makes the file-based opengraph-image.png resolve to an
+  // absolute URL — without it Next can't build the share card and warns at
+  // build time. On preview builds this points at the deployment's own host.
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    siteName: "Bad Brain",
+    locale: "en_GB",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

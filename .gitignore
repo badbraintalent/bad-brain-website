@@ -15,6 +15,7 @@
 
 # next.js
 /.next/
+/.next-verify/
 /out/
 
 # production
@@ -23,6 +24,11 @@
 # misc
 .DS_Store
 *.pem
+
+# client-review artefacts — screenshots and the generated review doc are large
+# and regenerable; the .md notes in docs/ are tracked as normal
+/docs/flag-shots/
+/docs/*.html
 
 # debug
 npm-debug.log*

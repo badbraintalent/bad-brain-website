@@ -33,7 +33,7 @@ const CopyEmail = ({
       </a>
       {copied && (
         <span
-          className="copied-badge absolute left-1/2 -translate-x-1/2 -top-7 bg-bb-mint text-black border border-black px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.15em] uppercase whitespace-nowrap pointer-events-none"
+          className="copied-badge absolute left-1/2 -translate-x-1/2 -top-7 bg-bb-mint text-black border border-black px-2 py-0.5 text-label tracking-label uppercase whitespace-nowrap pointer-events-none"
           role="status"
         >
           copied ✓

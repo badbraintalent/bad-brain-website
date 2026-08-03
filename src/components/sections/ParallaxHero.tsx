@@ -20,7 +20,11 @@ const HERO_LOGO = "/images/brand/logo/BB_Horizontal.svg";
 
    Hidden at load — the film carries its own Bad Brain branding, so the lockup
    only prints in on scroll (stepped bottom-up clip wipe driven by the same
-   scroll handler as the pixel-field fade; see the effect below). */
+   scroll handler as the pixel-field fade; see the effect below).
+
+   Plain <img> on purpose: the source is an SVG, which next/image passes through
+   untouched (and only with dangerouslyAllowSVG), so it would buy no bytes while
+   adding a wrapper element around the blend and transform below. */
 function HeroLogo({ clipRef }: { clipRef: RefObject<HTMLDivElement | null> }) {
   return (
     <div
@@ -29,6 +33,7 @@ function HeroLogo({ clipRef }: { clipRef: RefObject<HTMLDivElement | null> }) {
       style={{ zIndex: 4, clipPath: "inset(100% 0 0 0)" }}
     >
       <div className="hidden md:flex absolute inset-0 items-end justify-end" style={{ paddingRight: "2.5vw" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={HERO_LOGO}
           alt="Bad Brain"
@@ -38,6 +43,7 @@ function HeroLogo({ clipRef }: { clipRef: RefObject<HTMLDivElement | null> }) {
         />
       </div>
       <div className="flex md:hidden absolute inset-0 items-end justify-start" style={{ paddingLeft: "2vw" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={HERO_LOGO}
           alt="Bad Brain"

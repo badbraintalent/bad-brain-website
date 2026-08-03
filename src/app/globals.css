@@ -26,11 +26,76 @@
   --color-bb-fill: var(--bb-fill);
   --font-display: var(--font-gravity), system-ui, sans-serif;
   --font-body: var(--font-walter), system-ui, sans-serif;
+
+  /* ----------------------------------------------------------------
+     TYPE SCALE
+     The deck works on a fixed 1920px slide: Header 24px · Sub-title 50px
+     · Title 100px · Body 45px and 30px (guidelines pg 35). Those five
+     steps are converted here into fluid web equivalents — the vw term is
+     the deck ratio (e.g. 100/1920 = 5.2vw), with min/max clamps so the
+     scale still holds on phones and ultrawides.
+
+     Below ~600px every step sits on its clamp floor, so those floors are
+     not just legibility minimums — they ARE the mobile scale. They are sized
+     against a 360px phone, where the binding constraint is the longest
+     unbreakable word in a service hero ("following." in Gravity Wide), and
+     they step at ~1.2 so headings stay clearly above the 16px body.
+     display-4 and body-lg sit close on purpose — at phone sizes the two are
+     told apart by typeface (Gravity Wide vs Walter Neue), not by size, and
+     forcing a gap there would push the whole display ladder past the fit.
+
+     Every font-size on the site comes from this scale. Do not add
+     one-off clamp() values in TSX — add a step here instead.
+     ---------------------------------------------------------------- */
+
+  /* Display — ABC Gravity Wide */
+  --text-hero: clamp(3.5rem, 13vw, 12rem); /* page heroes + bleed type */
+  --text-hero--line-height: 0.88;
+  --text-display-1: clamp(2rem, 7.2vw, 6.5rem); /* deck Title 100px */
+  --text-display-1--line-height: 0.9;
+  --text-display-2: clamp(1.65rem, 4.8vw, 3.75rem);
+  --text-display-2--line-height: 0.95;
+  --text-display-3: clamp(1.375rem, 3.2vw, 2.4rem); /* deck Sub-title 50px */
+  --text-display-3--line-height: 1;
+  --text-display-4: clamp(1.2rem, 1.9vw, 1.65rem); /* deck Header 24px */
+  --text-display-4--line-height: 1;
+
+  /* Body — ABC Walter Neue */
+  --text-body-lg: clamp(1.125rem, 1.9vw, 1.5rem); /* deck Body 45px */
+  --text-body-lg--line-height: 1.35;
+  --text-body-md: clamp(1rem, 1.35vw, 1.15rem); /* deck Body 30px */
+  --text-body-md--line-height: 1.6;
+  --text-body-sm: clamp(0.875rem, 1.05vw, 0.95rem);
+  --text-body-sm--line-height: 1.6;
+
+  /* The single micro-caps eyebrow size. Replaces the former
+     0.5 / 0.55 / 0.6 / 0.65 / 0.7rem spread. */
+  --text-label: clamp(0.625rem, 0.75vw, 0.6875rem);
+  --text-label--line-height: 1;
+
+  /* Two tracking steps for caps labels — nothing in between. */
+  --tracking-label: 0.2em;
+  --tracking-label-wide: 0.32em;
+
+  /* Display line-heights. Brand line-height is 100% (guidelines pg 13);
+     these two tighter steps are the established site conventions for
+     stacked hero type and decorative bleed type. */
+  --leading-hero: 0.88;
+  --leading-bleed: 0.82;
+
+  /* Clearance under the service-hero copy column, so the bleed word that
+     hangs below the hero has room. One value for all four service pages. */
+  --spacing-hero-bleed: clamp(5rem, 17vw, 13rem);
 }
 
 /* Base type lives in @layer base so Tailwind font-* utilities can
    still override it (unlayered rules would beat the utilities layer). */
 @layer base {
+  /* DELIBERATE DEVIATION: the guidelines set line-height 100% and
+     letter-spacing -4% for body copy as well as headlines (pg 13). Both
+     are set for 30–45px deck body text; at 16–18px on screen they close
+     up the counters and collide the ascenders/descenders of wrapped
+     paragraphs. Body is relaxed to 1.4 / -2%; headlines keep 1 / -4%. */
   body {
     background: var(--background);
     color: var(--foreground);
@@ -57,12 +122,20 @@
 
 /* Sticker title — inverted fill + outside stroke at 30% of type size
    (guidelines pg 14/36). -webkit-text-stroke is centred so the width is
-   doubled, then the fill paints over the inner half. */
+   doubled, then the fill paints over the inner half.
+
+   The leading is part of the treatment, not a per-use choice: the stroke
+   paints 0.3em beyond the glyph on every side, so two stacked lines need
+   at least ~1.55 or their outlines merge into one black blob. This rule
+   is unlayered, so it deliberately overrides the line-height that comes
+   with the `text-*` scale tokens. Sticker titles also sit one step lower
+   on the display scale than plain headlines, for the same reason. */
 .title-outline {
   --title-stroke: 0.3em;
   color: #fff;
   -webkit-text-stroke: calc(var(--title-stroke) * 2) #000;
   paint-order: stroke fill;
+  line-height: 1.55;
 }
 
 /* ============================================================
@@ -88,17 +161,17 @@
   height: 14px;
 }
 ::-webkit-scrollbar-track {
-  background: #ededed;
+  background: var(--bb-fill);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--bb-blue);
-  border: 3px solid #ededed;
+  border: 3px solid var(--bb-fill);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #000;
 }
 html {
-  scrollbar-color: var(--bb-blue) #ededed; /* Firefox */
+  scrollbar-color: var(--bb-blue) var(--bb-fill); /* Firefox */
 }
 
 /* Cursor pixel trail (spawned by PixelTrail.tsx) */
@@ -294,7 +367,7 @@ html {
 .nav-fill-item {
   display: inline;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.8vw, 3.5rem);
+  font-size: var(--text-display-2);
   text-transform: uppercase;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -454,21 +527,8 @@ html {
   }
 }
 
-/* Video Showcase — scroll-driven slide-in from right.
-   Text elements and video cards slide in from off-screen right,
-   staggered so they arrive one after another. Straight horizontal
-   movement (no rotation), using the grid wrapper's view-timeline. */
-
-.video-showcase-section {
-  overflow: clip;
-}
-
-.video-showcase-grid {
-  view-timeline-name: --video-showcase;
-  view-timeline-axis: block;
-}
-
-/* Shared slide-from-right animation */
+/* Shared horizontal slide-in. Paired with `slide-from-left` below; both are
+   used by the services, testimonial and service-page entrance animations. */
 @keyframes slide-from-right {
   0% {
     opacity: 0;
@@ -481,50 +541,6 @@ html {
     opacity: 1;
     transform: translateX(0);
   }
-}
-
-/* Text elements — staggered, arrive early */
-.video-text-1 {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --video-showcase;
-  animation-range: entry 0% cover 25%;
-}
-
-.video-text-2 {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --video-showcase;
-  animation-range: entry 5% cover 28%;
-}
-
-.video-text-3 {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --video-showcase;
-  animation-range: entry 10% cover 31%;
-}
-
-.video-text-4 {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --video-showcase;
-  animation-range: entry 15% cover 34%;
-}
-
-/* Video cards — arrive from the left, staggered sequentially */
-.video-card-1 {
-  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --video-showcase;
-  animation-range: entry 5% cover 30%;
-}
-
-.video-card-2 {
-  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --video-showcase;
-  animation-range: entry 15% cover 38%;
-}
-
-.video-card-3 {
-  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --video-showcase;
-  animation-range: entry 25% cover 46%;
 }
 
 /* Social Showcase — scroll-driven entrance animations.
@@ -857,6 +873,30 @@ html {
   animation-range: entry 0% cover 40%;
 }
 
+.studio-paradigm {
+  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 42%;
+}
+
+/* The paradigm diagram's blue signal pass — a quantised left→right wipe that
+   holds for as long as the diagram is hovered, then wipes back out. Clip-path
+   rather than transform so the mask stays put while the reveal moves. */
+.paradigm-sweep {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.5s steps(14, end);
+}
+
+.studio-paradigm:hover .paradigm-sweep {
+  clip-path: inset(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paradigm-sweep {
+    transition: none;
+  }
+}
+
 .studio-approach-section {
   overflow: clip;
 }
@@ -892,8 +932,7 @@ html {
 
 /* ============================================================
    Resonate page — scroll-driven animations
-   Problem section + approach: per-element view()
-   Services: named timeline, slides from right
+   Stat + experience sections: per-element view()
    ============================================================ */
 
 .resonate-pull-quote {
@@ -904,24 +943,6 @@ html {
 
 .resonate-problem-copy {
   animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 40%;
-}
-
-.resonate-approach-left {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 40%;
-}
-
-.resonate-approach-copy {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 40%;
-}
-
-.resonate-approach-header {
-  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
 }

@@ -136,7 +136,7 @@ const Navigation = () => {
             >
               <span className="sr-only">Toggle menu</span>
               <span
-                className="font-mono text-[0.6rem] tracking-[0.2em] uppercase"
+                className="text-label tracking-label uppercase"
                 aria-hidden="true"
               >
                 {isOpen ? 'Close' : 'Menu'}
@@ -234,7 +234,7 @@ const Navigation = () => {
 
           {/* Status strip — quiet OS readout along the bottom */}
           <div className="absolute bottom-0 left-0 right-0">
-            <div className="max-w-7xl mx-auto px-6 lg:px-8 py-3 flex justify-between font-mono text-[0.55rem] tracking-[0.15em] text-black/40 lowercase border-t border-black/15">
+            <div className="max-w-7xl mx-auto px-6 lg:px-8 py-3 flex justify-between text-label tracking-label tabular-nums text-black/40 lowercase border-t border-black/15">
               <span>{navItems.length} items · badbrain.media</span>
               <span>
                 local <StatusClock />

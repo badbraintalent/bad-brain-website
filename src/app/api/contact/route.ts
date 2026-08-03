@@ -43,8 +43,15 @@ export async function POST(request: Request) {
 
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
-    // Dev without credentials: pretend-send so the UI flow is exercisable.
-    console.warn('[contact] RESEND_API_KEY not set — simulating send', { name, email, service })
+    // No credentials: pretend-send so the UI flow stays exercisable. The form
+    // still tells the visitor "Message sent", so log the WHOLE submission —
+    // message body included — or a genuine enquiry sent during review is gone
+    // for good. Recoverable from the deployment logs until Resend is live.
+    // Remove this once RESEND_API_KEY is set; real sends must not log bodies.
+    console.warn(
+      '[contact] RESEND_API_KEY not set — simulating send. Full submission:\n' +
+        [`Name: ${name}`, `Email: ${email}`, `Interested in: ${service || '—'}`, '', message].join('\n'),
+    )
     return NextResponse.json({ ok: true, simulated: true })
   }
 

@@ -19,7 +19,7 @@ const ChromeMoment = () => {
       {/* CRT scanlines */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={scanlines(0.18)} />
       {/* Corner caption */}
-      <span className="absolute bottom-5 right-6 font-mono text-[0.55rem] tracking-[0.3em] uppercase text-white/80">
+      <span className="absolute bottom-5 right-6 text-label tracking-label-wide uppercase text-white/80">
         bad brain — est. London
       </span>
     </section>

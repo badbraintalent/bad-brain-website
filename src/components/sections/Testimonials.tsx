@@ -2,67 +2,25 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-/* ── Generic but realistic SVG logo marks ── */
-
-const NovaLogo = () => (
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.2">
-    <path d="M14 3L25 22H3L14 3Z" />
-    <path d="M14 25L3 6H25L14 25Z" />
-  </svg>
-)
-
-const MeridianLogo = () => (
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.2">
-    <path d="M4 7H24M4 14H24M4 21H24" />
-    <path d="M7 7L14 14L21 7" />
-  </svg>
-)
-
-const FluxLogo = () => (
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.2">
-    <circle cx="14" cy="14" r="11" />
-    <circle cx="14" cy="14" r="6" />
-    <circle cx="14" cy="14" r="1.5" fill="currentColor" />
-  </svg>
-)
-
-const KineticLogo = () => (
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M8 4V24M8 14L20 4M8 14L20 24" />
-  </svg>
-)
-
-/* ── Data ── */
+/* ── Data ─ real client quotes, supplied 2026-07-28 ── */
 
 const heroTestimonial = {
-  quote: "Working with Bad Brain completely changed how we approach creator partnerships. The results weren\u2019t incremental\u2009\u2014\u2009they were transformative.",
-  name: 'Sarah Chen',
-  role: 'VP Marketing',
-  company: 'NOVA',
-  Logo: NovaLogo,
+  quote: "The true mark of an exceptional operator is the ability to turn complexity into clarity. Creator marketing is layered, fast-moving and nuanced — yet Bad Brain makes it feel structured and actionable.",
+  company: 'Vamp',
 }
 
 const gridTestimonials = [
   {
-    quote: "They understand the intersection of culture and commerce better than anyone we\u2019ve worked with. A genuine strategic partner.",
-    name: 'Marcus Webb',
-    role: 'CEO',
-    company: 'MERIDIAN',
-    Logo: MeridianLogo,
+    quote: "In the space of three months, Bad Brain helped us build a bespoke UGC platform on the other side of the world, launching a new brand to 15 international markets — and doing so to the highest possible standard. The type of feat I only thought possible through a large agency!",
+    company: 'Crozier Consulting',
   },
   {
-    quote: "Fast, strategic, and genuinely creative. A rare combination in this space. They delivered on every brief.",
-    name: 'Priya Patel',
-    role: 'Director of Brand',
-    company: 'FLUX',
-    Logo: FluxLogo,
+    quote: "Bad Brain combines creator-side experience and creative strategy with a strong grasp of data, attribution, and commercial value. That blend of creativity and sharp commercial thinking is rare and really stood out.",
+    company: 'Awin',
   },
   {
-    quote: "The team\u2019s deep knowledge of the creator economy is unmatched. They\u2019ve become an extension of our own team.",
-    name: 'Jamie Torres',
-    role: 'CMO',
-    company: 'KINETIC',
-    Logo: KineticLogo,
+    quote: "Bad Brain immediately grasped what our brand was all about, as well as our strengths, weaknesses and untapped opportunities. Communication was open and honest from the get-go, which was a refreshing change from working with other agencies.",
+    company: 'Canadian Bureau for International Education',
   },
 ]
 
@@ -110,33 +68,23 @@ const Testimonials = () => {
 
   return (
     <section className="testimonials-section bg-bb-blue text-black border-t border-black">
-      <div className="testimonials-grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+      <div className="testimonials-grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-32">
 
         {/* ── Heading — sticker title over the flat blue block ── */}
-        <div className="testimonial-heading mb-20 md:mb-28">
+        <div className="testimonial-heading mb-10 md:mb-28">
           <h2
-            className="title-outline text-right"
-            style={{
-              fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
-              lineHeight: 1.2,
-            }}
+            className="title-outline text-right text-display-2"
           >
-            What they<br />say.
+We didn&rsquo;t<br />write these.
           </h2>
         </div>
 
         {/* ── Hero testimonial ── */}
-        <div className="testimonial-hero relative mb-20 md:mb-28 border-t border-black/30 pt-12 md:pt-16">
+        <div className="testimonial-hero relative mb-10 md:mb-28 border-t border-black/30 pt-8 md:pt-16">
           {/* Giant decorative quotation mark */}
           <span
-            className="absolute select-none pointer-events-none text-black/10"
-            style={{
-              fontFamily: 'var(--font-gravity), system-ui, sans-serif',
-              fontSize: 'clamp(8rem, 18vw, 14rem)',
-              lineHeight: 0.8,
-              top: '-0.1em',
-              left: '-0.03em',
-            }}
+            className="absolute select-none pointer-events-none text-black/10 font-display text-hero leading-bleed"
+            style={{ top: '-0.1em', left: '-0.03em' }}
             aria-hidden="true"
           >
             &ldquo;
@@ -144,21 +92,13 @@ const Testimonials = () => {
 
           <blockquote className="relative">
             <p
-              className="text-black max-w-4xl"
-              style={{
-                fontSize: 'clamp(1.4rem, 3vw, 2.4rem)',
-                lineHeight: 1.3,
-                letterSpacing: '-0.02em',
-              }}
+              className="text-black max-w-4xl text-display-3 leading-[1.3]"
             >
               {heroTestimonial.quote}
             </p>
             <footer className="mt-8 md:mt-10 flex items-center gap-3 justify-end text-black/60">
-              <heroTestimonial.Logo />
-              <div className="text-sm">
-                <span className="text-black font-medium">{heroTestimonial.name}</span>
-                <span className="mx-2">/</span>
-                <span>{heroTestimonial.role}, {heroTestimonial.company}</span>
+              <div className="text-body-sm">
+                <span className="text-black font-medium">{heroTestimonial.company}</span>
               </div>
             </footer>
           </blockquote>
@@ -169,19 +109,17 @@ const Testimonials = () => {
           {gridTestimonials.map((t, i) => (
             <div
               key={i}
-              className={`testimonial-col-${i + 1} py-10 md:py-12 px-0 md:px-8 ${
+              className={`testimonial-col-${i + 1} py-8 md:py-12 px-0 md:px-8 ${
                 i === 0 ? '' : 'border-t md:border-t-0 md:border-l'
               } border-black/30`}
             >
               <blockquote className="h-full flex flex-col justify-between">
-                <p className="text-black/80 text-base leading-relaxed mb-8">
+                <p className="text-black/80 text-body-md mb-8">
                   &ldquo;{t.quote}&rdquo;
                 </p>
                 <footer className="flex items-center gap-3 text-black/60">
-                  <t.Logo />
-                  <div className="text-xs">
-                    <span className="text-black font-medium block">{t.name}</span>
-                    <span>{t.role}, {t.company}</span>
+                  <div className="text-label">
+                    <span className="text-black font-medium block">{t.company}</span>
                   </div>
                 </footer>
               </blockquote>
@@ -191,7 +129,7 @@ const Testimonials = () => {
 
         {/* ── Logo marquee ── */}
         <div
-          className="testimonial-marquee-wrapper mt-20 md:mt-28 border-t border-black/30 pt-10 overflow-hidden"
+          className="testimonial-marquee-wrapper mt-10 md:mt-28 border-t border-black/30 pt-8 md:pt-10 overflow-hidden"
           onMouseEnter={() => setMarqueeRate(0.5)}
           onMouseLeave={() => setMarqueeRate(1)}
         >
@@ -208,6 +146,10 @@ const Testimonials = () => {
                 onMouseEnter={() => setHoveredLogo(i)}
                 onMouseLeave={() => setHoveredLogo(null)}
               >
+                {/* Plain <img>: the marquee sizes logos by height with width
+                    auto, which next/image can't express without the width={0}
+                    sizes escape hatch. Sources are pre-sized to 2x instead. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={client.src}
                   alt={client.company}

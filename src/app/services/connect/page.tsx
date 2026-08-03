@@ -5,8 +5,9 @@ import Footer from '@/components/layout/Footer'
 import PixelDitherFrame from '@/components/ui/PixelDitherFrame'
 import WindowTitleBar from '@/components/ui/WindowTitleBar'
 import ServiceCTA from '@/components/sections/ServiceCTA'
+import ClientQuote from '@/components/sections/ClientQuote'
 import { useEffect, useRef, useState } from 'react'
-import { enter } from '@/lib/y2k'
+import { enter, winShadow } from '@/lib/y2k'
 
 
 // Roster = the 12 creators from the client's "Our Roster" deck (photos, niches
@@ -51,7 +52,7 @@ const creators: Creator[] = [
     stats: [
       { platform: 'YouTube', count: '52,000' },
       { platform: 'Instagram', count: '2,500' },
-      { platform: 'Newsletter', count: '2,500' },
+      { platform: 'Newsletter Readers', count: '2,500' },
     ],
   },
   {
@@ -118,7 +119,7 @@ const creators: Creator[] = [
     niche: 'Music · Tech',
     photo: '/images/creators/higgouk.jpg',
     stats: [
-      { platform: 'Spotify listeners', count: '350,000' },
+      { platform: 'Spotify Listeners', count: '350,000' },
       { platform: 'Instagram', count: '12,000' },
     ],
   },
@@ -141,26 +142,83 @@ const creators: Creator[] = [
   },
 ]
 
-const services = [
+/* The brand-side offer — four campaign phases, per client copy v1.3. */
+const delivers = [
   {
-    num: '01',
-    title: 'Representation',
-    desc: 'Brand partnership negotiation, licensing deals, and collaboration management — handled with creator interests first.',
+    phase: 'Plan',
+    when: 'Before the brief goes out',
+    items: [
+      {
+        lead: 'Strategy',
+        desc: 'Set the creator mix, activation structure and creative ideation before a single message goes out. Creators are matched to category authority and audience fit, not just follower count.',
+      },
+    ],
   },
   {
-    num: '02',
-    title: 'Business Development & Strategy',
-    desc: 'Dedicated strategy hours, revenue diversification, and long-term career roadmapping to build businesses that last.',
+    phase: 'Source & Secure',
+    when: 'Creator and contract',
+    items: [
+      {
+        lead: 'Talent sourcing',
+        desc: 'Access the right creators for the brief — matched on culture, values, content and demographics.',
+      },
+      {
+        lead: 'Negotiating',
+        desc: 'Secure terms that work for the brand and the creator — rates, usage, exclusivity and timelines handled so the partnership starts on solid ground.',
+      },
+      {
+        lead: 'Contracting',
+        desc: 'Get every partnership locked down properly — licensing, deliverables and rights agreed before anything goes live.',
+      },
+    ],
   },
   {
-    num: '03',
-    title: 'Content Planning & Creative Development',
-    desc: 'Structured planning and creative development support to keep output consistent, fresh, and audience-first.',
+    phase: 'Deliver',
+    when: 'On the ground',
+    items: [
+      {
+        lead: 'Briefing',
+        desc: 'Equip every creator with the rules, message and visual cue — then let them add their own creative sauce.',
+      },
+      {
+        lead: 'Management',
+        desc: 'Run the whole campaign through one point of contact — deadlines, comms and logistics all handled, so you’re never juggling five relationships at once.',
+      },
+      {
+        lead: 'Content approvals',
+        desc: 'Keep the brand safe and the creator moving — every piece signed off before it goes live, no bottlenecks.',
+      },
+    ],
   },
   {
-    num: '04',
-    title: 'Brand Access',
-    desc: 'Direct access to brands and campaigns running through the Bad Brain network — opportunities your audience actually cares about.',
+    phase: 'Close',
+    when: 'Wrapped and reported',
+    items: [
+      {
+        lead: 'Reporting',
+        desc: 'See the real numbers — watch time, engagement, and how the campaign fares against the creator’s own organic average.',
+      },
+      {
+        lead: 'Payment',
+        desc: 'Send the money once — we split it, pay every creator, and keep the paperwork off your desk.',
+      },
+    ],
+  },
+]
+
+/* The three levels a creator relationship can sit at, per client copy v1.3. */
+const tiers = [
+  {
+    name: 'Verified',
+    desc: 'The widest tier. Creators across every niche and platform, brought in and matched project by project — whatever the campaign needs, there’s a fit in this pool.',
+  },
+  {
+    name: 'Connected',
+    desc: 'The tier we manage hands-on. Every deal, every pitch, run through us — so you get creators we already know, with fewer surprises and a stronger match to the brief.',
+  },
+  {
+    name: 'Partnered',
+    desc: 'The deepest tier. We act as a genuine business partner here, not just a manager — the most accountable relationships we have, built for campaigns where the stakes are highest.',
   },
 ]
 
@@ -193,6 +251,7 @@ export default function ConnectPage() {
         style={{
           height: 'calc(100svh - 65px)',
           minHeight: '700px',
+          maxHeight: '900px',
           overflow: 'hidden',
           display: 'grid',
           gridTemplateRows: '1fr',
@@ -200,21 +259,23 @@ export default function ConnectPage() {
       >
         {/* ── Video panel + copy column (fills the hero) ── */}
         <div
-          className="grid min-h-0 overflow-hidden grid-cols-1 lg:grid-cols-[38%_1fr]"
+          className="grid min-h-0 overflow-hidden grid-cols-1 grid-rows-[32%_1fr] lg:grid-cols-[38%_1fr] lg:grid-rows-none w-full max-w-[1800px] mx-auto"
         >
           {/* Left — connect.exe contact sheet: the whole roster as a static
               "icon view" (the roster.exe browser below is the detail view,
-              and owns the only slideshow on the page) */}
+              and owns the only slideshow on the page). On mobile it becomes the
+              top band of the hero — 6×2 instead of 3×4 so the cells stay
+              portrait enough to hold a face. */}
           <div
-            className="hidden lg:flex flex-col min-h-0 overflow-hidden border-r border-black/15"
+            className="flex flex-col min-h-0 overflow-hidden border-b lg:border-b-0 lg:border-r border-black/15"
             style={enter('0.18s', '0.9s')}
             onMouseLeave={() => setSheetHover(null)}
           >
             {/* Shared OS-window chrome — every service hero device runs as an app */}
-            <WindowTitleBar name="connect.exe" className="bg-bb-grey px-3 py-2" />
+            <WindowTitleBar name="connect.exe" className="shrink-0 bg-bb-grey px-3 py-2" />
 
-            {/* 3×4 headshot grid */}
-            <div className="grid grid-cols-3 grid-rows-4 flex-1 min-h-0 gap-px bg-black/15 border-b border-black/15">
+            {/* Headshot grid — 6×2 on mobile, 3×4 from lg */}
+            <div className="grid grid-cols-6 grid-rows-2 lg:grid-cols-3 lg:grid-rows-4 flex-1 min-h-0 gap-px bg-black/15 border-b border-black/15">
               {creators.map((c, i) => (
                 <div
                   key={c.num}
@@ -240,26 +301,27 @@ export default function ConnectPage() {
             </div>
 
             {/* Readout — names the hovered face, else the roster headline */}
-            <div className="px-4 py-3 flex items-end justify-between gap-4">
+            <div className="shrink-0 px-4 py-2 lg:py-3 flex items-end justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-black truncate">
+                <p className="text-label font-semibold text-black truncate">
                   {sheetHover !== null ? creators[sheetHover].name : '12 creators'}
                 </p>
-                <p className="font-mono text-[0.55rem] tracking-[0.15em] text-black/50 uppercase mt-0.5 truncate">
+                <p className="text-label tracking-label text-black/50 uppercase mt-0.5 truncate">
                   {sheetHover !== null ? creators[sheetHover].niche : 'On roster · London'}
                 </p>
               </div>
-              <p className="font-mono text-[0.55rem] tracking-[0.15em] text-black/40 shrink-0">
+              <p className="text-label tracking-label tabular-nums text-black/40 shrink-0">
                 {sheetHover !== null ? `${creators[sheetHover].num}/12` : '12/12'}
               </p>
             </div>
           </div>
 
           {/* Right — copy column, split into headline + body */}
-          <div className="flex flex-col min-h-0">
+          <div className="flex flex-col min-h-0 min-w-0">
 
-            {/* Upper cell: headline, anchored to bottom */}
-            <div className="relative flex-1 flex flex-col justify-end px-10 lg:px-16 pt-10 pb-10">
+            {/* Upper cell: headline, anchored to bottom. Container-typed so the
+                headline can be sized against this column rather than the viewport. */}
+            <div className="relative flex-1 flex flex-col justify-end px-6 sm:px-10 lg:px-16 pt-10 pb-6 lg:pb-10 [container-type:inline-size]">
               {/* Mobile-only halftone — fills the space the hidden panels leave */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -268,23 +330,25 @@ export default function ConnectPage() {
                 aria-hidden="true"
                 className="lg:hidden absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none"
               />
-              {/* Headline + sub-brand mark — same lockup slot on every service hero */}
-              <div className="relative flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
-                <h1
-                  className="uppercase text-black"
-                  style={{ fontSize: 'clamp(2.8rem, 5.2vw, 8rem)', lineHeight: 0.88 }}
-                >
-                  <span className="block" style={enter('0.32s')}>Create</span>
-                  <span className="block" style={enter('0.42s')}>Your Own</span>
-                  <span className="block" style={enter('0.52s')}>Terms.</span>
-                </h1>
+              {/* Headline + sub-brand mark — same lockup slot on every service hero.
+                  The mark stacks above the statement so the headline gets the full
+                  column; cqi sizes it to the column, so the longest line ("creators.")
+                  lands flush with the right edge at every width. */}
+              <div className="relative flex flex-col items-start gap-5 lg:gap-7">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/brand/marks/Connect.svg"
                   alt="Bad Brain Connect"
-                  className="order-first sm:order-last shrink-0 w-[10.8rem] lg:w-[16.8rem] h-auto sm:mb-2"
-                  style={enter('0.5s')}
+                  className="shrink-0 w-[8rem] lg:w-[10rem] h-auto"
+                  style={enter('0.26s')}
                 />
+                <h1
+                  className="uppercase text-black leading-hero"
+                  style={{ fontSize: 'clamp(1.5rem, 11.4cqi, 7rem)' }}
+                >
+                  <span className="block" style={enter('0.32s')}>We know</span>
+                  <span className="block" style={enter('0.44s')}>creators.</span>
+                </h1>
               </div>
             </div>
 
@@ -293,30 +357,25 @@ export default function ConnectPage() {
 
             {/* Lower cell: copy + CTA */}
             <div
-              className="px-10 lg:px-16 py-8"
-              style={{ paddingBottom: 'clamp(5rem, 17vw, 13rem)', ...enter('0.65s') }}
+              className="px-6 sm:px-10 lg:px-16 py-8 pb-10 lg:pb-hero-bleed"
+              style={{ ...enter('0.65s') }}
             >
-              <p className="text-black/60 text-sm leading-relaxed mb-6" style={{ maxWidth: '30rem' }}>
-                Bad Brain Connect supports, develops and represents{' '}
-                <strong className="text-black font-semibold">
-                  up-and-coming original content creators
-                </strong>
-                . We handle the brand deals, the admin, and the business development — so you can put
-                your time and energy into{' '}
-                <strong className="text-black font-semibold">
-                  your content and your audience.
-                </strong>
+              <p className="text-black/60 text-body-sm mb-6 max-w-[30rem]">
+                Over a decade in this industry has shown us the same thing again and again: the
+                numbers are always best when the campaign lands the brand brief and still protects
+                the creator&rsquo;s own style. That&rsquo;s a fine line to walk, but we know the
+                channel well enough to get it right.
               </p>
               <a
-                href="#roster"
+                href="#delivers"
                 onClick={(e) => {
                   e.preventDefault()
-                  document.querySelector('#roster')?.scrollIntoView({ behavior: 'smooth' })
+                  document.querySelector('#delivers')?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="inline-flex items-center gap-2 text-black/60 text-xs tracking-[0.2em] uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
+                className="inline-flex items-center gap-2 text-black/60 text-label tracking-label uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
               >
                 <span className="border-b border-black/20 pb-0.5 group-hover:border-bb-blue transition-colors">
-                  Meet the roster
+                  See the breakdown
                 </span>
                 <span className="arrow-hop inline-block">→</span>
               </a>
@@ -327,54 +386,63 @@ export default function ConnectPage() {
 
       </section>
 
-      {/* ── Problem section — white, typographic two-col ── */}
-      <section className="bg-white py-24 overflow-clip">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
-            {/* Pull quote */}
-            <div className="talent-pull-quote">
-              <p
-                className="font-display text-black uppercase"
-                style={{ fontSize: 'clamp(2.8rem, 6vw, 6rem)', lineHeight: 0.88, letterSpacing: '-0.04em' }}
-              >
-                The demand never slows.
-              </p>
-              <div className="mt-8 h-1.5 w-16 bg-bb-blue" />
-            </div>
+      {/* ── What Connect delivers — the brand-side offer, grouped by campaign
+             phase (client copy v1.3) ── */}
+      <section id="delivers" className="relative py-14 md:py-24 bg-bb-fill border-t border-black/10">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
 
-            {/* Body copy */}
-            <div className="talent-problem-copy space-y-5 text-black/60 text-base leading-relaxed pt-2">
-              <p>
-                <strong className="text-black font-semibold">Audiences expect more</strong> — more
-                formats, more frequency, more from the people they follow. Keeping up with content leaves
-                little room for managing brand deals, career development, and long-term growth.
-              </p>
-              <p>
-                The need for representation is clear. But too often,{' '}
-                <strong className="text-black font-semibold">
-                  traditional management means losing control
-                </strong>
-                : forced deals, overexposure, and strategies built to serve the agency — not the creator.
-              </p>
-              <p>
-                Our{' '}
-                <strong className="text-black font-semibold">tiered model gives creators control</strong>
-                , with support that flexes to fit their needs — from inbox management to full-scale
-                representation. We handle the business. You focus on the work.
-              </p>
-            </div>
+          <div className="flex items-baseline justify-between mb-8 md:mb-12 pb-6 border-b border-black/20">
+            <span className="text-label tracking-label-wide uppercase text-black/60">
+              What Connect Delivers
+            </span>
+            <span className="text-label tracking-label uppercase text-black/40">For Brands</span>
           </div>
+
+          <div className="grid lg:grid-cols-2 gap-x-16 gap-y-10 md:gap-y-16">
+            {delivers.map(({ phase, when, items }, phaseIdx) => (
+              <div key={phase} className="relative">
+
+                {/* Phase header — heavy rule in brand blue */}
+                <div className="relative flex items-baseline gap-4 pb-2 border-b-2 border-bb-blue">
+                  <h3 className="text-body-sm font-bold text-black uppercase tracking-label">{phase}</h3>
+                  <span className="text-label tracking-label uppercase text-black/40">{when}</span>
+
+                  {/* Ghost phase number — sits on the rule, rising into the empty
+                      space above it. lg+ only: below that the header row is too
+                      narrow and the phase labels run into it. */}
+                  <span
+                    aria-hidden="true"
+                    className="hidden lg:block pointer-events-none select-none absolute right-0 bottom-[3px] font-display text-black/[0.08] text-display-2 leading-bleed tabular-nums"
+                  >
+                    {String(phaseIdx + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                {items.map(({ lead, desc }) => (
+                  <div
+                    key={lead}
+                    className="group/row py-4 border-b border-black/10 transition-colors duration-150"
+                  >
+                    <p className="text-body-sm text-black/60 border-l-2 border-transparent pl-0 group-hover/row:border-bb-blue group-hover/row:pl-4 transition-all duration-200">
+                      <strong className="text-black font-semibold">{lead}:</strong> {desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
       {/* ── Creator roster — "roster.exe", a photo-based talent browser:
              index list on the left, sticky dossier viewer on the right ── */}
-      <section id="roster" className="bg-black py-24 talent-roster-section">
+      <section id="roster" className="bg-black py-14 md:py-24 talent-roster-section">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="talent-roster-header flex items-baseline justify-between mb-10 pb-6 border-b border-white/20">
-            <span className="text-[0.65rem] tracking-[0.35em] uppercase text-white/60">Our Creators</span>
-            <span className="text-[0.65rem] tracking-[0.2em] uppercase text-white/40">
+          <div className="talent-roster-header flex items-baseline justify-between mb-8 md:mb-10 pb-6 border-b border-white/20">
+            <span className="text-label tracking-label-wide uppercase text-white/60">Our Creators</span>
+            <span className="text-label tracking-label uppercase text-white/40">
               12 Represented · 5.2M+ Combined Audience
             </span>
           </div>
@@ -414,7 +482,7 @@ export default function ConnectPage() {
                     />
                     {/* Index number (lg+) */}
                     <span
-                      className={`hidden lg:block font-mono text-xs transition-colors duration-200 ${
+                      className={`hidden lg:block text-label tabular-nums transition-colors duration-200 ${
                         active === i ? 'text-bb-mint' : 'text-white/40'
                       }`}
                     >
@@ -423,18 +491,17 @@ export default function ConnectPage() {
 
                     <div className="min-w-0">
                       <h3
-                        className={`font-display uppercase lg:truncate transition-colors duration-200 ${
+                        className={`font-display uppercase lg:truncate text-display-4 transition-colors duration-200 ${
                           active === i ? 'lg:text-bb-mint text-white' : 'text-white'
                         }`}
-                        style={{ fontSize: 'clamp(1.05rem, 1.7vw, 1.5rem)', lineHeight: 1 }}
                       >
                         {creator.name}
                       </h3>
-                      <p className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-white/40 mt-1.5 truncate">
+                      <p className="text-label tracking-label uppercase text-white/40 mt-1.5 truncate">
                         {creator.niche}
                       </p>
                       {/* Inline stats — mobile only (the viewer shows them on lg) */}
-                      <p className="lg:hidden font-mono text-[0.55rem] tracking-[0.1em] uppercase text-white/60 mt-1.5 leading-relaxed">
+                      <p className="lg:hidden text-label tracking-label uppercase text-white/60 mt-1.5">
                         {creator.stats.map((s) => `${s.count} ${s.platform}`).join(' · ')}
                       </p>
                     </div>
@@ -448,7 +515,7 @@ export default function ConnectPage() {
                 <div className="sticky top-20 p-6">
 
                   {/* Photo stack — active creator faded in, dither pattern re-seeds per creator */}
-                  <div className="relative aspect-square overflow-hidden bg-[#0a0a0a]">
+                  <div className="relative aspect-square overflow-hidden bg-black">
                     {creators.map((c, i) => (
                       /* eslint-disable-next-line @next/next/no-img-element */
                       <img
@@ -466,10 +533,10 @@ export default function ConnectPage() {
 
                   {/* Properties readout */}
                   <div className="mt-5 flex items-baseline justify-between gap-4">
-                    <p className="font-mono text-[0.55rem] tracking-[0.15em] uppercase text-white/40">
+                    <p className="text-label tracking-label uppercase text-white/40">
                       {creators[active].niche}
                     </p>
-                    <p className="font-mono text-xs text-bb-mint shrink-0">
+                    <p className="text-label tabular-nums text-bb-mint shrink-0">
                       {creators[active].num}<span className="text-white/30">/12</span>
                     </p>
                   </div>
@@ -479,10 +546,10 @@ export default function ConnectPage() {
                         key={s.platform}
                         className="flex items-baseline justify-between gap-4 py-2.5 border-b border-white/10"
                       >
-                        <span className="font-mono text-[0.6rem] tracking-[0.15em] uppercase text-white/50">
+                        <span className="text-label tracking-label uppercase text-white/50">
                           {s.platform}
                         </span>
-                        <span className="font-mono text-sm text-white">{s.count}</span>
+                        <span className="text-body-sm tabular-nums text-white">{s.count}</span>
                       </div>
                     ))}
                   </div>
@@ -492,46 +559,85 @@ export default function ConnectPage() {
 
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ── Services — numbered rows over the Connect halftone ── */}
-      <section className="relative py-24 talent-services-section bg-white border-t border-black/10">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/brand/halftones/connect_16x9_gray.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
-        />
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-
-          <div className="talent-services-header flex items-baseline justify-between mb-12 pb-6 border-b border-black/20">
-            <span className="text-[0.65rem] tracking-[0.35em] uppercase text-black/60">What We Offer</span>
-            <span className="text-[0.65rem] tracking-[0.2em] uppercase text-black/40">04 Services</span>
-          </div>
-
-          <div className="talent-services-list">
-            {services.map((s, i) => (
-              <div
-                key={s.num}
-                className={`talent-service-${i + 1} grid grid-cols-[2.5rem_1fr] md:grid-cols-[2.5rem_1fr_1fr] gap-x-8 gap-y-2 py-8 border-b border-black/10 group`}
-              >
-                <span className="text-black/40 text-xs font-mono pt-[0.2em]">{s.num}</span>
-                <h3 className="text-sm font-bold text-black uppercase tracking-wide group-hover:text-black/50 transition-colors duration-300">
-                  {s.title}
-                </h3>
-                <p className="text-sm text-black/50 leading-relaxed col-start-2 md:col-start-3 mt-1 md:mt-0">
-                  {s.desc}
-                </p>
-              </div>
-            ))}
+          {/* Roster sign-up — the only creator-facing CTA on the page */}
+          <div className="mt-10 pt-8 border-t border-white/15 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+            <p className="text-white/60 text-body-sm">
+              Are you a creator? Ready to join the roster?
+            </p>
+            <a
+              href="/contact"
+              className="btn-phys border border-white/40 px-7 py-3 text-label uppercase tracking-label text-white hover:bg-bb-mint hover:text-black hover:border-bb-mint transition-colors w-fit"
+            >
+              Get in touch →
+            </a>
           </div>
         </div>
       </section>
+
+
+
+      {/* ── Tiers — the roster model, run as an OS window so it reads as a
+             sibling of roster.exe above rather than a plain card grid ── */}
+      <section className="py-14 md:py-24 bg-bb-fill border-t border-black/10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+
+          <div className="flex items-baseline justify-between mb-8 pb-6 border-b border-black/20">
+            <span className="text-label tracking-label-wide uppercase text-black/60">
+              How We Work With Creators
+            </span>
+            <span className="text-label tracking-label uppercase text-black/40">
+              The Bad Brain Roster
+            </span>
+          </div>
+
+          <p className="text-black/60 text-body-md mb-10 max-w-2xl">
+            Every creator relationship sits at a defined level — so you always know what
+            you&rsquo;re working with.
+          </p>
+
+          <div className="border border-black bg-white" style={{ boxShadow: winShadow(6, 0.14) }}>
+            <WindowTitleBar name="tiers.exe" className="bg-bb-grey px-3 py-2" />
+
+            {/* Three panes side by side — column view rather than a row list */}
+            <div className="grid md:grid-cols-3 border-t border-black/15">
+              {tiers.map(({ name, desc }, i) => (
+                <div
+                  key={name}
+                  className="flex flex-col border-b md:border-b-0 md:border-r last:border-b-0 md:last:border-r-0 border-black/15 hover:bg-bb-mint/25 transition-colors"
+                >
+                  {/* Pane header strip */}
+                  <div className="flex items-baseline gap-3 px-6 py-3 border-b border-black/15 bg-black/[0.03]">
+                    <span className="text-label text-black/35">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <h3 className="text-body-sm font-bold text-black uppercase tracking-label">
+                      {name}
+                    </h3>
+                  </div>
+                  <p className="text-body-sm text-black/60 px-6 py-6">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── Client testimonial — shared site-wide quote treatment ── */}
+      <ClientQuote
+        quote="Bad Brain were a pleasure to work with from start to finish. They immediately grasped what our brand was all about, as well as our strengths, weaknesses and untapped opportunities… They were also able to source an extensive and diverse range of creators in our very niche field and onboard them seamlessly."
+        attribution="Jake Massey, Head of Socials — BLD BRO"
+        accent="text-bb-grey"
+      />
 
       {/* ── CTA — cool-grey block moment ── */}
-      <ServiceCTA heading="Work with us." bg="bg-bb-grey" hoverText="hover:text-bb-grey" />
+      <ServiceCTA
+        heading="Bring us the brief."
+        cta="Let's talk"
+        bg="bg-bb-grey"
+        hoverText="hover:text-bb-grey"
+      />
 
       <Footer />
     </main>

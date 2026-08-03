@@ -3,11 +3,9 @@
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import ContactCTA from '@/components/sections/ContactCTA'
-import CopyEmail from '@/components/ui/CopyEmail'
 import WindowTitleBar from '@/components/ui/WindowTitleBar'
 import { useEffect, useRef, useState } from 'react'
 import { enter } from '@/lib/y2k'
-import { CONTACT_EMAIL } from '@/lib/site'
 
 export default function ContactPage() {
   const [minimized, setMinimized] = useState<number | null>(null)
@@ -34,7 +32,7 @@ export default function ContactPage() {
     <main>
       <Navigation />
 
-      {/* ── Hero — CSS grid, two columns: copy | offices ── */}
+      {/* ── Hero — CSS grid, two columns: copy | brand panel ── */}
       <section
         className="bg-white text-black relative border-b border-black/10"
         style={{
@@ -52,9 +50,9 @@ export default function ContactPage() {
         <div
           className="grid min-h-0 grid-cols-1 lg:grid-cols-[38%_1fr] w-full max-w-[100rem] mx-auto border-x border-black/10"
         >
-          {/* Left — headline + direct email */}
+          {/* Left — headline + intro copy */}
           <div className="flex flex-col lg:border-r border-black/15 min-h-0">
-            <div className="relative flex-1 flex flex-col justify-end px-8 lg:px-10 pt-10 pb-10">
+            <div className="relative flex-1 flex flex-col justify-end px-6 sm:px-8 lg:px-10 pt-10 pb-10">
               {/* Mobile-only halftone — fills the space the hidden offices column leaves */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -74,14 +72,11 @@ export default function ContactPage() {
                   style={enter('0.5s')}
                 />
                 <h1
-                  className="uppercase text-black"
-                  // 5.5rem cap = where 5.5vw lands at the container's 100rem
-                  // width cap; any larger and TOUCH. overflows the 38% column.
-                  style={{ fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)', lineHeight: 0.88 }}
+                  className="uppercase text-black text-display-1 leading-hero"
                 >
-                  <span className="block" style={enter('0.25s')}>Get</span>
-                  <span className="block" style={enter('0.35s')}>In</span>
-                  <span className="block" style={enter('0.45s')}>Touch.</span>
+                  <span className="block" style={enter('0.25s')}>Come</span>
+                  <span className="block" style={enter('0.35s')}>and say</span>
+                  <span className="block" style={enter('0.45s')}>hello.</span>
                 </h1>
               </div>
             </div>
@@ -89,22 +84,16 @@ export default function ContactPage() {
             <div className="border-t border-black/15" style={enter('0.52s', '0.5s')} />
 
             <div
-              className="px-8 lg:px-10 py-8"
-              style={{ paddingBottom: 'clamp(4rem, 15vw, 11rem)', ...enter('0.62s') }}
+              className="px-6 sm:px-8 lg:px-10 py-8"
+              style={{ paddingBottom: 'clamp(2.5rem, 15vw, 11rem)', ...enter('0.62s') }}
             >
-              <p className="text-black/60 text-sm leading-relaxed mb-6" style={{ maxWidth: '26rem' }}>
-                Whether you&apos;re a brand looking to optimise your creator strategy, need integrated content production, or you&apos;re a creator seeking representation — we&apos;d love to hear from you.
+              <p className="text-black/60 text-body-sm max-w-[30rem]">
+                Good to have you here. Wherever you&apos;re up to — a rough idea or a firm brief — we&apos;d love to hear about it.
               </p>
-              {/* Primary action — mint sticker button so the eye lands here
-                  after the headline (was a small grey text link) */}
-              <CopyEmail className="group btn-phys inline-flex items-center gap-2 border border-black bg-bb-mint hover:bg-bb-blue px-6 py-3 text-black text-xs tracking-[0.2em] uppercase w-fit">
-                {CONTACT_EMAIL}
-                <span className="arrow-hop inline-block">→</span>
-              </CopyEmail>
             </div>
           </div>
 
-          {/* Right — contact.exe device panel: BB halftone field + mark + offices */}
+          {/* Right — contact.exe device panel: BB halftone field + mark */}
           <div className="hidden lg:flex flex-col min-h-0" style={enter('0.38s', '0.85s')}>
             {/* Shared OS-window chrome — same grammar as the service hero devices */}
             <WindowTitleBar name="contact.exe" className="border-b border-black/15 px-3 py-2" />
@@ -124,61 +113,45 @@ export default function ContactPage() {
                 className="absolute top-8 right-10 lg:right-16 w-[10.8rem] lg:w-[16.8rem] h-auto"
                 style={enter('0.5s')}
               />
-              <div className="relative flex-1 flex flex-col justify-end px-10 lg:px-16 pt-10 pb-10">
-                <div className="space-y-10">
-                  <div className="bg-white/85 border border-black/10 w-fit">
-                    <div className="p-5">
-                      <span className="text-black/40 text-[0.5rem] tracking-[0.35em] uppercase block mb-3">London</span>
-                      <p className="text-black/70 text-sm leading-relaxed">
-                        Bad Brain Media<br />
-                        United Kingdom
-                      </p>
-                    </div>
-                    <div className="h-1 bg-bb-blue" aria-hidden="true" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative border-t border-black/15 bg-white/85" />
-
-              <div
-                className="relative px-10 lg:px-16 py-8"
-                style={{ paddingBottom: 'clamp(8rem, 15vw, 11rem)', ...enter('0.72s') }}
-              >
-                <p className="text-black/50 text-xs tracking-wide bg-white/85 border border-black/10 p-3 w-fit">
-                  We typically respond within 24 hours.
-                </p>
-              </div>
             </div>
           </div>
         </div>
 
       </section>
 
-      {/* ── Who's this for? — three-column wayfinder ── */}
+      {/* ── Who's this for? — one panel per service, audience-led ── */}
       <div className="border-b border-black/10">
-        <div className="grid md:grid-cols-3 max-w-[100rem] mx-auto border-x border-black/10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 max-w-[100rem] mx-auto border-x border-black/10">
           {[
             {
               label: 'Blueprint',
               question: 'Are you a brand?',
-              desc: 'Need help with creator strategy and optimisation?',
+              desc: 'Get your creator and social strategy working as one — audits, workshops and programme design. Most clients start here.',
               href: '/services/blueprint',
               accent: 'border-t-bb-mint',
             },
             {
               label: 'Studio',
-              question: 'Are you producing?',
-              desc: 'Looking for integrated content production?',
+              // Two lines at lg, like its neighbours — "Are you making content?"
+              // wrapped to three and knocked the descriptions out of alignment
+              question: 'Do you need content?',
+              desc: 'Turn your social strategy into content that holds attention rather than chases it. Watch time over view count.',
               href: '/services/studio',
               accent: 'border-t-bb-blue',
             },
             {
               label: 'Connect',
               question: 'Are you a creator?',
-              desc: 'Seeking representation and development?',
+              desc: 'Build a career without losing control. Representation that flexes with you — three tiers, no forced exclusivity.',
               href: '/services/connect',
               accent: 'border-t-bb-grey',
+            },
+            {
+              label: 'Resonate',
+              question: 'Are you an artist?',
+              desc: 'Get discovered on your own terms. Fans who’ll follow you off the app and into the room.',
+              href: '/services/resonate',
+              accent: 'border-t-black',
             },
           ].map((item, i) => (
             /* The card is a div with a stretched link on the heading (not one
@@ -186,7 +159,9 @@ export default function ContactPage() {
                inside an anchor — invalid HTML and a confusing tab stop. */
             <div
               key={item.label}
-              className={`group relative flex flex-col gap-3 px-8 lg:px-10 py-8 border-r border-black/10 last:border-r-0 border-t-[3px] ${item.accent} hover:bg-bb-mint/30 transition-colors duration-200 ${
+              /* Column rules only between cards — cleared on the last card of
+                 each row so they don't double up on the container's border-x */
+              className={`group relative flex flex-col gap-3 px-8 lg:px-10 py-8 border-black/10 border-r-0 sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:border-r lg:[&:nth-child(4n)]:border-r-0 border-t-[3px] ${item.accent} hover:bg-bb-mint/30 transition-colors duration-200 ${
                 minimized === i ? 'win-minimized' : ''
               }`}
             >
@@ -200,15 +175,14 @@ export default function ContactPage() {
               />
               <div className="win-content flex flex-col gap-3 flex-1">
                 <h3
-                  className="uppercase text-black leading-tight"
-                  style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.5rem)' }}
+                  className="uppercase text-black text-body-lg"
                 >
                   <a href={item.href} className="after:absolute after:inset-0">
                     {item.question}
                   </a>
                 </h3>
-                <p className="text-sm text-black/50 leading-relaxed flex-1">{item.desc}</p>
-                <span className="inline-flex items-center gap-2 text-[0.6rem] tracking-[0.25em] uppercase text-black/40 group-hover:text-bb-blue transition-colors duration-200 mt-1">
+                <p className="text-body-sm text-black/50 flex-1">{item.desc}</p>
+                <span className="inline-flex items-center gap-2 text-label tracking-label uppercase text-black/40 group-hover:text-bb-blue transition-colors duration-200 mt-1">
                   Learn more
                   <span className="arrow-hop inline-block">→</span>
                 </span>
@@ -218,8 +192,9 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* ── Form — reuses the ContactCTA component from homepage ── */}
-      <ContactCTA />
+      {/* ── Form — reuses the ContactCTA component from homepage, minus its
+             "Come and say hello." heading (this page's hero already says it) ── */}
+      <ContactCTA showHeading={false} />
 
       <Footer />
     </main>

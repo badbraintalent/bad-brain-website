@@ -6,7 +6,9 @@ import StepBar from '@/components/ui/StepBar'
 import WindowTitleBar from '@/components/ui/WindowTitleBar'
 import { winShadow } from '@/lib/y2k'
 
-const ContactCTA = () => {
+// The contact page carries "Come and say hello." in its own hero, so it renders
+// this section form-only (showHeading={false}); the homepage keeps the heading.
+const ContactCTA = ({ showHeading = true }: { showHeading?: boolean }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -56,33 +58,36 @@ const ContactCTA = () => {
   return (
     <section className="bg-white border-t border-black/10">
       {/* Top area — massive heading over a halftone logomark field */}
-      <div className="relative overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/brand/halftones/bb_blue_1600.png"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          decoding="async"
-          className="absolute -right-8 top-1/2 -translate-y-1/2 h-[140%] w-auto pointer-events-none"
-        />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-          <h2
-            className="text-black leading-[0.9]"
-            style={{
-              fontSize: 'clamp(3.5rem, 10vw, 9rem)',
-            }}
-          >
-            Let&rsquo;s talk.
-          </h2>
-        </div>
-      </div>
+      {showHeading && (
+        <>
+          <div className="relative overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/brand/halftones/bb_blue_1600.png"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              className="absolute -right-8 top-1/2 -translate-y-1/2 h-[140%] w-auto pointer-events-none"
+            />
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 md:pt-24 pb-10 md:pb-16">
+              <h2
+                // One line from sm up; below that it wraps to two lines so the
+                // type can stay large rather than shrinking to fit.
+                className="text-black sm:whitespace-nowrap text-display-2 leading-hero"
+              >
+                Come and say hello.
+              </h2>
+            </div>
+          </div>
 
-      {/* Divider */}
-      <div className="border-t border-black/10" />
+          {/* Divider */}
+          <div className="border-t border-black/10" />
+        </>
+      )}
 
       {/* Form area */}
-      <div ref={formAreaRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" style={{ minHeight: lockedHeight }}>
+      <div ref={formAreaRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16" style={{ minHeight: lockedHeight }}>
         {status === 'sent' ? (
           /* Digital system-confirmation dialog — message.exe */
           <div
@@ -94,13 +99,13 @@ const ContactCTA = () => {
             <WindowTitleBar name="message.exe" className="border-b border-black/15 px-3 py-2" />
             <div className="px-6 py-7 flex items-start gap-4">
               <span
-                className="flex-shrink-0 w-10 h-10 border border-black bg-bb-mint flex items-center justify-center text-black text-lg leading-none"
+                className="flex-shrink-0 w-10 h-10 border border-black bg-bb-mint flex items-center justify-center text-black text-body-lg leading-none"
                 aria-hidden="true"
               >
                 ✓
               </span>
               <div>
-                <h3 className="text-2xl md:text-3xl text-black mb-1.5">Message sent.</h3>
+                <h3 className="text-display-3 text-black mb-1.5">Message sent.</h3>
                 <p className="text-black/50">Thanks — we&rsquo;ll reply within 24 hours.</p>
               </div>
             </div>
@@ -108,7 +113,7 @@ const ContactCTA = () => {
               <button
                 type="button"
                 onClick={reset}
-                className="btn-phys border border-black px-7 py-2.5 text-xs uppercase tracking-widest text-black bg-white hover:bg-bb-blue"
+                className="btn-phys border border-black px-7 py-2.5 text-label uppercase tracking-label text-black bg-white hover:bg-bb-blue"
               >
                 OK
               </button>
@@ -125,13 +130,13 @@ const ContactCTA = () => {
             <WindowTitleBar name="message.exe" className="border-b border-black/15 px-3 py-2" />
             <div className="px-6 py-7 flex items-start gap-4">
               <span
-                className="flex-shrink-0 w-10 h-10 border border-black bg-bb-blue flex items-center justify-center text-black text-lg leading-none"
+                className="flex-shrink-0 w-10 h-10 border border-black bg-bb-blue flex items-center justify-center text-black text-body-lg leading-none"
                 aria-hidden="true"
               >
                 ✕
               </span>
               <div>
-                <h3 className="text-2xl md:text-3xl text-black mb-1.5">Not sent.</h3>
+                <h3 className="text-display-3 text-black mb-1.5">Not sent.</h3>
                 <p className="text-black/50">
                   Something went wrong — try again, or email us at <CopyEmail className="px-underline text-black" />.
                 </p>
@@ -141,7 +146,7 @@ const ContactCTA = () => {
               <button
                 type="button"
                 onClick={() => setStatus('idle')}
-                className="btn-phys border border-black px-7 py-2.5 text-xs uppercase tracking-widest text-black bg-white hover:bg-bb-blue"
+                className="btn-phys border border-black px-7 py-2.5 text-label uppercase tracking-label text-black bg-white hover:bg-bb-blue"
               >
                 Try again
               </button>
@@ -150,7 +155,7 @@ const ContactCTA = () => {
         ) : status === 'sending' ? (
           /* Self-driving stepped "transmitting" loader */
           <div className="max-w-md py-4" role="status" aria-live="polite">
-            <p className="font-mono text-[0.6rem] tracking-[0.3em] uppercase text-black/60 mb-3">
+            <p className="text-label tracking-label-wide uppercase text-black/60 mb-3">
               transmitting message…
             </p>
             <StepBar autoplay durationMs={1500} onComplete={onTransmitted} className="w-fit" />
@@ -177,7 +182,7 @@ const ContactCTA = () => {
                 <span className="px-corners" aria-hidden="true" />
                 <label
                   htmlFor="contact-name"
-                  className="block text-xs uppercase tracking-widest text-black/60 mb-3"
+                  className="block text-label uppercase tracking-label text-black/60 mb-3"
                 >
                   Name
                 </label>
@@ -189,7 +194,7 @@ const ContactCTA = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Your name"
-                  className="w-full bg-transparent text-black text-lg border-none outline-none placeholder:text-black/25"
+                  className="w-full bg-transparent text-black text-body-lg border-none outline-none placeholder:text-black/25"
                 />
               </div>
 
@@ -197,7 +202,7 @@ const ContactCTA = () => {
                 <span className="px-corners" aria-hidden="true" />
                 <label
                   htmlFor="contact-email"
-                  className="block text-xs uppercase tracking-widest text-black/60 mb-3"
+                  className="block text-label uppercase tracking-label text-black/60 mb-3"
                 >
                   Email
                 </label>
@@ -209,7 +214,7 @@ const ContactCTA = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@company.com"
-                  className="w-full bg-transparent text-black text-lg border-none outline-none placeholder:text-black/25"
+                  className="w-full bg-transparent text-black text-body-lg border-none outline-none placeholder:text-black/25"
                 />
               </div>
 
@@ -217,22 +222,22 @@ const ContactCTA = () => {
                 <span className="px-corners" aria-hidden="true" />
                 <label
                   htmlFor="contact-service"
-                  className="block text-xs uppercase tracking-widest text-black/60 mb-3"
+                  className="block text-label uppercase tracking-label text-black/60 mb-3"
                 >
-                  What are you interested in?
+                  Where do you need us?
                 </label>
                 <select
                   id="contact-service"
                   name="service"
                   value={formData.service}
                   onChange={handleChange}
-                  className="w-full bg-transparent text-black text-lg border-none outline-none appearance-none cursor-pointer"
+                  className="w-full bg-transparent text-black text-body-lg border-none outline-none appearance-none cursor-pointer"
                 >
                   <option value="">Select a service</option>
-                  <option value="blueprint">Blueprint — Strategy</option>
-                  <option value="studio">Studio — Production</option>
-                  <option value="connect">Connect — Creators</option>
-                  <option value="resonate">Resonate — Music</option>
+                  <option value="blueprint">Blueprint</option>
+                  <option value="studio">Studio</option>
+                  <option value="connect">Connect</option>
+                  <option value="resonate">Resonate</option>
                   <option value="other">Something else</option>
                 </select>
               </div>
@@ -244,9 +249,9 @@ const ContactCTA = () => {
                 <span className="px-corners" aria-hidden="true" />
                 <label
                   htmlFor="contact-message"
-                  className="block text-xs uppercase tracking-widest text-black/60 mb-3"
+                  className="block text-label uppercase tracking-label text-black/60 mb-3"
                 >
-                  Tell us about your project
+                  What are you working on?
                 </label>
                 <textarea
                   id="contact-message"
@@ -254,20 +259,23 @@ const ContactCTA = () => {
                   required
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="Brief description of what you're looking for..."
+                  placeholder="Your brand, what you need and when – as much or as little as you like."
                   rows={6}
-                  className="w-full bg-transparent text-black text-lg border-none outline-none resize-none placeholder:text-black/25"
+                  className="w-full bg-transparent text-black text-body-lg border-none outline-none resize-none placeholder:text-black/25"
                 />
               </div>
 
-              <div className="py-6 flex items-center justify-between">
-                <span className="text-sm text-black/60">
+              <div className="py-6 flex items-center justify-between gap-6">
+                <span className="text-body-sm text-black/60">
                   Or email us directly at{' '}
                   <CopyEmail className="px-underline text-black" />
+                  <span className="block text-black/45 mt-1.5">
+                    We aim to come back to you within 24 hours.
+                  </span>
                 </span>
                 <button
                   type="submit"
-                  className="btn-phys border border-black px-8 py-3 text-sm uppercase tracking-widest text-black bg-white hover:bg-bb-blue"
+                  className="btn-phys border border-black px-8 py-3 text-body-sm uppercase tracking-label text-black bg-white hover:bg-bb-blue"
                 >
                   Send
                 </button>
@@ -282,10 +290,10 @@ const ContactCTA = () => {
 
       {/* Subtle sign-off line */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
-        <span className="text-xs text-black/55 uppercase tracking-[0.3em]">
+        <span className="text-label text-black/55 uppercase tracking-label-wide">
           Bad Brain Media
         </span>
-        <span className="text-xs text-black/55">
+        <span className="text-label text-black/55">
           London
         </span>
       </div>

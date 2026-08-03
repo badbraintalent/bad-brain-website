@@ -43,22 +43,32 @@ export default function NotFound() {
         style={{
           boxShadow: winShadow(),
           animation: 'win-open 220ms steps(4) both',
+          // The 404 is sized against this window, not the viewport — see below.
+          containerType: 'inline-size',
         }}
       >
         <WindowTitleBar name="error.exe" className="border-b border-black/15 px-3 py-2" />
 
         {/* Body */}
         <div className="px-6 sm:px-8 py-8">
-          <p className="font-mono text-[0.6rem] tracking-[0.3em] uppercase text-black/40 mb-4">
+          <p className="text-label tracking-label-wide uppercase text-black/40 mb-4">
             ✕ fatal exception
           </p>
-          <h1 className="uppercase text-black leading-[0.85] mb-5" style={{ fontSize: 'clamp(4.5rem, 16vw, 9rem)' }}>
+          {/* `text-hero` is viewport-relative (13vw), but this window is a fixed
+              512px — so the numerals overran the box at every desktop width. Sized
+              in `cqw` against the window instead: the display face sets ~3.08× its
+              font-size wide, so 27cqw keeps "404" inside the body's padding at any
+              window width. */}
+          <h1
+            className="uppercase text-black leading-hero mb-5"
+            style={{ fontSize: 'clamp(2.5rem, 27cqw, 8.5rem)' }}
+          >
             404
           </h1>
-          <p className="text-black/70 leading-relaxed mb-2" style={{ maxWidth: '32rem' }}>
+          <p className="text-black/70 text-body-md mb-2 max-w-[32rem]">
             The page you requested has stopped responding, or never existed in the first place.
           </p>
-          <p className="font-mono text-[0.65rem] tracking-[0.15em] text-black/40 mb-8">
+          <p className="text-label tracking-label text-black/40 mb-8">
             0x00000194&nbsp;&nbsp;PAGE_NOT_FOUND
           </p>
 
@@ -66,11 +76,11 @@ export default function NotFound() {
           <div className="flex items-center gap-5 flex-wrap">
             <Link
               href="/"
-              className="btn-phys inline-block border border-black px-7 py-3 text-xs uppercase tracking-widest text-black bg-white hover:bg-bb-blue"
+              className="btn-phys inline-block border border-black px-7 py-3 text-label uppercase tracking-label text-black bg-white hover:bg-bb-blue"
             >
               ← Return home
             </Link>
-            <span className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-black/40">
+            <span className="text-label tracking-label uppercase text-black/40">
               or press any key
             </span>
           </div>

@@ -124,28 +124,23 @@ const SocialShowcase = () => {
   return (
     <section
       ref={sectionRef}
-      className="social-showcase-section bg-white text-black py-20 border-y border-black/10"
+      className="social-showcase-section bg-white text-black py-12 md:py-20 border-y border-black/10"
     >
       <div className="social-showcase-grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
           {/* Left Column - CTA */}
           <div className="space-y-8">
-            <h2 className="social-text-1 text-4xl sm:text-5xl lg:text-6xl">
-              Hey, we&apos;re<br />Bad Brain.
+            <h2 className="social-text-1 text-display-2">
+              The thinking<br />and the making.
             </h2>
-            <p className="social-text-2 text-2xl text-black max-w-sm">
-              Hey, we&apos;re Bad Brain. We&apos;re a specialist agency built for the creator economy.
-            </p>
-
-            {/* Body copy */}
-            <p className="social-text-3 text-base text-black/60 max-w-sm">
-              Bad Brain helps brands, agencies and creators work smarter in a space where strategy, storytelling and scale all need to align.
+            <p className="social-text-2 text-body-lg text-black max-w-sm">
+              We&apos;re a specialist agency for brands, creators and artists. Four connected services for the entertainment era of social.
             </p>
 
             {/* Arrow CTA button */}
             {/* <div className="social-text-4">
-              <div className="w-16 h-16 rounded-full border-2 border-gray-400 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full border-2 border-bb-grey flex items-center justify-center">
                 <svg className="w-6 h-6 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>

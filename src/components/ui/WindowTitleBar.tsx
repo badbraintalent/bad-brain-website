@@ -37,7 +37,7 @@ const WindowTitleBar = ({ name, onClose, closeLabel = 'Close', className = '' }:
       <span className={`${SQUARE} bg-bb-mint`} aria-hidden="true" />
       <span className={SQUARE} aria-hidden="true" />
     </span>
-    <span className="font-mono text-[0.55rem] tracking-[0.15em] text-black/40 lowercase">
+    <span className="text-label tracking-label text-black/40 lowercase">
       {name}
     </span>
   </div>
