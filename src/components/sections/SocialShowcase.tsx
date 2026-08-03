@@ -81,21 +81,31 @@ const VideoSlotColumn = ({
               loop
               playsInline
               preload="none"
-              className="slot-video absolute inset-0 h-full object-cover"
+              className="slot-video absolute inset-0 z-0 h-full object-cover"
             />
-            {/* Deliberately NOT loading="lazy". Tiles sit inside the slot
-                machine's 500px overflow window on an animated track, so most
-                of them are parked outside the viewport at load and never trip
-                the lazy threshold — the frame simply never painted on them.
-                It is only two shared files across all 24 tiles, so they cost
-                one download each and then come from cache. */}
+            {/* Two things keep this frame visible, and both are load-bearing.
+
+                No loading="lazy": tiles sit inside the slot machine's 500px
+                overflow window on an animated track, so most are parked out of
+                view at load and never trip the lazy threshold — the frame
+                simply never painted on them. It is only two shared files across
+                all 24 tiles, so they cost one download each, then cache.
+
+                translateZ(0) + z-10: Safari promotes a *playing* <video> to a
+                hardware-composited layer that draws above non-composited
+                siblings, ignoring paint order — so the frame vanished on every
+                tile whose reel had started, leaving it only on ones still
+                showing a poster. Chrome composites in DOM order and never
+                showed this. Forcing the overlay onto its own layer puts it back
+                above the video on both. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={slotFrames[i % slotFrames.length]}
               alt=""
               aria-hidden="true"
               decoding="async"
-              className="absolute inset-0 w-full h-full pointer-events-none"
+              className="absolute inset-0 z-10 w-full h-full pointer-events-none"
+              style={{ transform: 'translateZ(0)' }}
             />
           </div>
         ))}
