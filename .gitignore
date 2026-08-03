@@ -13,9 +13,8 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/.next-verify/
+# next.js — the glob also covers scratch dist dirs (NEXT_DIST_DIR, see next.config.ts)
+/.next*/
 /out/
 
 # production

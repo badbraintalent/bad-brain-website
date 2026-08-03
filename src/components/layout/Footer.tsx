@@ -40,9 +40,13 @@ const Footer = () => {
                 className="boop h-12 w-auto invert"
               />
             </div>
+            {/* Client-supplied footer line (Bad Brain copy document). Replaced
+                the previously written "We're a specialist agency built for the
+                creator economy / We consult. We produce content. We develop
+                talent." on 2026-08-03. */}
             <p className="text-body-md mb-6 text-white/70 max-w-lg">
-              We&apos;re a specialist agency built for the creator economy.
-              <br />We consult. We produce content. We develop talent.
+              The social entertainment agency.
+              <br />For brands, creators and artists.
             </p>
             <div>
               <CopyEmail className="px-underline text-body-sm text-bb-mint hover:text-bb-blue" />

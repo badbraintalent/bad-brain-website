@@ -14,7 +14,10 @@ const eslintConfig = [
   {
     ignores: [
       "node_modules/**",
-      ".next/**",
+      // Glob covers the scratch dist dirs too (NEXT_DIST_DIR=.next-verify and
+      // friends, see next.config.ts) — linting generated build output buries
+      // real findings under thousands of bogus ones.
+      ".next*/**",
       "out/**",
       "build/**",
       "next-env.d.ts",
