@@ -183,8 +183,20 @@ html {
      top, black behind the footer when you pull up at the bottom. The 50%
      seam never shows — <body> carries its own opaque background over the
      whole document box, so the canvas is only ever visible in the overscroll
-     region beyond it. */
-  background: linear-gradient(to bottom, #fff 0 50%, #000 50% 100%);
+     region beyond it.
+
+     no-repeat is load-bearing. The root's background positioning area is the
+     document box, and the default `repeat` tiles the gradient past the end of
+     it — so the bottom overscroll showed the *next tile's* white rather than
+     the black it ends on (white in Safari, dark grey in Firefox, since the two
+     extend the canvas differently). The image is oversized by a viewport at
+     each end and offset up to match, so both overscroll regions land inside
+     it, and background-color backstops anything past that. */
+  background-color: #000;
+  background-image: linear-gradient(to bottom, #fff 0 50%, #000 50% 100%);
+  background-repeat: no-repeat;
+  background-position: 0 -100vh;
+  background-size: 100% calc(100% + 200vh);
 }
 
 /* Cursor pixel trail (spawned by PixelTrail.tsx) */
