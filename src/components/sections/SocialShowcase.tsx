@@ -2,6 +2,13 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
+/* Tiles render ~112px wide on a phone (the grid collapses to one column, so
+   three slot columns share the full width) and ~200px at lg. The 540x960
+   masters are 5x oversized for the former, which dominated load on mobile —
+   ~9.8MB across the six reels. A 270x480 rendition suffices below lg and
+   costs ~3.1MB. Mirrors the hero's -960 split. */
+const mobileRendition = (src: string) => src.replace(/\.mp4$/, '-480.mp4')
+
 // Real creator reels — transcoded to web mp4 (+ poster). Cycled through the
 // slot columns; each column shows a 4-up window into this set, doubled for the loop.
 const creatorVideos = [
@@ -28,12 +35,15 @@ const VideoSlotColumn = ({
   startIndex = 0,
   count = 4,
   running,
+  narrow,
 }: {
   direction: 'up' | 'down'
   startOffset?: string
   startIndex?: number
   count?: number
   running: boolean
+  /** null until measured client-side, so SSR can't bake in the wrong rendition. */
+  narrow: boolean | null
 }) => {
   const animClass = direction === 'up' ? 'slot-scroll-up' : 'slot-scroll-down'
 
@@ -59,7 +69,13 @@ const VideoSlotColumn = ({
           <div key={i} className="slot-video-wrapper relative aspect-[9/16]">
             <video
               data-slot-video
-              src={item.src}
+              src={
+                narrow === null
+                  ? undefined
+                  : narrow
+                    ? mobileRendition(item.src)
+                    : item.src
+              }
               poster={item.poster}
               muted
               loop
@@ -67,12 +83,17 @@ const VideoSlotColumn = ({
               preload="none"
               className="slot-video absolute inset-0 h-full object-cover"
             />
+            {/* Deliberately NOT loading="lazy". Tiles sit inside the slot
+                machine's 500px overflow window on an animated track, so most
+                of them are parked outside the viewport at load and never trip
+                the lazy threshold — the frame simply never painted on them.
+                It is only two shared files across all 24 tiles, so they cost
+                one download each and then come from cache. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={slotFrames[i % slotFrames.length]}
               alt=""
               aria-hidden="true"
-              loading="lazy"
               decoding="async"
               className="absolute inset-0 w-full h-full pointer-events-none"
             />
@@ -86,6 +107,13 @@ const VideoSlotColumn = ({
 const SocialShowcase = () => {
   const sectionRef = useRef<HTMLElement>(null)
   const [inView, setInView] = useState(false)
+  // null until measured, so the server can't commit to a rendition; the
+  // poster holds each tile in the meantime.
+  const [narrow, setNarrow] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    setNarrow(window.matchMedia('(max-width: 1024px)').matches)
+  }, [])
 
   // Pause the slot animations while the section is off-screen so the
   // compositor isn't animating three ~2700px layers for the whole session.
@@ -103,9 +131,12 @@ const SocialShowcase = () => {
   // Play each reel only while its tile is actually visible (the observer
   // clips through the slot-machine overflow, so tiles cycled out of the
   // 500px window pause too) — mirrors the connect roster pattern.
+  // Re-run once the rendition is known: on the first pass the tiles have no
+  // src at all, so play() would be a no-op and any tile already on screen
+  // would sit on its poster forever.
   useEffect(() => {
     const section = sectionRef.current
-    if (!section) return
+    if (!section || narrow === null) return
     const videos = section.querySelectorAll<HTMLVideoElement>('video[data-slot-video]')
     const io = new IntersectionObserver(
       (entries) => {
@@ -119,7 +150,7 @@ const SocialShowcase = () => {
     )
     videos.forEach((v) => io.observe(v))
     return () => io.disconnect()
-  }, [])
+  }, [narrow])
 
   return (
     <section
@@ -151,9 +182,9 @@ const SocialShowcase = () => {
           {/* Right Column - Slot Machine Video Columns */}
           <div className="social-slots slot-machine">
             {/* Each column starts at a different vertical offset */}
-            <VideoSlotColumn direction="up" startOffset="0%" startIndex={0} running={inView} />
-            <VideoSlotColumn direction="down" startOffset="-16%" startIndex={2} running={inView} />
-            <VideoSlotColumn direction="up" startOffset="-33%" startIndex={4} running={inView} />
+            <VideoSlotColumn direction="up" startOffset="0%" startIndex={0} running={inView} narrow={narrow} />
+            <VideoSlotColumn direction="down" startOffset="-16%" startIndex={2} running={inView} narrow={narrow} />
+            <VideoSlotColumn direction="up" startOffset="-33%" startIndex={4} running={inView} narrow={narrow} />
           </div>
 
           {/* Original social post grid (preserved for reference)
