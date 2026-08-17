@@ -9,13 +9,12 @@ import { enter } from '@/lib/y2k'
 
 const EQ_BARS = 16
 
-/* Coverage-grid cell height. Taller than the old 220px service labels — the
-   client's items are full sentences, not two-word tags. */
+/* Coverage-grid cell height. Taller than the old 220px service labels — these
+   items are full sentences, not two-word tags. */
 const CELL_H = '250px'
 
-/* Icon set migrated from the retired "Inside-out. Outside-in." approach block —
-   the client's copy replaces that framework, but the three marks map cleanly onto
-   Make / Move / Grow. Drawn edge-to-edge in a 40×40 box. */
+/* Three marks, mapped onto Make / Move / Grow. Drawn edge-to-edge in a 40×40
+   box. */
 const iconProps = {
   'aria-hidden': true,
   viewBox: '0 0 40 40',
@@ -57,7 +56,7 @@ const GrowIcon = () => (
   </svg>
 )
 
-/* "What Resonate covers", client copy v1.3 — three clusters, eight items. The
+/* "What Resonate covers" — three clusters, eight items. The
    grid below is 4×3: each row opens with the cluster's black header cell, so the
    groups stay legible while every item keeps its brand-animation hover cell. */
 const coverage = [
@@ -96,8 +95,7 @@ const itemOffsets = coverage.map((_, gi) =>
   coverage.slice(0, gi).reduce((n, g) => n + g.items.length, 0)
 )
 
-// Official brand animations (compressed) — the only place these replace
-// client placeholder videos, per client direction.
+// Official brand animations (compressed).
 const videoSrcs = [
   '/videos/brand/spin-land.mp4',
   '/videos/brand/dvd-land.mp4',
@@ -278,20 +276,19 @@ export default function ResonatePage() {
             <img
               src="/images/brand/marks/Resonate.svg"
               alt="Bad Brain Resonate"
-              className="order-first sm:order-last min-w-0 w-[9rem] lg:w-[11rem] h-auto sm:mb-6"
+              className="order-first sm:order-last min-w-0 w-[11rem] lg:w-[15rem] h-auto sm:mb-6"
               style={enter('0.5s')}
             />
           </div>
 
-          {/* Bottom row: copy in a clean white inset card (right-aligned on large) */}
           <div
-            className="flex flex-col lg:flex-row lg:items-start lg:justify-end gap-6"
+            className="flex flex-col lg:flex-row lg:items-start gap-6"
             style={enter('0.62s')}
           >
             <div className="bg-white border border-black/15 max-w-[28rem]">
               <WindowTitleBar name="resonate.exe" className="border-b border-black/15 px-3 py-2" />
               <div className="p-6">
-                <p className="text-black/60 text-body-sm mb-6">
+                <p className="text-black/70 text-body-sm mb-6">
                   Build your audience with{' '}
                   <strong className="text-black font-semibold">as much care as you make your music</strong>.
                   We value connection over likes, fans over followers. Resonate helps you create strategies
@@ -303,7 +300,7 @@ export default function ResonatePage() {
                     e.preventDefault()
                     document.querySelector('#now')?.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="inline-flex items-center gap-2 text-black/60 text-label tracking-label uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
+                  className="inline-flex items-center gap-2 text-black/70 text-label tracking-label uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
                 >
                   <span className="border-b border-black/20 pb-0.5 group-hover:border-bb-blue transition-colors">
                     Learn more
@@ -313,18 +310,18 @@ export default function ResonatePage() {
               </div>
               {/* Player strip — live EQ + elapsed counter */}
               <div className="flex items-center gap-3 border-t border-black/15 px-3 py-2">
-                <span aria-hidden="true" className="text-black/60 text-label leading-none">▶</span>
+                <span aria-hidden="true" className="text-black/70 text-label leading-none">▶</span>
                 <span aria-hidden="true" className="flex items-end gap-[3px] h-3 flex-1">
                   {Array.from({ length: EQ_BARS }, (_, i) => (
                     <span
                       key={i}
                       ref={(el) => { eqRefs.current[i] = el }}
-                      className="w-1 h-full bg-bb-blue origin-bottom"
+                      className="w-1 h-full bg-bb-mint origin-bottom"
                       style={{ transform: 'scaleY(0.2)' }}
                     />
                   ))}
                 </span>
-                <span className="text-label tracking-label text-black/40">
+                <span className="text-label tracking-label text-black/60">
                   <span ref={elapsedRef}>00:00</span> / 00:16
                 </span>
               </div>
@@ -365,7 +362,7 @@ export default function ResonatePage() {
             >
               discover new music<br className="hidden sm:inline" /> via the platform.
             </p>
-            <p className="text-label tracking-label-wide uppercase text-black/40 mt-5">
+            <p className="text-label tracking-label-wide uppercase text-black/60 mt-5">
               Source: TikTok
             </p>
           </div>
@@ -377,15 +374,15 @@ export default function ResonatePage() {
         {/* Body copy — two columns, under a "Right now" overline */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-10 md:py-16">
           <div>
-            <span className="text-label tracking-label-wide uppercase text-black/40 block mb-8">
+            <span className="text-label tracking-label-wide uppercase text-black/60 block mb-8">
               Right now
             </span>
-            <div className="resonate-problem-copy grid lg:grid-cols-2 gap-8 lg:gap-20 text-black/60 text-body-md">
+            <div className="resonate-problem-copy grid lg:grid-cols-2 gap-8 lg:gap-20 text-black/70 text-body-md">
               <div>
                 <p>
                   <strong className="text-black font-semibold">Discovery has never been more open.</strong>{' '}
-                  Anyone scrolling today could be hearing you for the first time, whether you&apos;re
-                  signed or not.
+                  Anyone online today could be hearing your music for the first time, whether
+                  you&apos;re a signed artist or not.
                 </p>
               </div>
               <div>
@@ -393,7 +390,7 @@ export default function ResonatePage() {
                   The part nobody tells you:{' '}
                   <strong className="text-black font-semibold">not everybody is a potential fan</strong>.
                   Being discovered by the right audience takes a plan, not just a phone and good
-                  intentions. We build it with you — starting with your sound, goals and whole story.
+                  intentions. We build it with you — starting with your story, your sound, and your goals.
                 </p>
               </div>
             </div>
@@ -410,8 +407,11 @@ export default function ResonatePage() {
 
         {/* Section label */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="resonate-experience-header flex items-baseline justify-between py-6 border-b border-black/10">
-            <span className="text-label tracking-label-wide uppercase text-black/40">Experience</span>
+          <div className="resonate-experience-header flex items-baseline justify-between gap-4 py-6 border-b border-black/10">
+            <span className="text-label tracking-label-wide uppercase text-black/60">Experience</span>
+            <span className="text-label tracking-label uppercase text-black/60 text-right">
+              Jen Long, Resonate Co-Founder
+            </span>
           </div>
         </div>
 
@@ -442,16 +442,16 @@ export default function ResonatePage() {
               <blockquote
                 className="text-black text-body-lg"
               >
-                <span aria-hidden="true" className="text-bb-blue">&ldquo;</span>There&apos;s nothing
+                <span aria-hidden="true" className="text-bb-grey">&ldquo;</span>There&apos;s nothing
                 better than watching an artist you believed in early start to connect with lots of
                 people who get it. That feeling never gets old.
-                <span aria-hidden="true" className="text-bb-blue">&rdquo;</span>
+                <span aria-hidden="true" className="text-bb-grey">&rdquo;</span>
               </blockquote>
-              <div className="h-px w-10 bg-bb-blue mt-8 mb-6" />
+              <div className="h-px w-10 bg-black mt-8 mb-6" />
               <p className="font-display text-black text-display-4">
                 Jen Long
               </p>
-              <p className="text-label tracking-label uppercase text-black/40 mt-2">
+              <p className="text-label tracking-label uppercase text-black/60 mt-2">
                 Resonate Co-Founder
               </p>
             </div>
@@ -461,6 +461,9 @@ export default function ResonatePage() {
 
         {/* Career strands — the mockup's three columns */}
         <div className="resonate-bio max-w-7xl mx-auto px-6 lg:px-8 py-10 md:py-16 border-t border-black/10">
+          <p className="text-label tracking-label uppercase text-black/60 mb-8">
+            Jen&rsquo;s track record
+          </p>
           <div className="grid md:grid-cols-3 gap-10 lg:gap-16">
             {[
               ['Broadcasting', <>
@@ -479,11 +482,11 @@ export default function ResonatePage() {
               </>],
             ].map(([label, body], i) => (
               <div key={label as string}>
-                <div className="h-px w-10 bg-bb-blue mb-6" />
-                <span className="text-label tracking-label-wide uppercase text-bb-blue block mb-4">
+                <div className="h-px w-10 bg-black mb-6" />
+                <span className="text-label tracking-label-wide uppercase text-black block mb-4">
                   {String(i + 1).padStart(2, '0')} / {label}
                 </span>
-                <p className="text-black/60 text-body-md">{body}</p>
+                <p className="text-black/70 text-body-md">{body}</p>
               </div>
             ))}
           </div>
@@ -497,7 +500,7 @@ export default function ResonatePage() {
                   next to 14px text share a baseline but not a cap-height, so the
                   label reads as sitting low until its cap block is re-centred. */}
               <span
-                className="text-label tracking-label-wide uppercase text-black/40 shrink-0"
+                className="text-label tracking-label-wide uppercase text-black/60 shrink-0"
                 style={{ transform: 'translateY(-2px)' }}
               >
                 Previous clients
@@ -529,7 +532,7 @@ export default function ResonatePage() {
             >
               What Resonate covers
             </h2>
-            <span className="text-label tracking-label uppercase text-black/40">
+            <span className="text-label tracking-label uppercase text-black/60">
               For artists, labels and managers
             </span>
           </div>
@@ -635,9 +638,8 @@ export default function ResonatePage() {
 
           {/* Grow has one fewer item than the other two clusters, so the 4×3 is
               one short. Held as black negative space rather than a hole at the
-              corner. FLAGGED WITH THE CLIENT for a ninth item — see
-              docs/CLIENT-QUESTIONS.md. (The wordmark was tried here first and
-              inverts to an illegible blob on black.) */}
+              corner. (The wordmark was tried here and inverts to an illegible
+              blob on black.) */}
           <div
             aria-hidden="true"
             className="relative bg-black overflow-hidden border-r border-b border-black/15"

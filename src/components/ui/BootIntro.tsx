@@ -84,7 +84,7 @@ const BootIntro = () => {
       {/* Stepped loading bar */}
       <StepBar step={step} className="mb-4" />
 
-      <p className="text-label tracking-label-wide uppercase text-black/50">
+      <p className="text-label tracking-label-wide uppercase text-black/60">
         loading bad brain v2.0{'.'.repeat((step % 3) + 1)}
       </p>
     </div>

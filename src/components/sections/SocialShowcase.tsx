@@ -20,14 +20,9 @@ const creatorVideos = [
   { src: '/videos/creators/sam-kojo.mp4', poster: '/videos/creators/sam-kojo.jpg' },
 ]
 
-// Brand pixel frames (transparent centres, dither at the edges) — alternated
-// per tile for subtle variation, per guidelines pg 31.
-const slotFrames = [
-  // 800px variants — tiles render ~184px wide, so the 1404×2500 originals
-  // cost ~12× the decode memory for no visible gain
-  '/images/brand/frames/Image_frame_9x16_1_800.png',
-  '/images/brand/frames/Image_frame_9x16_2_800.png',
-]
+/* Tiles carry no dither overlay — the frames fought the footage, and dropping
+   them also retired a Safari compositing workaround for keeping an overlay above
+   a playing <video>. */
 
 const VideoSlotColumn = ({
   direction,
@@ -82,30 +77,6 @@ const VideoSlotColumn = ({
               playsInline
               preload="none"
               className="slot-video absolute inset-0 z-0 h-full object-cover"
-            />
-            {/* Two things keep this frame visible, and both are load-bearing.
-
-                No loading="lazy": tiles sit inside the slot machine's 500px
-                overflow window on an animated track, so most are parked out of
-                view at load and never trip the lazy threshold — the frame
-                simply never painted on them. It is only two shared files across
-                all 24 tiles, so they cost one download each, then cache.
-
-                translateZ(0) + z-10: Safari promotes a *playing* <video> to a
-                hardware-composited layer that draws above non-composited
-                siblings, ignoring paint order — so the frame vanished on every
-                tile whose reel had started, leaving it only on ones still
-                showing a poster. Chrome composites in DOM order and never
-                showed this. Forcing the overlay onto its own layer puts it back
-                above the video on both. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={slotFrames[i % slotFrames.length]}
-              alt=""
-              aria-hidden="true"
-              decoding="async"
-              className="absolute inset-0 z-10 w-full h-full pointer-events-none"
-              style={{ transform: 'translateZ(0)' }}
             />
           </div>
         ))}
@@ -172,8 +143,15 @@ const SocialShowcase = () => {
 
           {/* Left Column - CTA */}
           <div className="space-y-8">
-            <h2 className="social-text-1 text-display-2">
-              The thinking<br />and the making.
+            {/* "entertainment" is 13 characters of Gravity Wide — at the stock
+                display-2 ceiling (60px) it measures 684px against a 576px
+                column, so it ran into the reel grid. Below lg the column is
+                full-width and display-2 fits, so only lg+ is re-scaled: the
+                column is narrowest at exactly 1024px (448px, where the two-up
+                grid starts) and widens to 576px, hence the vw-tracking clamp
+                rather than a flat size. */}
+            <h2 className="social-text-1 text-display-2 lg:text-[clamp(2.25rem,calc(4.2vw_-_9px),3rem)]">
+              The social<br />entertainment<br />agency.
             </h2>
             <p className="social-text-2 text-body-lg text-black max-w-sm">
               We&apos;re a specialist agency for brands, creators and artists. Four connected services for the entertainment era of social.

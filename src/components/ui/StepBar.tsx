@@ -14,7 +14,9 @@ type StepBarProps = {
   className?: string
 }
 
-const segColor = (i: number) => (i % 2 === 0 ? 'var(--bb-blue)' : 'var(--bb-mint)')
+/* Single tone. The bar is a progress readout, but it's decoration at rest, so
+   it follows the ornament rule (mint) rather than the interaction rule (cyan). */
+const segColor = () => 'var(--bb-mint)'
 
 /* Shared stepped "12fps" segment bar — used by BootIntro (controlled via `step`)
    and the contact form's sending state (`autoplay`, which drives its own timing
@@ -52,7 +54,7 @@ const StepBar = ({
         <span
           key={i}
           className="block w-4 h-4"
-          style={{ background: i < filled ? segColor(i) : 'transparent' }}
+          style={{ background: i < filled ? segColor() : 'transparent' }}
         />
       ))}
     </div>

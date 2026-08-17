@@ -10,6 +10,14 @@ const hash = (x: number, y: number, seed: number) => {
   return ((h ^ (h >>> 15)) >>> 0) / 4294967295
 }
 
+/* The dither is monochrome — one tone per surface, never mixed, and never cyan.
+   Grey is the default ornament on white; mint is for surfaces that want
+   emphasis. */
+const TONES = {
+  grey: 'var(--bb-grey)',
+  mint: 'var(--bb-mint)',
+} as const
+
 /* Hover-animated brand pixel frame: dither concentrated in a 3-cell edge
    band, each pixel fading in at its own offset (0–900ms) on group-hover.
    Parent must be `relative` and carry the `group` class. */
@@ -18,17 +26,22 @@ const PixelDitherFrame = ({
   rows = 32,
   seed = 1,
   visible = false,
+  tone = 'grey',
 }: {
   cols?: number
   rows?: number
   seed?: number
   /** Always show the pixels (default: only on parent group-hover). */
   visible?: boolean
+  /** Which single tone the field renders in. */
+  tone?: keyof typeof TONES
 }) => {
   // Memoized: hosts re-render on unrelated hover state, and the grid loop is
   // thousands of hash calls per pass.
+  // Colour is applied at render rather than baked into each cell, so changing
+  // tone doesn't rebuild the grid.
   const pixels = useMemo(() => {
-    const out: { x: number; y: number; c: string; d: number }[] = []
+    const out: { x: number; y: number; d: number }[] = []
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         const v = Math.min(x, y, cols - 1 - x, rows - 1 - y)
@@ -37,7 +50,6 @@ const PixelDitherFrame = ({
         out.push({
           x,
           y,
-          c: hash(x + 97, y + 31, seed) < 0.5 ? 'var(--bb-blue)' : 'var(--bb-mint)',
           d: Math.round(hash(x + 13, y + 57, seed) * 900),
         })
       }
@@ -56,7 +68,7 @@ const PixelDitherFrame = ({
             top: `${(p.y / rows) * 100}%`,
             width: `${100 / cols}%`,
             height: `${100 / rows}%`,
-            background: p.c,
+            background: TONES[tone],
             transition: 'opacity 120ms linear',
             transitionDelay: `${p.d}ms`,
           }}

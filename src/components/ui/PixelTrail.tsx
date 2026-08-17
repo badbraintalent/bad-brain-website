@@ -2,7 +2,10 @@
 
 import { useEffect } from 'react'
 
-const COLORS = ['var(--bb-blue)', 'var(--bb-mint)', 'var(--bb-blue)']
+/* Monochrome, in line with the rest of the dither system. Mint rather than
+   grey: the trail crosses both white and grey-panel sections, and a grey
+   trail vanishes on the grey ones. */
+const TRAIL_COLOR = 'var(--bb-mint)'
 const MIN_DIST = 36 // px of travel between spawns — keeps it sparse
 const MAX_PIXELS = 24
 
@@ -16,7 +19,6 @@ const PixelTrail = () => {
 
     let lastX = -100
     let lastY = -100
-    let count = 0
     let live = 0
 
     const onMove = (e: PointerEvent) => {
@@ -32,7 +34,7 @@ const PixelTrail = () => {
       // snap to an 8px grid so the trail feels rasterised
       px.style.left = `${Math.round((e.clientX - 3) / 8) * 8}px`
       px.style.top = `${Math.round((e.clientY + 14) / 8) * 8}px`
-      px.style.background = COLORS[count++ % COLORS.length]
+      px.style.background = TRAIL_COLOR
       document.body.appendChild(px)
       live++
       // animationend never fires if the animation is cancelled (e.g. the

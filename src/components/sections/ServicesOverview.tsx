@@ -30,21 +30,6 @@ const services = [
   },
   {
     num: '02',
-    name: 'Studio',
-    logo: '/images/brand/marks/Studio.svg',
-    category: 'For brands',
-    desc: (
-      <>
-        Turn your organic social strategy into content that holds attention
-        rather than chases it. <strong>Creator content. Live production.
-        Watch Time over View Count.</strong>
-      </>
-    ),
-    cta: 'Make it with us',
-    href: '/services/studio',
-  },
-  {
-    num: '03',
     name: 'Connect',
     logo: '/images/brand/marks/Connect.svg',
     category: 'For brands and creators',
@@ -61,6 +46,21 @@ const services = [
     ),
     cta: 'Get connected',
     href: '/services/connect',
+  },
+  {
+    num: '03',
+    name: 'Studio',
+    logo: '/images/brand/marks/Studio.svg',
+    category: 'For brands',
+    desc: (
+      <>
+        Turn your organic social strategy into content that holds attention
+        rather than chases it. <strong>Creator content. Live production.
+        Watch Time over View Count.</strong>
+      </>
+    ),
+    cta: 'Make it with us',
+    href: '/services/studio',
   },
   {
     num: '04',
@@ -104,9 +104,12 @@ const ServicesOverview = () => {
             // Alternate slide direction per row
             const dir = i % 2 === 0 ? 'slide-from-left' : 'slide-from-right'
             // Each row uses its own view() timeline so it tracks independently.
-            // entry 0% = row off-screen below viewport; contain 35% = row in
-            // lower third of screen — animation completes before reading position
-            // so content is settled by the time the eye reaches it.
+            // The range runs entry 0% → entry 100%: the row finishes sliding in
+            // the moment it is fully on screen. It previously ran to
+            // `contain 35%`, which requires the row to be wholly in view *plus*
+            // 35% of the containment window further — so row 04 was still
+            // settling after row 01 had scrolled off, and the tiles never
+            // locked into a line until you were past them.
             return (
               <div
                 key={name}
@@ -116,13 +119,17 @@ const ServicesOverview = () => {
                   animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
                   animationFillMode: 'both',
                   animationTimeline: 'view()',
-                  animationRange: 'entry 0% contain 35%',
+                  animationRange: 'entry 0% entry 100%',
                 } as ScrollCSS}
               >
-                <div className="py-8 sm:py-12 grid grid-cols-[2.75rem_1fr] sm:grid-cols-[2.75rem_1fr_auto] gap-x-6 gap-y-0 items-start">
+                {/* The number's gutter is narrow on mobile — 44px of column plus a
+                    24px gap took a sixth of a 375px screen away from the copy. */}
+                <div className="py-8 sm:py-12 grid grid-cols-[1.5rem_1fr] gap-x-3 sm:grid-cols-[2.75rem_1fr_auto] sm:gap-x-6 gap-y-0 items-start">
 
-                  {/* Row number — faint, tabular so the column stays aligned */}
-                  <span className="text-black/55 pt-px text-label tabular-nums leading-[1.8rem]">
+                  {/* Row number — faint, tabular so the column stays aligned.
+                      `.service-row-num` sits its cap top on the wordmark's; see
+                      globals.css for the derivation. */}
+                  <span className="service-row-num text-black/70 text-label tabular-nums">
                     {num}
                   </span>
 
@@ -144,12 +151,12 @@ const ServicesOverview = () => {
                     </div>
 
                     {/* Category */}
-                    <p className="text-black/40 uppercase text-label tracking-label">
+                    <p className="text-black/60 uppercase text-label tracking-label">
                       {category}
                     </p>
 
                     {/* Description */}
-                    <p className="text-black/60 text-body-sm max-w-[42rem]">
+                    <p className="text-black/70 text-body-sm max-w-[42rem]">
                       {desc}
                     </p>
 

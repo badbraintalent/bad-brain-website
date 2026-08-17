@@ -14,12 +14,12 @@ type NavItem = {
 }
 
 const navItems: NavItem[] = [
-  { name: 'About', href: '/', accent: 'var(--bb-blue)' },
+  { name: 'About', href: '/', accent: 'var(--bb-grey)' },
   { name: 'Blueprint', href: '/services/blueprint', accent: 'var(--bb-mint)', field: '/images/brand/halftones/blueprint_16x9_blue.png' },
-  { name: 'Studio', href: '/services/studio', accent: 'var(--bb-blue)', field: '/images/brand/halftones/studio_16x9_blue.png' },
   { name: 'Connect', href: '/services/connect', accent: 'var(--bb-grey)', field: '/images/brand/halftones/connect_16x9_blue.png' },
-  { name: 'Resonate', href: '/services/resonate', accent: 'var(--bb-mint)', field: '/images/brand/halftones/resonate_16x9_blue.png' },
-  { name: 'Contact', href: '/contact', accent: 'var(--bb-blue)' },
+  { name: 'Studio', href: '/services/studio', accent: 'var(--bb-mint)', field: '/images/brand/halftones/studio_16x9_blue.png' },
+  { name: 'Resonate', href: '/services/resonate', accent: 'var(--bb-grey)', field: '/images/brand/halftones/resonate_16x9_blue.png' },
+  { name: 'Contact', href: '/contact', accent: 'var(--bb-mint)' },
 ]
 
 const DEFAULT_FIELD = '/images/brand/halftones/bb_16x9_blue.png'

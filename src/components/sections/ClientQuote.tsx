@@ -6,7 +6,7 @@ const ClientQuote = ({
   quote,
   attribution,
   /** Accent colour utility for the quote mark + rule, e.g. "text-bb-mint" */
-  accent = 'text-bb-blue',
+  accent = 'text-bb-mint',
 }: {
   quote: string
   /** e.g. "Sarah Twyman, Head of Consumer — Smoking Gun" */

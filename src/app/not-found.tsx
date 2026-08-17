@@ -31,7 +31,7 @@ export default function NotFound() {
   }, [router])
 
   return (
-    <main className="relative min-h-screen bg-bb-blue text-black flex items-center justify-center overflow-hidden px-4">
+    <main className="relative min-h-screen bg-bb-grey text-black flex items-center justify-center overflow-hidden px-4">
       {/* CRT scanlines */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none" style={scanlines()} />
       {/* Pixel-field strips top + bottom (echoes the boot screen) */}
@@ -51,7 +51,7 @@ export default function NotFound() {
 
         {/* Body */}
         <div className="px-6 sm:px-8 py-8">
-          <p className="text-label tracking-label-wide uppercase text-black/40 mb-4">
+          <p className="text-label tracking-label-wide uppercase text-black/60 mb-4">
             ✕ fatal exception
           </p>
           {/* `text-hero` is viewport-relative (13vw), but this window is a fixed
@@ -68,7 +68,7 @@ export default function NotFound() {
           <p className="text-black/70 text-body-md mb-2 max-w-[32rem]">
             The page you requested has stopped responding, or never existed in the first place.
           </p>
-          <p className="text-label tracking-label text-black/40 mb-8">
+          <p className="text-label tracking-label text-black/60 mb-8">
             0x00000194&nbsp;&nbsp;PAGE_NOT_FOUND
           </p>
 
@@ -80,7 +80,7 @@ export default function NotFound() {
             >
               ← Return home
             </Link>
-            <span className="text-label tracking-label uppercase text-black/40">
+            <span className="text-label tracking-label uppercase text-black/60">
               or press any key
             </span>
           </div>

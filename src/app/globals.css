@@ -73,9 +73,13 @@
   --text-label: clamp(0.625rem, 0.75vw, 0.6875rem);
   --text-label--line-height: 1;
 
-  /* Two tracking steps for caps labels — nothing in between. */
-  --tracking-label: 0.2em;
-  --tracking-label-wide: 0.32em;
+  /* Two tracking steps for caps labels — nothing in between. Halved from
+     0.2/0.32em: brand type is tracked negatively throughout, and these caps
+     are the most spacing-conspicuous type on the site. Note there is no
+     precedent for positive-tracked caps in the brand guidelines — this is a
+     site device, not brand type, so it stays restrained. */
+  --tracking-label: 0.1em;
+  --tracking-label-wide: 0.16em;
 
   /* Display line-heights. Brand line-height is 100% (guidelines pg 13);
      these two tighter steps are the established site conventions for
@@ -91,19 +95,32 @@
 /* Base type lives in @layer base so Tailwind font-* utilities can
    still override it (unlayered rules would beat the utilities layer). */
 @layer base {
-  /* DELIBERATE DEVIATION: the guidelines set line-height 100% and
-     letter-spacing -4% for body copy as well as headlines (pg 13). Both
-     are set for 30–45px deck body text; at 16–18px on screen they close
-     up the counters and collide the ascenders/descenders of wrapped
-     paragraphs. Body is relaxed to 1.4 / -2%; headlines keep 1 / -4%. */
+  /* Letter-spacing is -4% for body as well as headlines (guidelines pg 13).
+     An earlier -2% here was a legibility deviation for 16–18px; the spec
+     value was then measured rather than assumed.
+
+     Method: guidelines pg 14 carries the "We help brands" specimen twice at
+     the SAME size — once in Gravity Wide, once in Walter Neue. Two ink widths
+     (939.572pt / 550.041pt from `pdftotext -bbox`) and two glyph-advance sums
+     give two equations in font-size and tracking. Solving them recovers
+     79.925pt — i.e. 80pt, a round value, which validates the model — and
+     -4.385%. The extra -0.385% over spec is kerning, which raw advance sums
+     don't model and browsers apply by default. So -4% + kerning it is.
+
+     Line-height stays at 1.4 rather than the spec's 100%: that one is a
+     standing deviation, set for 30–45px deck type and unreadable for wrapped
+     web paragraphs. */
   body {
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
     line-height: 1.4;
+    /* Explicit rather than relying on `auto` — the measurement above only
+       reconciles with the PDF if kern pairs are applied. */
+    font-kerning: normal;
     font-synthesis: none;
   }
 
@@ -121,8 +138,22 @@
 }
 
 /* Sticker title — inverted fill + outside stroke at 30% of type size
-   (guidelines pg 14/36). -webkit-text-stroke is centred so the width is
-   doubled, then the fill paints over the inner half.
+   (guidelines pg 14/36).
+
+   ROUND JOINS, NOT MITRED. This used to be `-webkit-text-stroke`, which
+   mitres every corner and offers no `stroke-linejoin` control. At a 30%
+   stroke that is ruinous: a mitre spike runs (w/2)/sin(θ/2) past the
+   vertex, so the ~20° apexes of Gravity Wide's W threw ~100px spurs off
+   a 60px headline. The guidelines lockup on pg 14 is round-joined, so
+   the stroke is rebuilt as
+   the union of 48 offset copies of the glyphs on a circle of radius
+   `--title-stroke` (text-shadow paints behind the fill, so no
+   `paint-order` needed). That union IS the glyph dilated by a disc:
+   round joins and caps, everywhere, by construction.
+
+   48 steps is the quality knob. Deviation from a true circle is
+   r·(1−cos(π/48)) ≈ 0.04px at the 60px cap — invisible, and the offsets
+   are in `em` so it holds at every clamp() size.
 
    The leading is part of the treatment, not a per-use choice: the stroke
    paints 0.3em beyond the glyph on every side, so two stacked lines need
@@ -132,10 +163,63 @@
    on the display scale than plain headlines, for the same reason. */
 .title-outline {
   --title-stroke: 0.3em;
+  --title-stroke-colour: #000;
+  /* Sub-pixel feather. 48 opaque copies stack their antialiased edges into
+     one hard, faintly stepped contour; a feather of ~0.7px at the 60px cap
+     hands the edge back its antialiasing. Too small to soften the shape,
+     enough to stop the outline reading as ragged on a 2x display. */
+  --title-stroke-feather: 0.012em;
   color: #fff;
-  -webkit-text-stroke: calc(var(--title-stroke) * 2) #000;
-  paint-order: stroke fill;
   line-height: 1.55;
+  text-shadow:
+    calc(var(--title-stroke) * 1.0000) 0 var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.9914) calc(var(--title-stroke) * 0.1305) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.9659) calc(var(--title-stroke) * 0.2588) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.9239) calc(var(--title-stroke) * 0.3827) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.8660) calc(var(--title-stroke) * 0.5000) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.7934) calc(var(--title-stroke) * 0.6088) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.7071) calc(var(--title-stroke) * 0.7071) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.6088) calc(var(--title-stroke) * 0.7934) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.5000) calc(var(--title-stroke) * 0.8660) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.3827) calc(var(--title-stroke) * 0.9239) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.2588) calc(var(--title-stroke) * 0.9659) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.1305) calc(var(--title-stroke) * 0.9914) var(--title-stroke-feather) var(--title-stroke-colour),
+    0 calc(var(--title-stroke) * 1.0000) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.1305) calc(var(--title-stroke) * 0.9914) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.2588) calc(var(--title-stroke) * 0.9659) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.3827) calc(var(--title-stroke) * 0.9239) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.5000) calc(var(--title-stroke) * 0.8660) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.6088) calc(var(--title-stroke) * 0.7934) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.7071) calc(var(--title-stroke) * 0.7071) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.7934) calc(var(--title-stroke) * 0.6088) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.8660) calc(var(--title-stroke) * 0.5000) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.9239) calc(var(--title-stroke) * 0.3827) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.9659) calc(var(--title-stroke) * 0.2588) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.9914) calc(var(--title-stroke) * 0.1305) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -1.0000) 0 var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.9914) calc(var(--title-stroke) * -0.1305) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.9659) calc(var(--title-stroke) * -0.2588) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.9239) calc(var(--title-stroke) * -0.3827) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.8660) calc(var(--title-stroke) * -0.5000) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.7934) calc(var(--title-stroke) * -0.6088) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.7071) calc(var(--title-stroke) * -0.7071) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.6088) calc(var(--title-stroke) * -0.7934) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.5000) calc(var(--title-stroke) * -0.8660) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.3827) calc(var(--title-stroke) * -0.9239) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.2588) calc(var(--title-stroke) * -0.9659) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * -0.1305) calc(var(--title-stroke) * -0.9914) var(--title-stroke-feather) var(--title-stroke-colour),
+    0 calc(var(--title-stroke) * -1.0000) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.1305) calc(var(--title-stroke) * -0.9914) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.2588) calc(var(--title-stroke) * -0.9659) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.3827) calc(var(--title-stroke) * -0.9239) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.5000) calc(var(--title-stroke) * -0.8660) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.6088) calc(var(--title-stroke) * -0.7934) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.7071) calc(var(--title-stroke) * -0.7071) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.7934) calc(var(--title-stroke) * -0.6088) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.8660) calc(var(--title-stroke) * -0.5000) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.9239) calc(var(--title-stroke) * -0.3827) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.9659) calc(var(--title-stroke) * -0.2588) var(--title-stroke-feather) var(--title-stroke-colour),
+    calc(var(--title-stroke) * 0.9914) calc(var(--title-stroke) * -0.1305) var(--title-stroke-feather) var(--title-stroke-colour);
 }
 
 /* ============================================================
@@ -386,6 +470,41 @@ html {
 .nav-item-row-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Row number in the homepage service tiles.
+
+   The number sits in its own grid column, so nothing aligns it to the wordmark
+   beside it — and that wordmark is vertically centred against a taller
+   logomark, which pushes it down while the number stays at the row top. This
+   puts the number's cap top on the wordmark's cap top instead:
+
+     offset = (logomark height − wordmark line box) / 2   ← the centring push
+            + wordmark cap inset − number cap inset       ← two different faces
+
+   Cap inset is the drop from the top of a line box (at line-height 1) to the
+   top of the capitals: (1 − (ascent + descent)) / 2 + (ascent − cap). Measured
+   off the two webfonts — Gravity 0.0898em, Walter 0.15em. Every term scales
+   with its own type token, so this holds all the way across the clamp rather
+   than at one width.
+
+   Aligning on cap height, not on ink: "Blueprint" and "Studio" carry ascenders
+   taller than their caps, "Connect" doesn't, so matching ink tops would set the
+   four rows differently from each other. */
+.service-row-num {
+  line-height: 1;
+  padding-top: calc(
+    (3rem - var(--text-display-3)) / 2 + var(--text-display-3) * 0.0898 - var(--text-label) * 0.15
+  );
+}
+
+/* The logomark steps up to h-16 at md, so the centring push grows with it. */
+@media (min-width: 48rem) {
+  .service-row-num {
+    padding-top: calc(
+      (4rem - var(--text-display-3)) / 2 + var(--text-display-3) * 0.0898 - var(--text-label) * 0.15
+    );
+  }
 }
 
 /* Fill text gradient — starts unfilled, fills on hover */

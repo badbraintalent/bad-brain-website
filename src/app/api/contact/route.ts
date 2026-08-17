@@ -6,7 +6,7 @@ import { CONTACT_EMAIL } from '@/lib/site'
    Env (see .env.example):
    - RESEND_API_KEY — required in production; without it the route runs in
      "simulated" mode so the form flow stays testable in dev.
-   - CONTACT_FROM — verified sender. Until the client's domain is verified in
+   - CONTACT_FROM — verified sender. Until the site's own domain is verified in
      Resend, the onboarding sender below is the only address Resend accepts.
    - CONTACT_TO — where submissions land. */
 
@@ -45,8 +45,8 @@ export async function POST(request: Request) {
   if (!apiKey) {
     // No credentials: pretend-send so the UI flow stays exercisable. The form
     // still tells the visitor "Message sent", so log the WHOLE submission —
-    // message body included — or a genuine enquiry sent during review is gone
-    // for good. Recoverable from the deployment logs until Resend is live.
+    // message body included — or a genuine enquiry sent before Resend is live
+    // is gone for good. Recoverable from the deployment logs until then.
     // Remove this once RESEND_API_KEY is set; real sends must not log bodies.
     console.warn(
       '[contact] RESEND_API_KEY not set — simulating send. Full submission:\n' +

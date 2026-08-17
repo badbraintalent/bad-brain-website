@@ -2,11 +2,17 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-/* ── Data ─ real client quotes, supplied 2026-07-28 ── */
+/* ── Data ─ real quotes ── */
 
+/* The featured quote is the one with a named person, a role and a logo; the
+   grid quotes below are text-only. The featured companies and the logo crawl
+   are kept as disjoint sets. */
 const heroTestimonial = {
-  quote: "The true mark of an exceptional operator is the ability to turn complexity into clarity. Creator marketing is layered, fast-moving and nuanced — yet Bad Brain makes it feel structured and actionable.",
+  quote: "Bad Brain thinks differently. Sharp creative, sharp strategy, with an expert’s read on the creator economy that shows in everything they make. Their focus on Social Entertainment is exactly the kind of thinking we want in the room.",
+  name: 'Aaron Brooks',
+  role: 'CEO',
   company: 'Vamp',
+  logo: '/images/clients/vamp.svg',
 }
 
 const gridTestimonials = [
@@ -67,10 +73,10 @@ const Testimonials = () => {
   }
 
   return (
-    <section className="testimonials-section bg-bb-blue text-black border-t border-black">
+    <section className="testimonials-section bg-bb-grey text-black border-t border-black">
       <div className="testimonials-grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-32">
 
-        {/* ── Heading — sticker title over the flat blue block ── */}
+        {/* ── Heading — sticker title over the flat grey block ── */}
         <div className="testimonial-heading mb-10 md:mb-28">
           <h2
             className="title-outline text-right text-display-2"
@@ -96,9 +102,21 @@ We didn&rsquo;t<br />write these.
             >
               {heroTestimonial.quote}
             </p>
-            <footer className="mt-8 md:mt-10 flex items-center gap-3 justify-end text-black/60">
+            {/* Logo carries the company name, so it isn't repeated in type —
+                the attribution beside it is the person, which is what the
+                supplied text adds. */}
+            <footer className="mt-8 md:mt-10 flex items-center gap-4 md:gap-5 justify-end text-black/70">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={heroTestimonial.logo}
+                alt={heroTestimonial.company}
+                draggable={false}
+                className="h-8 md:h-10 w-auto shrink-0"
+              />
+              <span aria-hidden="true" className="w-px h-8 md:h-10 bg-black/25 shrink-0" />
               <div className="text-body-sm">
-                <span className="text-black font-medium">{heroTestimonial.company}</span>
+                <span className="text-black font-medium block">{heroTestimonial.name}</span>
+                <span className="text-black/60">{heroTestimonial.role}</span>
               </div>
             </footer>
           </blockquote>
@@ -117,7 +135,7 @@ We didn&rsquo;t<br />write these.
                 <p className="text-black/80 text-body-md mb-8">
                   &ldquo;{t.quote}&rdquo;
                 </p>
-                <footer className="flex items-center gap-3 text-black/60">
+                <footer className="flex items-center gap-3 text-black/70">
                   <div className="text-label">
                     <span className="text-black font-medium block">{t.company}</span>
                   </div>

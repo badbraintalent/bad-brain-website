@@ -12,10 +12,16 @@ const POSTER = "/videos/brand/hero-main-poster.jpg";
 // Full horizontal logo (mark + wordmark), all-white knockout art.
 const HERO_LOGO = "/images/brand/logo/BB_Horizontal.svg";
 
-/* The signature lockup: desktop bottom-right, mobile bottom-left. The img
-   itself carries mix-blend-difference so the white logo inverts whatever film
-   sits behind it and stays legible on any frame (counters read as the video).
-   Keeping the blend off the full-viewport wrapper limits the region the
+/* The signature lockup, centred and shown whole. It used to run oversized and
+   bottom-anchored (135vw, translateY(41%)), which cropped the mark.
+
+   Sized by width with a max-height ceiling: on a replaced element with
+   height:auto, max-height scales the width down proportionally, so the lockup
+   fits both a wide desktop and a short landscape phone without cropping.
+
+   The img itself carries mix-blend-difference so the white logo inverts whatever
+   film sits behind it and stays legible on any frame (counters read as the
+   video). Keeping the blend off the full-viewport wrapper limits the region the
    compositor has to re-blend every video frame to the logo's own bounds.
 
    Hidden at load — the film carries its own Bad Brain branding, so the lockup
@@ -32,24 +38,24 @@ function HeroLogo({ clipRef }: { clipRef: RefObject<HTMLDivElement | null> }) {
       className="absolute inset-0 pointer-events-none"
       style={{ zIndex: 4, clipPath: "inset(100% 0 0 0)" }}
     >
-      <div className="hidden md:flex absolute inset-0 items-end justify-end" style={{ paddingRight: "2.5vw" }}>
+      <div className="hidden md:flex absolute inset-0 items-center justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={HERO_LOGO}
           alt="Bad Brain"
           draggable={false}
           className="mix-blend-difference"
-          style={{ width: "min(135vw, 2288px)", height: "auto", display: "block", transform: "translateY(41%)" }}
+          style={{ width: "min(72vw, 1000px)", height: "auto", maxHeight: "60vh", display: "block" }}
         />
       </div>
-      <div className="flex md:hidden absolute inset-0 items-end justify-start" style={{ paddingLeft: "2vw" }}>
+      <div className="flex md:hidden absolute inset-0 items-center justify-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={HERO_LOGO}
           alt="Bad Brain"
           draggable={false}
           className="mix-blend-difference"
-          style={{ width: "min(125vw, 52rem)", height: "auto", display: "block", transform: "translateY(41%)" }}
+          style={{ width: "min(86vw, 30rem)", height: "auto", maxHeight: "50vh", display: "block" }}
         />
       </div>
     </div>

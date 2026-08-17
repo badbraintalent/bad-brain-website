@@ -13,7 +13,7 @@ const ServiceCTA = ({
   bg: string
   /** Button hover text colour utility matching the block, e.g. "hover:text-bb-mint" */
   hoverText: string
-  /** Button label — defaults to "Get in touch" where the client supplied none */
+  /** Button label — defaults to "Get in touch" where no copy is supplied */
   cta?: string
 }) => (
   <section className={`${bg} py-12 md:py-20 border-t border-black`}>

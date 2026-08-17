@@ -16,8 +16,14 @@ type ScrollCSS = CSSProperties & {
 }
 
 /* The FFF funnel — three descending tiers, widest at the top. Widths are
-   Tailwind classes rather than inline styles so they can collapse to full-width
-   on mobile (inline styles carry no breakpoints). */
+   Tailwind classes rather than inline styles so the ramp can differ by
+   breakpoint (inline styles carry no breakpoints).
+
+   Two ramps, not one. The desktop 100/78/56 taper was previously `lg:`-only,
+   so below 1024px the tiers were all full-width and the funnel read as three
+   flat bars. Narrow screens now get a gentler 100/88/76 — the full desktop
+   taper would leave ~170px of text column at 375px, where this one leaves
+   ~250px. */
 const funnel = [
   {
     name: 'Faces',
@@ -29,20 +35,17 @@ const funnel = [
     name: 'Formats',
     sub: 'Organic social',
     action: 'Keep them watching.',
-    width: 'w-full lg:w-[78%]',
+    width: 'w-[88%] lg:w-[78%]',
   },
   {
     name: 'Function',
     sub: 'UGC × media',
     action: 'Inspire the sale.',
-    width: 'w-full lg:w-[56%]',
+    width: 'w-[76%] lg:w-[56%]',
   },
 ]
 
-/* What Blueprint covers, grouped by the FFF tier it sits under (client copy
-   v1.2). Replaces the earlier flat six-service list — the two services that
-   copy dropped (cross-functional frameworks, creative ideation & execution)
-   were retired with it. */
+/* What Blueprint covers, grouped by the FFF tier it sits under. */
 const framework = [
   {
     label: 'Faces',
@@ -273,15 +276,21 @@ export default function BlueprintPage() {
               className="px-6 sm:px-10 lg:px-16 py-8 pb-10 lg:pb-hero-bleed"
               style={{ ...enter('0.70s') }}
             >
-              <p className="text-black/60 text-body-sm mb-6 max-w-[30rem]">
-                Most brands have social scattered across teams &ndash; creator campaigns over here,
-                organic content there, paid media somewhere else. Coordinated in theory.
-                Fragmented in practice. Blueprint connects the dots &ndash; and the world follows.
+              {/* The measure was 30rem, which split "creator campaigns / over here"
+                  mid-phrase. At 36rem the sentence's three clauses land one per line and
+                  both key phrases stay whole. The nowrap spans hold them together below
+                  that width too; each is ~200px, so they fit even a 320px column. */}
+              <p className="text-black/70 text-body-sm mb-6 max-w-[36rem]">
+                Most brands have social scattered across teams &ndash;{' '}
+                <span className="whitespace-nowrap">creator campaigns over here</span>,
+                organic content there, <span className="whitespace-nowrap">paid media somewhere else</span>.
+                Coordinated in theory. Fragmented in practice. Blueprint connects the dots
+                &ndash; and the world follows.
               </p>
               <a
                 href="#framework"
                 onClick={(e) => { e.preventDefault(); document.querySelector('#framework')?.scrollIntoView({ behavior: 'smooth' }) }}
-                className="inline-flex items-center gap-2 text-black/60 text-label tracking-label uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
+                className="inline-flex items-center gap-2 text-black/70 text-label tracking-label uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
               >
                 <span className="border-b border-black/20 pb-0.5 group-hover:border-bb-blue transition-colors">
                   See the framework
@@ -303,7 +312,7 @@ export default function BlueprintPage() {
           className="h-px"
           style={{ background: 'repeating-linear-gradient(90deg, rgba(0,0,0,0.28) 0 10px, transparent 10px 16px)' }}
         />
-        <span className="absolute left-0 top-0 h-0.5 w-24 bg-bb-blue" />
+        <span className="absolute left-0 top-0 h-0.5 w-24 bg-black" />
       </div>
 
       {/* ── Problem section — editorial, typographic ── */}
@@ -318,11 +327,11 @@ export default function BlueprintPage() {
               >
 Your audience wants a world to belong to.
               </p>
-              <div className="mt-8 h-1.5 w-16 bg-bb-blue" />
+              <div className="mt-8 h-1.5 w-16 bg-black" />
             </div>
 
             {/* Body copy — right column */}
-            <div className="consulting-problem-copy space-y-5 text-black/60 text-body-md pt-2">
+            <div className="consulting-problem-copy space-y-5 text-black/70 text-body-md pt-2">
               <p>
                 Faces, Formats and Function is how you build one.
               </p>
@@ -396,8 +405,8 @@ Your audience wants a world to belong to.
 
           {/* Section header */}
           <div className="consulting-services-header flex items-baseline justify-between mb-8 md:mb-12 pb-6 border-b border-black/20">
-            <span className="text-label tracking-label-wide uppercase text-black/60">What Blueprint Covers</span>
-            <span className="text-label tracking-label uppercase text-black/40">For Brands, Agencies and Networks</span>
+            <span className="text-label tracking-label-wide uppercase text-black/70">What Blueprint Covers</span>
+            <span className="text-label tracking-label uppercase text-black/60">For Brands, Agencies and Networks</span>
           </div>
 
           {/* Service groups — one block per FFF tier */}
@@ -413,19 +422,19 @@ Your audience wants a world to belong to.
                 <div key={label} className={`consulting-service-${i + 1} py-8`}>
                   {/* 1 — Tier header: heaviest note, echoes the funnel above.
                          Blue rule matches Connect's phase headers. */}
-                  <div className="flex items-baseline gap-4 pb-2 border-b-2 border-bb-blue">
+                  <div className="flex items-baseline gap-4 pb-2 border-b-2 border-black">
                     <h3
                       className="text-black uppercase text-display-3"
                     >
                       {label}
                     </h3>
-                    <span className="text-label tracking-label uppercase text-black/40">
+                    <span className="text-label tracking-label uppercase text-black/60">
                       {category}
                     </span>
                   </div>
 
                   {/* 2 — Caption: the tier's promise, set apart in italic */}
-                  <p className="text-body-md text-black/45 italic mt-5 mb-2 max-w-2xl">{intro}</p>
+                  <p className="text-body-md text-black/60 italic mt-5 mb-2 max-w-2xl">{intro}</p>
 
                   {/* 3/4 — Items: bold lead clause, lighter detail clause */}
                   {items.map(({ lead, detail }, j) => (
@@ -438,7 +447,7 @@ Your audience wants a world to belong to.
                       </span>
                       <p className="text-body-md max-w-3xl">
                         <span className="text-black font-semibold">{lead}</span>
-                        <span className="text-black/55"> — {detail}</span>
+                        <span className="text-black/70"> — {detail}</span>
                       </p>
                     </div>
                   ))}

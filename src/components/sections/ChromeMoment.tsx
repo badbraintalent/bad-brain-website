@@ -3,11 +3,12 @@
 import React from 'react'
 import { scanlines } from '@/lib/y2k'
 
-/* Deck page 12 as a section: full-bleed chrome horn-hand on CRT blue,
-   with a scanline overlay. The one pure-blue full-bleed beat on the site. */
+/* Full-bleed chrome horn-hand with a scanline overlay. The ground is only
+   visible while the film loads — grey rather than cyan, since cyan is
+   interaction-only. The film itself is cyan-graded, so the section reads blue. */
 const ChromeMoment = () => {
   return (
-    <section className="relative bg-bb-blue overflow-hidden border-t border-black" style={{ height: '70vh', minHeight: '420px' }}>
+    <section className="relative bg-bb-grey overflow-hidden border-t border-black" style={{ height: '70vh', minHeight: '420px' }}>
       <video
         src="/videos/brand/spin-full-land.mp4"
         autoPlay

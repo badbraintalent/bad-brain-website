@@ -29,10 +29,10 @@ const WindowTitleBar = ({ name, onClose, closeLabel = 'Close', className = '' }:
             e.stopPropagation()
             onClose()
           }}
-          className={`${SQUARE} bg-bb-blue hover:bg-black cursor-pointer`}
+          className={`${SQUARE} bg-black hover:bg-bb-mint cursor-pointer`}
         />
       ) : (
-        <span className={`${SQUARE} bg-bb-blue`} aria-hidden="true" />
+        <span className={`${SQUARE} bg-black`} aria-hidden="true" />
       )}
       <span className={`${SQUARE} bg-bb-mint`} aria-hidden="true" />
       <span className={SQUARE} aria-hidden="true" />

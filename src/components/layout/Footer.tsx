@@ -6,8 +6,8 @@ import CopyEmail from '@/components/ui/CopyEmail'
 
 const serviceLinks = [
   { name: 'Blueprint', href: '/services/blueprint' },
-  { name: 'Studio', href: '/services/studio' },
   { name: 'Connect', href: '/services/connect' },
+  { name: 'Studio', href: '/services/studio' },
   { name: 'Resonate', href: '/services/resonate' },
 ]
 
@@ -40,10 +40,6 @@ const Footer = () => {
                 className="boop h-12 w-auto invert"
               />
             </div>
-            {/* Client-supplied footer line (Bad Brain copy document). Replaced
-                the previously written "We're a specialist agency built for the
-                creator economy / We consult. We produce content. We develop
-                talent." on 2026-08-03. */}
             <p className="text-body-md mb-6 text-white/70 max-w-lg">
               The social entertainment agency.
               <br />For brands, creators and artists.

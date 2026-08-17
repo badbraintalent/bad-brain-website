@@ -9,35 +9,67 @@ import StudioParadigm from '@/components/sections/StudioParadigm'
 import { useEffect, useRef, useState } from 'react'
 import { enter, scanlines } from '@/lib/y2k'
 
-// Hero "channel" clips are the client placeholder reels — the only video on this
-// page. Pending client sign-off on whether these three are the clips he wants
-// (see docs/CLIENT-QUESTIONS.md).
-const pillars = [
+// Hero "channel" clips are the only video on this page. Running order is
+// Quickfire, then Conceptual, then Conversation.
+//
+// The rack is driven off how many channels carry a clip. The layout, the
+// auto-cycle, the preload chain and the channel affordances all follow from
+// that count: at three it's a rack, at two a pair, at one a single monitor with
+// the switching UI gone. A channel with an empty `video` reads as off air and
+// keeps its copy — set the path to bring it on air, don't delete the channel.
+//
+// `focus` is the vertical framing, and belongs to the clip rather than the slot:
+// the monitor is ~2.4:1, so a 9:16 clip shows only 23% of its frame height and a
+// centred crop lands on the chest. Lance is framed at 22% because his face sits
+// between 19% and 41% of frame height throughout. Clips whose subject is already
+// mid-frame take the default.
+type Channel = {
+  num: string
+  type: string
+  label: string
+  desc: string
+  /** Empty means the channel is off air — see the note above. */
+  video?: string
+  focus?: string
+}
+
+const CHANNELS: Channel[] = [
   {
     num: '01',
     type: 'Quickfire',
     label: 'Fast & Reactive Content',
     desc: 'Snappy content to grab genuine reactions — vox-pops, quick reviews, on-the-spot takes.',
-    video: '/videos/643f326f-6cc3-4911-84db-07e530191a93.mp4',
+    // Same footage the Connect page ships as lance-480; this is the 540×960
+    // rendition, since the rack slot is ~647px wide.
+    video: '/videos/creators/lance.mp4',
+    focus: '22%',
   },
   {
     num: '02',
-    type: 'Conversation',
-    label: 'Structured & Hosted Formats',
-    desc: 'Proper conversations that earn real attention — interviews, podcasts, Q&As.',
-    video: '/videos/1c23b88f-b7be-4ccc-a43b-3b7a0b6cf8b3.mp4',
-  },
-  {
-    num: '03',
     type: 'Conceptual',
     label: 'Art-Directed & Elevated Content',
     desc: 'Fully produced pieces — editorial shoots, social series, micro-dramas, campaign work.',
-    video: '/videos/ee1173e5-69c8-4dd1-b1e4-ee9b5bbd0b0a.mp4',
+    // Opaque filename is the asset's own — left as-is so it stays traceable.
+    video: '/videos/643f326f-6cc3-4911-84db-07e530191a93.mp4',
+  },
+  {
+    num: '03',
+    type: 'Conversation',
+    label: 'Structured & Hosted Formats',
+    desc: 'Proper conversations that earn real attention — interviews, podcasts, Q&As.',
+    // Empty — see the note above.
+    video: undefined,
   },
 ]
 
+const pillars = CHANNELS.filter((c): c is Channel & { video: string } => Boolean(c.video))
+
 const CHANNEL_DWELL_MS = 5000
 const pad2 = (n: number) => String(n).padStart(2, '0')
+
+// With a single clip there is nothing to switch between, so the cycling and the
+// hover-to-select affordance are both suppressed rather than left dead.
+const multiChannel = pillars.length > 1
 
 const steps = [
   {
@@ -102,8 +134,9 @@ export default function StudioPage() {
     })
 
     // The CSS reduced-motion guard can't reach JS-driven motion — gate the
-    // auto-cycle here (hover still switches channels).
-    const cycle = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // auto-cycle here (hover still switches channels). A one-channel rack has
+    // nothing to cycle to, so it doesn't run a timer at all.
+    const cycle = !multiChannel || window.matchMedia('(prefers-reduced-motion: reduce)').matches
       ? null
       : setInterval(() => {
           if (!hoveredRef.current && inViewRef.current) {
@@ -154,8 +187,13 @@ export default function StudioPage() {
         }}
       >
         {/* ── Production pillar cells + copy column (fills the hero) ── */}
+        {/* On mobile the rack is a horizontal band, so channel count decides how
+            tall it needs to be: three monitors side by side each keep a portrait
+            frame at 32%, but a lone monitor spans the full width and would be a
+            hard letterbox crop of a 9:16 clip — it gets more height instead.
+            Both class strings are written out in full so Tailwind can see them. */}
         <div
-          className="grid min-h-0 grid-cols-1 grid-rows-[32%_1fr] lg:grid-cols-[45%_1fr] lg:grid-rows-none w-full max-w-[1800px] mx-auto"
+          className={`grid min-h-0 grid-cols-1 ${multiChannel ? 'grid-rows-[32%_1fr]' : 'grid-rows-[46%_1fr]'} lg:grid-cols-[45%_1fr] lg:grid-rows-none w-full max-w-[1800px] mx-auto`}
         >
           {/* Left — monitor rack: three channels, one live at a time. On mobile
               the rack turns on its side (top band, monitors side by side) so each
@@ -176,9 +214,9 @@ export default function StudioPage() {
               return (
                 <div
                   key={p.num}
-                  className="relative flex-1 min-h-0 min-w-0 overflow-hidden border-r last:border-r-0 lg:border-r-0 lg:border-b lg:last:border-b-0 border-white/15 cursor-pointer"
+                  className={`relative flex-1 min-h-0 min-w-0 overflow-hidden border-r last:border-r-0 lg:border-r-0 lg:border-b lg:last:border-b-0 border-white/15${multiChannel ? ' cursor-pointer' : ''}`}
                   style={enter(`${0.18 + i * 0.1}s`, '0.9s')}
-                  onMouseEnter={() => setActive(i)}
+                  onMouseEnter={multiChannel ? () => setActive(i) : undefined}
                 >
                   <video
                     ref={(el) => { videoRefs.current[i] = el }}
@@ -195,6 +233,7 @@ export default function StudioPage() {
                     onError={() => markReady(i)}
                     className="absolute inset-0 w-full h-full object-cover"
                     style={{
+                      objectPosition: `center ${p.focus ?? 'center'}`,
                       filter: live ? 'none' : 'grayscale(1) brightness(0.4)',
                       transition: 'filter 0.25s steps(3, end)',
                     }}
@@ -236,7 +275,7 @@ export default function StudioPage() {
                     {live ? (
                       <span className="flex items-center gap-1.5">
                         <span
-                          className="w-2 h-2 bg-bb-blue shrink-0"
+                          className="w-2 h-2 bg-black shrink-0"
                           style={{ animation: 'rec-blink 1s steps(1) infinite' }}
                         />
                         <span className="hidden sm:inline">REC</span>{' '}
@@ -308,8 +347,8 @@ export default function StudioPage() {
               className="px-6 sm:px-10 lg:px-16 py-8 pb-10 lg:pb-hero-bleed"
               style={{ ...enter('0.65s') }}
             >
-              <p className="text-black/60 text-body-sm mb-6 max-w-[30rem]">
-                The feed&apos;s a{' '}
+              <p className="text-black/70 text-body-sm mb-6 max-w-[30rem]">
+                The social feed&apos;s a{' '}
                 <strong className="text-black font-semibold">TV channel now.</strong> People skip the
                 ads, and keep hopping until something&apos;s worth stopping for.{' '}
                 <strong className="text-black font-semibold">Studio brings you that content.</strong>
@@ -320,7 +359,7 @@ export default function StudioPage() {
                   e.preventDefault()
                   document.querySelector('#approach')?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className="inline-flex items-center gap-2 text-black/60 text-label tracking-label uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
+                className="inline-flex items-center gap-2 text-black/70 text-label tracking-label uppercase hover:text-bb-blue transition-colors group w-fit cursor-pointer"
               >
                 <span className="border-b border-black/20 pb-0.5 group-hover:border-bb-blue transition-colors">
                   See what&apos;s on
@@ -345,11 +384,11 @@ export default function StudioPage() {
               >
                 It&apos;s about watch time over view count.
               </p>
-              <div className="mt-8 h-1.5 w-16 bg-bb-blue" />
+              <div className="mt-8 h-1.5 w-16 bg-black" />
             </div>
 
             {/* Body copy */}
-            <div className="studio-problem-copy space-y-5 text-black/60 text-body-md pt-2">
+            <div className="studio-problem-copy space-y-5 text-black/70 text-body-md pt-2">
               <p>
                 <strong className="text-black font-semibold">Views are easy</strong> — ride a trend and
                 you&apos;ll get a spike, but that attention was never really about your brand.{' '}
@@ -384,15 +423,15 @@ export default function StudioPage() {
 
           <div className="studio-approach-header">
             <div className="flex items-baseline justify-between pb-6 border-b border-black/20">
-              <span className="text-label tracking-label-wide uppercase text-black/60">What Studio Makes</span>
-              <span className="text-label tracking-label uppercase text-black/40">For Brands</span>
+              <span className="text-label tracking-label-wide uppercase text-black/70">What Studio Makes</span>
+              <span className="text-label tracking-label uppercase text-black/60">For Brands</span>
             </div>
             {/* Two columns from md up, breaking at "It lives". Same grid
                 template as the format rows below: the first half runs flush
                 left across the number + title columns (lining up with the
                 section header and the 01/02/03 rail), the second sits over the
                 description column. */}
-            <div className="mt-8 mb-8 md:mb-12 grid grid-cols-[2.5rem_1fr] md:grid-cols-[2.5rem_1fr_1fr] gap-x-8 gap-y-4 text-black/60 text-body-md">
+            <div className="mt-8 mb-8 md:mb-12 grid grid-cols-[2.5rem_1fr] md:grid-cols-[2.5rem_1fr_1fr] gap-x-8 gap-y-4 text-black/70 text-body-md">
               <p className="col-start-1 col-span-2">
                 <strong className="text-black font-semibold">
                   Build your own content formats and media IP.
@@ -413,10 +452,10 @@ export default function StudioPage() {
                 className={`studio-approach-${i + 1} grid grid-cols-[2.5rem_1fr] md:grid-cols-[2.5rem_1fr_1fr] gap-x-8 gap-y-2 py-8 border-b border-black/10 group`}
               >
                 <span className="text-black/40 text-label tabular-nums pt-[0.2em]">{s.num}</span>
-                <h3 className="text-body-sm font-bold text-black uppercase tracking-label group-hover:text-black/50 transition-colors duration-300">
+                <h3 className="text-body-sm font-bold text-black uppercase tracking-label group-hover:text-black/60 transition-colors duration-300">
                   {s.title}
                 </h3>
-                <p className="text-body-sm text-black/50 col-start-2 md:col-start-3 mt-1 md:mt-0">
+                <p className="text-body-sm text-black/60 col-start-2 md:col-start-3 mt-1 md:mt-0">
                   {s.desc}
                 </p>
               </div>
@@ -430,14 +469,14 @@ export default function StudioPage() {
       <ClientQuote
         quote="Bad Brain’s understanding of the ever evolving social and content landscape is second to none, and across multiple client projects they’ve consistently elevated the work by bringing a true content creator perspective to every brief. Bad Brain are a key unlock, creating market-leading UGC that platforms crave and performance depends on."
         attribution="Guy Crozier, Founder & Director — Crozier Consulting"
-        accent="text-bb-blue"
+        accent="text-bb-mint"
       />
 
-      {/* ── CTA — blue block moment ── */}
+      {/* ── CTA — grey block moment ── */}
       <ServiceCTA
         heading="An audience that stays."
-        bg="bg-bb-blue"
-        hoverText="hover:text-bb-blue"
+        bg="bg-bb-grey"
+        hoverText="hover:text-bb-grey"
         cta="Make it with us"
       />
 
