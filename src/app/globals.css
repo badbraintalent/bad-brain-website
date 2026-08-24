@@ -135,6 +135,18 @@
     font-family: inherit;
     font-weight: 600;
   }
+
+  /* Tailwind v4's Preflight sets `button { cursor: default }` — a deliberate
+     change from v3, which used `pointer`. It follows the native UA default,
+     but on this site every <button> is a custom control that reads as
+     clickable, so the arrow makes them feel inert. Restored here rather than
+     as a `cursor-pointer` on each one: it is a reset regression, so it belongs
+     with the reset. Disabled controls keep the default arrow, since they
+     genuinely aren't clickable. */
+  button:not(:disabled):not([aria-disabled='true']),
+  [role='button']:not(:disabled):not([aria-disabled='true']) {
+    cursor: pointer;
+  }
 }
 
 /* Sticker title — inverted fill + outside stroke at 30% of type size
@@ -574,11 +586,14 @@ html {
   position: absolute;
   inset: 0;
   z-index: 3;
-  /* Brand pixel field fades in over the video on scroll; the
-     mix-blend-difference wordmark inverts it into acid Y2K colours. */
+  /* Brand pixel field fades in over the video on scroll. */
   background: url('/images/brand/fields/bg_16x9_1.png') center / cover;
   image-rendering: pixelated;
   opacity: 0;
+  /* The scroll handler rewrites opacity on almost every frame. Without a
+     promoted layer that repaints a viewport-sized pixelated bitmap each time;
+     with one it is a compositor-only property change. */
+  will-change: opacity;
 }
 
 /* "Bad Brain" text — styles applied via inline styles + Tailwind in ParallaxHero.tsx
@@ -613,6 +628,10 @@ html {
   gap: 0.75rem;
   height: 500px;
   overflow: hidden;
+  /* Fixed height and already clipping, so nothing inside can affect the page
+     around it — telling the compositor that keeps the six-odd playing reels
+     from being re-laid-out and re-painted with the rest of the document. */
+  contain: layout paint;
 }
 
 .slot-column {
@@ -624,6 +643,7 @@ html {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  will-change: transform;
 }
 
 .slot-video-wrapper {
@@ -754,11 +774,15 @@ html {
   animation-range: entry 15% cover 34%;
 }
 
-/* Slot machine — scales up from compact */
+/* Slot machine — scales up from compact.
+   The scale wraps ~24 <video> elements, up to a dozen of them playing. Left
+   unpromoted the compositor re-rasters that whole subtree — video textures
+   included — on every scroll frame the scale advances. */
 .social-slots {
   animation: scale-reveal cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: --social-showcase;
   animation-range: entry 5% cover 30%;
+  will-change: transform;
 }
 
 /* Testimonials — scroll-driven fade-up animations + infinite marquee.

@@ -49,7 +49,7 @@ const funnel = [
 const framework = [
   {
     label: 'Faces',
-    category: 'Creator partnerships',
+    category: 'Creator & Influencer Marketing',
     intro: 'The partnerships that bring new audiences into your world.',
     items: [
       {
@@ -75,7 +75,7 @@ const framework = [
   },
   {
     label: 'Function',
-    category: 'Conversion content',
+    category: 'UGC & Paid Media',
     intro: 'The product-focused content and paid media that converts them.',
     items: [
       {
@@ -281,11 +281,11 @@ export default function BlueprintPage() {
                   both key phrases stay whole. The nowrap spans hold them together below
                   that width too; each is ~200px, so they fit even a 320px column. */}
               <p className="text-black/70 text-body-sm mb-6 max-w-[36rem]">
-                Most brands have social scattered across teams &ndash;{' '}
+                Most brands have social scattered across teams -{' '}
                 <span className="whitespace-nowrap">creator campaigns over here</span>,
                 organic content there, <span className="whitespace-nowrap">paid media somewhere else</span>.
                 Coordinated in theory. Fragmented in practice. Blueprint connects the dots
-                &ndash; and the world follows.
+                - and the world follows.
               </p>
               <a
                 href="#framework"
@@ -336,11 +336,11 @@ Your audience wants a world to belong to.
                 Faces, Formats and Function is how you build one.
               </p>
               <p>
-                Blueprint is social entertainment strategy, done properly. Most clients start here &ndash; some
+                Blueprint is social entertainment strategy, done properly. Most clients start here - some
                 building from scratch, some with campaigns already in flight but nothing tying them together.
               </p>
               <p>
-                Either way, the first step is an audit across Faces, Formats and Function &ndash; mapping what&apos;s
+                Either way, the first step is an audit across Faces, Formats and Function - mapping what&apos;s
                 working, finding what isn&apos;t, and setting the strategy that gets everything pulling in the same
                 direction.
               </p>
@@ -352,7 +352,7 @@ Your audience wants a world to belong to.
 
       {/* ── FFF funnel — the framework as a schematic, echoing the draughting
              language of the hero panel ── */}
-      <section id="framework" className="bg-bb-fill py-14 md:py-24 border-t border-black/10 overflow-clip">
+      <section id="framework" className="bg-bb-grey py-14 md:py-24 border-t border-black/10 overflow-clip">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           {/* Named timeline on the list so the tiers stagger against this block
               entering the viewport — the funnel assembles itself top-down. */}
@@ -366,7 +366,13 @@ Your audience wants a world to belong to.
             {funnel.map(({ name, sub, action, width }, i) => (
               <li
                 key={name}
-                className={`${width} bg-black text-white px-6 sm:px-8 py-5 flex flex-wrap items-center gap-x-6 gap-y-2`}
+                /* Below sm the three parts each take their own line and the block
+                   goes slim: wrapping put name + tier on one line and pushed the
+                   action to a second, which read as two ranked halves rather than
+                   three equal facts, and the row-height that produced left the
+                   funnel's three steps nearly touching. Stacked and tightened,
+                   the taper is legible again on a phone. */
+                className={`${width} bg-black text-white px-5 py-3 sm:px-8 sm:py-5 flex flex-col items-start gap-y-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-2`}
                 style={{
                   // Rises into place rather than sweeping in from the side — a
                   // horizontal slide would fight the funnel's own left-to-right
@@ -378,12 +384,18 @@ Your audience wants a world to belong to.
                   animationRange: `cover ${8 + i * 7}% cover ${33 + i * 7}%`,
                 } as ScrollCSS}
               >
-                <span className="text-body-md font-bold uppercase tracking-label">{name}</span>
+                {/* The stacked lines carry their own tightened leading below sm —
+                    the type tokens' 1.6 is set for running paragraphs and is what
+                    made these blocks tall. None of the three has a descender to
+                    protect at this size. */}
+                <span className="text-body-md font-bold uppercase tracking-label leading-none sm:leading-normal">
+                  {name}
+                </span>
                 <span aria-hidden="true" className="hidden sm:block w-px h-5 bg-white/25 shrink-0" />
                 <span className="text-label tracking-label uppercase text-white/50">
                   {sub}
                 </span>
-                <span className="w-full sm:w-auto sm:ml-auto text-body-sm text-bb-mint sm:text-right">
+                <span className="w-full sm:w-auto sm:ml-auto text-body-sm leading-snug sm:leading-normal text-bb-mint sm:text-right">
                   {action}
                 </span>
               </li>
@@ -399,6 +411,7 @@ Your audience wants a world to belong to.
           src="/images/brand/halftones/blueprint_16x9_gray.png"
           alt=""
           aria-hidden="true"
+          loading="lazy"
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
         />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -447,7 +460,7 @@ Your audience wants a world to belong to.
                       </span>
                       <p className="text-body-md max-w-3xl">
                         <span className="text-black font-semibold">{lead}</span>
-                        <span className="text-black/70"> — {detail}</span>
+                        <span className="text-black/70"> - {detail}</span>
                       </p>
                     </div>
                   ))}
@@ -475,7 +488,7 @@ Your audience wants a world to belong to.
                       baseline as the heading (their descender space matches to
                       within a pixel, so box-bottom alignment is enough) */}
                   <p className="text-body-sm text-white/60 max-w-2xl lg:border-l lg:border-white/15 lg:pl-10">
-                    Workshops and training built around the FFF framework — so your team can think in
+                    Workshops and training built around the FFF framework - so your team can think in
                     social entertainment terms, brief creators confidently and own the strategy in-house.
                   </p>
                 </div>
@@ -488,15 +501,16 @@ Your audience wants a world to belong to.
 
       {/* ── Client testimonial — shared site-wide quote treatment ── */}
       <ClientQuote
-        quote="Bad Brain are a genuine pleasure to work with and bring a sharp understanding of every stage of the funnel — and how influencers can effectively move customers through it. They develop highly impressive plans and strategic frameworks, underpinned by thoughtful insight and genuinely creative ideas."
-        attribution="Sarah Twyman, Head of Consumer — Smoking Gun"
+        quote="Bad Brain are a genuine pleasure to work with and bring a sharp understanding of every stage of the funnel - and how influencers can effectively move customers through it. They develop highly impressive plans and strategic frameworks, underpinned by thoughtful insight and genuinely creative ideas."
+        attribution="Sarah Twyman, Head of Consumer - Smoking Gun"
+        logo={{ src: '/images/clients/smoking-gun.png', alt: 'Smoking Gun' }}
         accent="text-bb-mint"
       />
 
       {/* ── CTA — mint block moment ── */}
       <ServiceCTA
         heading={<>Start with Blueprint.</>}
-        cta="Tell us what you’re building"
+        cta="Let's Talk"
         bg="bg-bb-mint"
         hoverText="hover:text-bb-mint"
       />

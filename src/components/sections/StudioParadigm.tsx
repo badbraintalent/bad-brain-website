@@ -1,4 +1,4 @@
-/* Studio's "organic social strategy paradigm" — the supplied brand diagram
+/* Studio's "organic social strategy paradigm" — the brand diagram
    (8_Diagrams/Diagram_1.svg) with its four axis labels set live rather than
    baked into the flat mockup PNG, so they stay crisp and selectable.
 
@@ -51,7 +51,7 @@ const StudioParadigm = () => (
         style={maskStyle}
       />
 
-      {/* Bad Brain lockup sits inside the diamond, as per the supplied artwork.
+      {/* Bad Brain lockup sits inside the diamond, as the source artwork has it.
           The stacked (square) lockup rather than the mockup's horizontal one —
           in the horizontal lockup the wordmark crosses the hand mark, which
           reads as a collision at this size, and a squarer shape sits better in

@@ -8,9 +8,19 @@
 export type Creator = {
   num: string
   name: string
-  niche: string
   photo: string
-  stats: { platform: string; count: string }[]
+  /**
+   * Shown in the Connect hero readout as well as the dossier, so a missing one
+   * is visible on the live site — the readout holds the line with an NBSP.
+   */
+  niche?: string
+  /**
+   * Read *only* by `RosterBrowser`, which is not currently mounted anywhere.
+   * The eleven populated sets are there for when it is; chasing the twelfth
+   * would be sourcing data nothing renders. Fill it in if the browser goes
+   * back on a page.
+   */
+  stats?: { platform: string; count: string }[]
 }
 
 export const creators: Creator[] = [
@@ -123,13 +133,15 @@ export const creators: Creator[] = [
     stats: [{ platform: 'YouTube', count: '10,200' }],
   },
   {
+    // `name` is the account's profile name, not the handle — every other entry
+    // here displays a name, and `@jamesbondlifestyle` stood out as the odd one.
+    //
+    // `stats` is deliberately absent rather than pending — see the note on the
+    // type below. `niche` follows the file's ordering habit of ending on the
+    // broad term, which is also the confident half of the pair here.
     num: '12',
-    name: 'Thibodyo',
-    niche: 'VFX · Tech · Automotive',
-    photo: '/images/creators/thibodyo.jpg',
-    stats: [
-      { platform: 'TikTok', count: '103,000' },
-      { platform: 'Instagram', count: '10,200' },
-    ],
+    name: 'Bond Lifestyle',
+    niche: 'Film · Lifestyle',
+    photo: '/images/creators/jamesbondlifestyle.jpg',
   },
 ]

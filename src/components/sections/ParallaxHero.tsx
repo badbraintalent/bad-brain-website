@@ -19,18 +19,13 @@ const HERO_LOGO = "/images/brand/logo/BB_Horizontal.svg";
    height:auto, max-height scales the width down proportionally, so the lockup
    fits both a wide desktop and a short landscape phone without cropping.
 
-   The img itself carries mix-blend-difference so the white logo inverts whatever
-   film sits behind it and stays legible on any frame (counters read as the
-   video). Keeping the blend off the full-viewport wrapper limits the region the
-   compositor has to re-blend every video frame to the logo's own bounds.
-
    Hidden at load — the film carries its own Bad Brain branding, so the lockup
    only prints in on scroll (stepped bottom-up clip wipe driven by the same
    scroll handler as the pixel-field fade; see the effect below).
 
    Plain <img> on purpose: the source is an SVG, which next/image passes through
    untouched (and only with dangerouslyAllowSVG), so it would buy no bytes while
-   adding a wrapper element around the blend and transform below. */
+   adding a wrapper element inside the clip below. */
 function HeroLogo({ clipRef }: { clipRef: RefObject<HTMLDivElement | null> }) {
   return (
     <div
@@ -44,7 +39,6 @@ function HeroLogo({ clipRef }: { clipRef: RefObject<HTMLDivElement | null> }) {
           src={HERO_LOGO}
           alt="Bad Brain"
           draggable={false}
-          className="mix-blend-difference"
           style={{ width: "min(72vw, 1000px)", height: "auto", maxHeight: "60vh", display: "block" }}
         />
       </div>
@@ -54,7 +48,6 @@ function HeroLogo({ clipRef }: { clipRef: RefObject<HTMLDivElement | null> }) {
           src={HERO_LOGO}
           alt="Bad Brain"
           draggable={false}
-          className="mix-blend-difference"
           style={{ width: "min(86vw, 30rem)", height: "auto", maxHeight: "50vh", display: "block" }}
         />
       </div>

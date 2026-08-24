@@ -106,7 +106,7 @@ export default function ContactPage() {
               style={{ paddingBottom: 'clamp(1.5rem, 6vw, 4rem)', ...enter('0.62s') }}
             >
               <p className="text-black/70 text-body-sm max-w-[30rem]">
-                Good to have you here. Wherever you&apos;re up to — a rough idea or a firm brief — we&apos;d love to hear about it.
+                Good to have you here. Wherever you&apos;re up to - a rough idea or a firm brief - we&apos;d love to hear about it.
               </p>
             </div>
           </div>
@@ -139,7 +139,7 @@ export default function ContactPage() {
             {
               label: 'Blueprint',
               question: 'Are you a brand?',
-              desc: 'Get your creator and social strategy working as one — audits, workshops and programme design. Most clients start here.',
+              desc: 'Get your creator and social strategy working as one - audits, workshops and programme design. Most clients start here.',
               href: '/services/blueprint',
               accent: 'border-t-bb-mint',
             },
@@ -149,7 +149,7 @@ export default function ContactPage() {
             {
               label: 'Connect',
               question: 'Are you a creator?',
-              desc: 'Build a career without losing control. Representation that flexes with you — three tiers, no forced exclusivity.',
+              desc: 'Build a career without losing control. Representation that flexes with you - three tiers, no forced exclusivity.',
               href: '/services/connect',
               accent: 'border-t-black',
             },

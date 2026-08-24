@@ -7,15 +7,15 @@ import { winShadow } from '@/lib/y2k'
 const tiers = [
   {
     name: 'Verified',
-    desc: 'The widest tier. Creators across every niche and platform, brought in and matched project by project — whatever the campaign needs, there’s a fit in this pool.',
+    desc: 'The widest tier. Creators across every niche and platform, brought in and matched project by project - whatever the campaign needs, there’s a fit in this pool.',
   },
   {
     name: 'Connected',
-    desc: 'The tier we manage hands-on. Every deal, every pitch, run through us — so you get creators we already know, with fewer surprises and a stronger match to the brief.',
+    desc: 'The tier we manage hands-on. Every deal, every pitch, run through us - so you get creators we already know, with fewer surprises and a stronger match to the brief.',
   },
   {
     name: 'Partnered',
-    desc: 'The deepest tier. We act as a genuine business partner here, not just a manager — the most accountable relationships we have, built for campaigns where the stakes are highest.',
+    desc: 'The deepest tier. We act as a genuine business partner here, not just a manager - the most accountable relationships we have, built for campaigns where the stakes are highest.',
   },
 ]
 
@@ -39,7 +39,7 @@ export default function CreatorTiers() {
         </div>
 
         <p className="text-black/70 text-body-md mb-10 max-w-2xl">
-          Every creator relationship sits at a defined level — so you always know what
+          Every creator relationship sits at a defined level - so you always know what
           you&rsquo;re working with.
         </p>
 

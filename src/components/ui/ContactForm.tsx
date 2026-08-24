@@ -78,6 +78,52 @@ const ContactForm = ({
     ? { animation: 'win-open 220ms steps(4) both' }
     : { boxShadow: winShadow(6, 0.18), animation: 'win-open 220ms steps(4) both' }
 
+  /* Status glyph box, shared by the sent and error dialogs so the two can't
+     drift.
+
+     It was a fixed `w-10 h-10`, but the heading beside it is `text-display-3` —
+     a clamp(1.375rem, 3.2vw, 2.4rem). So 40px agreed with the heading at
+     exactly one viewport width and drifted at every other, worst at narrow
+     widths where the heading falls to 22px and the box stayed at 40.
+
+     Sized in `cap`, not `em`: 1cap is the font's actual capital height, which
+     is what reads as "the height of the text". Gravity Wide sets tall caps, so
+     an em-sized box still stood visibly proud of them. The face has to be
+     declared here for `cap` to measure the right one — the heading inherits
+     `font-display` from the base layer, but this span is its sibling and would
+     otherwise measure the body font.
+
+     `mt` drops the box from the line-box top onto the cap band. Centring it in
+     the line box is the obvious guess and is wrong — caps are not centred
+     there, they sit on the baseline with descender space below, so a centred
+     box rides visibly low. The offset has to put the box's BOTTOM on the
+     baseline; being 1cap tall, its top then lands exactly on the cap line.
+
+     Baseline position, from ABCGravity-Wide's own metrics (unitsPerEm 2048,
+     hhea ascent 1916, descent -735, capHeight 1434; `useTypoMetrics` is off
+     and the win metrics are identical, so there is no ambiguity about which
+     set the browser uses):
+       content height = (1916 + 735) / 2048               = 1.2944em
+       half-leading   = (1em - 1.2944em) / 2              = -0.1472em
+       baseline       = -0.1472em + 1916/2048             =  0.7883em
+     so margin-top = 0.7883em - 1cap, which is 0.0881em for this face.
+
+     Kept as `0.7883em - 1cap` rather than the collapsed 0.0881em: the baseline
+     figure is the font-metric part and `1cap` is measured live, so swapping the
+     display face only invalidates the one constant.
+
+     The trailing `- 0.5px` is a rasterisation correction, not part of the
+     geometry. The maths above is exact — 'M' measures yMin 0 to yMax 1434
+     against a declared sCapHeight of 1434, so 1cap is precisely its height —
+     but the computed offset lands on a fraction (3.38px at the clamp's
+     ceiling) and Chrome rounded the bordered box just below the rasterised
+     cap. Half a pixel, arrived at by bisection: uncorrected read low, a full
+     1px read high. Flat unit deliberately — a rounding artifact does not scale
+     with font-size, so it must not be expressed in em. This is the dial if the
+     box ever looks a touch high or low. */
+  const glyphBoxClass =
+    'flex-shrink-0 font-display text-display-3 w-[1cap] h-[1cap] mt-[calc(0.7883em-1cap-0.5px)] border border-black flex items-center justify-center leading-none'
+
   return (
     <div ref={formAreaRef} className={className} style={{ minHeight: lockedHeight }}>
       {status === 'sent' ? (
@@ -87,15 +133,12 @@ const ContactForm = ({
             <WindowTitleBar name="message.exe" className="border-b border-black/15 px-3 py-2" />
           )}
           <div className={`flex items-start gap-4 ${compact ? 'py-7' : 'px-6 py-7'}`}>
-            <span
-              className="flex-shrink-0 w-10 h-10 border border-black bg-bb-mint flex items-center justify-center text-black text-body-lg leading-none"
-              aria-hidden="true"
-            >
-              ✓
+            <span className={`${glyphBoxClass} bg-bb-mint`} aria-hidden="true">
+              <span className="text-[0.45em] text-black">✓</span>
             </span>
             <div>
               <h3 className="text-display-3 text-black mb-1.5">Message sent.</h3>
-              <p className="text-black/60">Thanks — we&rsquo;ll reply within 24 hours.</p>
+              <p className="text-black/60">Thanks - we&rsquo;ll reply within 24 hours.</p>
             </div>
           </div>
           <div className={`border-t border-black/10 py-4 flex justify-end ${compact ? '' : 'px-6'}`}>
@@ -116,16 +159,13 @@ const ContactForm = ({
             <WindowTitleBar name="message.exe" className="border-b border-black/15 px-3 py-2" />
           )}
           <div className={`flex items-start gap-4 ${compact ? 'py-7' : 'px-6 py-7'}`}>
-            <span
-              className="flex-shrink-0 w-10 h-10 border border-black bg-bb-mint flex items-center justify-center text-black text-body-lg leading-none"
-              aria-hidden="true"
-            >
-              ✕
+            <span className={`${glyphBoxClass} bg-bb-mint`} aria-hidden="true">
+              <span className="text-[0.45em] text-black">✕</span>
             </span>
             <div>
               <h3 className="text-display-3 text-black mb-1.5">Not sent.</h3>
               <p className="text-black/60">
-                Something went wrong — try again, or email us at{' '}
+                Something went wrong - try again, or email us at{' '}
                 <CopyEmail className="px-underline text-black" />.
               </p>
             </div>
@@ -197,8 +237,9 @@ const ContactForm = ({
             {/* The "Where do you need us?" service <select> was removed to cut
                 friction: the capture is name, email and message only, since a
                 first-time visitor is unlikely to know which of the four
-                services they need. The API still accepts an optional
-                `service` field, so nothing downstream breaks. */}
+                services they need. The API's matching `service` handling went
+                with it — it was still printing "Interested in: -" into every
+                enquiry email. */}
             <div
               className={`px-field relative border-b border-black/10 ${
                 compact ? 'py-4' : 'md:border-b-0 py-6'

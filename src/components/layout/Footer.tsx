@@ -16,18 +16,6 @@ const Footer = () => {
 
   return (
     <footer className="bg-black text-white">
-      {/* Pixel-field divider strip */}
-      <div
-        aria-hidden="true"
-        className="h-3 w-full"
-        style={{
-          backgroundImage: 'url(/images/brand/fields/bg_16x9_1.png)',
-          backgroundSize: 'auto 400%',
-          backgroundPosition: 'center',
-          imageRendering: 'pixelated',
-        }}
-      />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-16 pb-9">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -35,7 +23,7 @@ const Footer = () => {
             <div className="mb-6">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/brand/logo/BB_Horizontal.svg"
+                src="/images/brand/logo/BB_Wordmark_Focus.svg"
                 alt="Bad Brain"
                 className="boop h-12 w-auto invert"
               />

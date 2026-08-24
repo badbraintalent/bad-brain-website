@@ -13,7 +13,7 @@ import { CONTACT_EMAIL } from '@/lib/site'
 const FROM = process.env.CONTACT_FROM ?? 'Bad Brain Site <onboarding@resend.dev>'
 const TO = process.env.CONTACT_TO ?? CONTACT_EMAIL
 
-const MAX = { name: 200, email: 254, service: 50, message: 5000 } as const
+const MAX = { name: 200, email: 254, message: 5000 } as const
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>
@@ -28,7 +28,6 @@ export async function POST(request: Request) {
 
   const name = field('name')
   const email = field('email')
-  const service = field('service')
   const message = field('message')
 
   // Honeypot — the visible form never fills this; bots do. Report success so
@@ -49,8 +48,8 @@ export async function POST(request: Request) {
     // is gone for good. Recoverable from the deployment logs until then.
     // Remove this once RESEND_API_KEY is set; real sends must not log bodies.
     console.warn(
-      '[contact] RESEND_API_KEY not set — simulating send. Full submission:\n' +
-        [`Name: ${name}`, `Email: ${email}`, `Interested in: ${service || '—'}`, '', message].join('\n'),
+      '[contact] RESEND_API_KEY not set - simulating send. Full submission:\n' +
+        [`Name: ${name}`, `Email: ${email}`, '', message].join('\n'),
     )
     return NextResponse.json({ ok: true, simulated: true })
   }
@@ -61,8 +60,8 @@ export async function POST(request: Request) {
       from: FROM,
       to: [TO],
       replyTo: email,
-      subject: `Site enquiry from ${name}${service ? ` — ${service}` : ''}`,
-      text: [`Name: ${name}`, `Email: ${email}`, `Interested in: ${service || '—'}`, '', message].join('\n'),
+      subject: `Site enquiry from ${name}`,
+      text: [`Name: ${name}`, `Email: ${email}`, '', message].join('\n'),
     })
     if (error) {
       console.error('[contact] resend error', error)

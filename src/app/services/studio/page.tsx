@@ -38,7 +38,7 @@ const CHANNELS: Channel[] = [
     num: '01',
     type: 'Quickfire',
     label: 'Fast & Reactive Content',
-    desc: 'Snappy content to grab genuine reactions — vox-pops, quick reviews, on-the-spot takes.',
+    desc: 'Snappy content to grab genuine reactions - vox-pops, quick reviews, on-the-spot takes.',
     // Same footage the Connect page ships as lance-480; this is the 540×960
     // rendition, since the rack slot is ~647px wide.
     video: '/videos/creators/lance.mp4',
@@ -48,7 +48,7 @@ const CHANNELS: Channel[] = [
     num: '02',
     type: 'Conceptual',
     label: 'Art-Directed & Elevated Content',
-    desc: 'Fully produced pieces — editorial shoots, social series, micro-dramas, campaign work.',
+    desc: 'Fully produced pieces - editorial shoots, social series, micro-dramas, campaign work.',
     // Opaque filename is the asset's own — left as-is so it stays traceable.
     video: '/videos/643f326f-6cc3-4911-84db-07e530191a93.mp4',
   },
@@ -56,9 +56,11 @@ const CHANNELS: Channel[] = [
     num: '03',
     type: 'Conversation',
     label: 'Structured & Hosted Formats',
-    desc: 'Proper conversations that earn real attention — interviews, podcasts, Q&As.',
-    // Empty — see the note above.
-    video: undefined,
+    desc: 'Proper conversations that earn real attention - interviews, podcasts, Q&As.',
+    // The only landscape clip in the rack — the other two are 9:16 phone
+    // footage. It needs no `focus`: the subject sits mid-frame vertically,
+    // which is the default case the note above describes.
+    video: '/videos/podcast.mp4',
   },
 ]
 
@@ -71,23 +73,32 @@ const pad2 = (n: number) => String(n).padStart(2, '0')
 // hover-to-select affordance are both suppressed rather than left dead.
 const multiChannel = pillars.length > 1
 
+/* `channel` ties each format row to the hero channel that shows it, so the two
+   lists can't drift apart — the rows carry the same clips as the rack. Note the
+   running orders differ: the rack runs Quickfire, Conceptual, Conversation, and
+   these read Quickfire, Conversation, Conceptual. */
 const steps = [
   {
     num: '01',
     title: 'Quickfire Content',
-    desc: 'Fast and reactive. Shoot snappy content to grab genuine reactions — vox-pops, quick reviews, on-the-spot takes — shot and posted while it’s still current.',
+    channel: 'Quickfire',
+    desc: 'Fast and reactive. Shoot snappy content to grab genuine reactions - vox-pops, quick reviews, on-the-spot takes - shot and posted while it’s still current.',
   },
   {
     num: '02',
     title: 'Conversation Formats',
-    desc: 'Structured and hosted. Produce proper conversations that earn real attention — interviews, podcasts, Q&As — cut into a full conversation plus shorter clips.',
+    channel: 'Conversation',
+    desc: 'Structured and hosted. Produce proper conversations that earn real attention - interviews, podcasts, Q&As - cut into a full conversation plus shorter clips.',
   },
   {
     num: '03',
     title: 'Conceptual Content',
-    desc: 'Art-directed and elevated. Craft fully produced pieces — editorial-style shoots, social series, micro-dramas, campaign work — bigger in scope, made to be the thing people remember.',
+    channel: 'Conceptual',
+    desc: 'Art-directed and elevated. Craft fully produced pieces - editorial-style shoots, social series, micro-dramas, campaign work - bigger in scope, made to be the thing people remember.',
   },
 ]
+
+const channelFor = (type: string) => CHANNELS.find((c) => c.type === type)
 
 export default function StudioPage() {
   /* Hero channel switcher — one "live" monitor at a time; auto-cycles until the
@@ -101,6 +112,28 @@ export default function StudioPage() {
   const activeRef = useRef(0)
   const hoveredRef = useRef(false)
   const inViewRef = useRef(true)
+  // The clips repeated beside the format rows, far down the page.
+  const formatVideoRefs = useRef<(HTMLVideoElement | null)[]>([])
+
+  /* Those monitors run only while they are on screen. Hover would have been the
+     cheaper trigger, but it is a desktop-only affordance and these need to move
+     on a phone too — the whole point of the row is to put motion next to the
+     format name. `preload="none"` means nothing is fetched until a row is
+     actually reached. */
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const v = entry.target as HTMLVideoElement
+          if (entry.isIntersecting) void v.play().catch(() => {})
+          else v.pause()
+        }
+      },
+      { threshold: 0.35 }
+    )
+    formatVideoRefs.current.forEach((v) => v && io.observe(v))
+    return () => io.disconnect()
+  }, [])
 
   /* Clips load sequentially: CH 01 preloads eagerly; each channel that becomes
      playable kicks off the next one's fetch, so first paint isn't competing
@@ -390,7 +423,7 @@ export default function StudioPage() {
             {/* Body copy */}
             <div className="studio-problem-copy space-y-5 text-black/70 text-body-md pt-2">
               <p>
-                <strong className="text-black font-semibold">Views are easy</strong> — ride a trend and
+                <strong className="text-black font-semibold">Views are easy</strong> - ride a trend and
                 you&apos;ll get a spike, but that attention was never really about your brand.{' '}
                 <strong className="text-black font-semibold">Viewership is harder:</strong> people who
                 come back for your own story, not someone else&apos;s moment.
@@ -403,7 +436,7 @@ export default function StudioPage() {
 
           </div>
 
-          {/* ── The supplied strategy diagram, sat under the two-column copy ── */}
+          {/* ── Strategy diagram, sat under the two-column copy ── */}
           <div className="mt-12 md:mt-20 lg:mt-24">
             <StudioParadigm />
           </div>
@@ -417,6 +450,7 @@ export default function StudioPage() {
           src="/images/brand/halftones/studio_16x9_gray.png"
           alt=""
           aria-hidden="true"
+          loading="lazy"
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
         />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -439,17 +473,23 @@ export default function StudioPage() {
                 Entertainment-first content produced by Bad Brain Studio.
               </p>
               <p className="col-start-1 col-span-2 md:col-start-3 md:col-span-1">
-                It lives on your channel, fronted by whoever tells the story best — that could be a
+                It lives on your channel, fronted by whoever tells the story best - that could be a
                 creator, a customer or one of your own team.
               </p>
             </div>
           </div>
 
+          {/* Each format row carries its own hero clip in a fourth column from lg
+              up — the same footage the rack plays, so the abstract format names
+              have a picture next to them. Below lg the column would squeeze the
+              copy, so the monitor drops under the row at full width instead. */}
           <div className="studio-approach-list">
-            {steps.map((s, i) => (
+            {steps.map((s, i) => {
+              const channel = channelFor(s.channel)
+              return (
               <div
                 key={s.num}
-                className={`studio-approach-${i + 1} grid grid-cols-[2.5rem_1fr] md:grid-cols-[2.5rem_1fr_1fr] gap-x-8 gap-y-2 py-8 border-b border-black/10 group`}
+                className={`studio-approach-${i + 1} grid grid-cols-[2.5rem_1fr] md:grid-cols-[2.5rem_1fr_1fr] lg:grid-cols-[2.5rem_1fr_1fr_13rem] gap-x-8 gap-y-2 py-8 border-b border-black/10 group`}
               >
                 <span className="text-black/40 text-label tabular-nums pt-[0.2em]">{s.num}</span>
                 <h3 className="text-body-sm font-bold text-black uppercase tracking-label group-hover:text-black/60 transition-colors duration-300">
@@ -458,8 +498,62 @@ export default function StudioPage() {
                 <p className="text-body-sm text-black/60 col-start-2 md:col-start-3 mt-1 md:mt-0">
                   {s.desc}
                 </p>
+
+                {/* Monitor. Cut down from the hero's — border, scanlines and the
+                    channel number, but no chrome, timecode or standby state:
+                    at 208px wide those would be noise, and nothing here is
+                    switchable. */}
+                <div className="col-start-1 col-span-2 md:col-start-3 lg:col-start-4 lg:col-span-1 mt-4 lg:mt-0 max-w-[26rem] lg:max-w-none">
+                  <div className="relative aspect-[16/9] overflow-hidden bg-black border border-black/15">
+                    {channel?.video ? (
+                      <video
+                        ref={(el) => { formatVideoRefs.current[i] = el }}
+                        src={channel.video}
+                        muted
+                        loop
+                        playsInline
+                        preload="none"
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ objectPosition: `center ${channel.focus ?? 'center'}` }}
+                      />
+                    ) : (
+                      /* Off-air fallback. Every channel has footage today, so
+                         nothing reaches this — but it is the visible half of the
+                         "empty `video` reads as off air" contract in `Channel`,
+                         so it stays. The grey halftone read as a dead monitor;
+                         this is the mint plate the Resonate cluster headers use,
+                         legibly a brand graphic rather than a failed load. */
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src="/images/brand/halftones/studio_16x9_green.png"
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 w-full h-full object-cover opacity-30"
+                      />
+                    )}
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 pointer-events-none"
+                      style={{ ...scanlines(0.28, 3), opacity: 0.45 }}
+                    />
+                    {/* The label sits over whatever the clip happens to be showing
+                        — a bright frame swallowed it, so it gets its own scrim
+                        rather than relying on the footage being dark. */}
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-x-0 top-0 h-10 pointer-events-none bg-gradient-to-b from-black/65 to-transparent"
+                    />
+                    <span className="absolute top-2 left-2.5 text-label tracking-label text-white">
+                      CH {s.num}
+                    </span>
+                  </div>
+                </div>
               </div>
-            ))}
+              )
+            })}
           </div>
 
         </div>
@@ -468,7 +562,8 @@ export default function StudioPage() {
       {/* ── Client testimonial — shared site-wide quote treatment ── */}
       <ClientQuote
         quote="Bad Brain’s understanding of the ever evolving social and content landscape is second to none, and across multiple client projects they’ve consistently elevated the work by bringing a true content creator perspective to every brief. Bad Brain are a key unlock, creating market-leading UGC that platforms crave and performance depends on."
-        attribution="Guy Crozier, Founder & Director — Crozier Consulting"
+        attribution="Guy Crozier, Founder & Director - The Warren"
+        logo={{ src: '/images/clients/the-warren.png', alt: 'The Warren' }}
         accent="text-bb-mint"
       />
 
@@ -477,7 +572,7 @@ export default function StudioPage() {
         heading="An audience that stays."
         bg="bg-bb-grey"
         hoverText="hover:text-bb-grey"
-        cta="Make it with us"
+        cta="Let's Talk"
       />
 
       <Footer />

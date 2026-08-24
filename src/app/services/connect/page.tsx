@@ -14,7 +14,6 @@ import { enter, winShadow } from '@/lib/y2k'
 const delivers = [
   {
     phase: 'Plan',
-    when: 'Before the brief goes out',
     items: [
       {
         lead: 'Strategy',
@@ -24,65 +23,74 @@ const delivers = [
   },
   {
     phase: 'Source & Secure',
-    when: 'Creator and contract',
     items: [
       {
         lead: 'Talent sourcing',
-        desc: 'Access the right creators for the brief — matched on culture, values, content and demographics.',
+        desc: 'Access the right creators for the brief - matched on culture, values, content and demographics.',
       },
       {
         lead: 'Negotiating',
-        desc: 'Secure terms that work for the brand and the creator — rates, usage, exclusivity and timelines handled so the partnership starts on solid ground.',
+        desc: 'Secure terms that work for the brand and the creator - rates, usage, exclusivity and timelines handled so the partnership starts on solid ground.',
       },
       {
         lead: 'Contracting',
-        desc: 'Get every partnership locked down properly — licensing, deliverables and rights agreed before anything goes live.',
+        desc: 'Get every partnership locked down properly - licensing, deliverables and rights agreed before anything goes live.',
       },
     ],
   },
   {
     phase: 'Deliver',
-    when: 'On the ground',
     items: [
       {
         lead: 'Briefing',
-        desc: 'Equip every creator with the rules, message and visual cue — then let them add their own creative sauce.',
+        desc: 'Equip every creator with the rules, message and visual cue - then let them add their own creative sauce.',
       },
       {
         lead: 'Management',
-        desc: 'Run the whole campaign through one point of contact — deadlines, comms and logistics all handled, so you’re never juggling five relationships at once.',
+        desc: 'Run the whole campaign through one point of contact - deadlines, comms and logistics all handled, so you’re never juggling five relationships at once.',
       },
       {
         lead: 'Content approvals',
-        desc: 'Keep the brand safe and the creator moving — every piece signed off before it goes live, no bottlenecks.',
+        desc: 'Keep the brand safe and the creator moving - every piece signed off before it goes live, no bottlenecks.',
       },
     ],
   },
   {
     phase: 'Close',
-    when: 'Wrapped and reported',
     items: [
       {
         lead: 'Reporting',
-        desc: 'See the real numbers — watch time, engagement, and how the campaign fares against the creator’s own organic average.',
+        desc: 'See the real numbers - watch time, engagement, and how the campaign fares against the creator’s own organic average.',
       },
       {
         lead: 'Payment',
-        desc: 'Send the money once — we split it, pay every creator, and keep the paperwork off your desk.',
+        desc: 'Send the money once - we split it, pay every creator, and keep the paperwork off your desk.',
       },
     ],
   },
 ]
 
+/* Every `desc` above hangs a clause off a spaced dash, and with the lines now
+   balanced the break lands next to that dash often enough to matter. Binding it
+   to the word before it with a non-breaking space stops a line ever opening on
+   a dash; the ordinary space after it still takes the break. Presentation only
+   — the copy is untouched. */
+const bindDashes = (s: string) => s.replace(/ - /g, '\u00a0- ')
+
 /* Media for the sticky panel beside the phases — one clip per phase, drawn
    from the creator reels already shipped for the homepage showcase. The 480px
    renditions are deliberate: the panel is ~390px wide at 1440 and four clips
-   would otherwise be four full-size downloads for what is scene-setting. */
-const phaseMedia = [
-  { src: '/videos/creators/marygrace-480.mp4', poster: '/videos/creators/marygrace.jpg' },
-  { src: '/videos/creators/lance-480.mp4', poster: '/videos/creators/lance.jpg' },
-  { src: '/videos/creators/matty-480.mp4', poster: '/videos/creators/matty.jpg' },
-  { src: '/videos/creators/amarilla-480.mp4', poster: '/videos/creators/amarilla.jpg' },
+   would otherwise be four full-size downloads for what is scene-setting.
+
+   `handle` credits the creator whose reel is playing, so the panel footer names
+   them rather than restating the phase. Required, not optional: every clip has
+   one, and a reel running uncredited is the state this is here to prevent.
+  */
+const phaseMedia: { src: string; poster: string; handle: string }[] = [
+  { src: '/videos/creators/marygrace-480.mp4', poster: '/videos/creators/marygrace.jpg', handle: '@marygracetropeano' },
+  { src: '/videos/creators/lance-480.mp4', poster: '/videos/creators/lance.jpg', handle: '@lancelauren_' },
+  { src: '/videos/creators/matty-480.mp4', poster: '/videos/creators/matty.jpg', handle: '@thickcutchipz' },
+  { src: '/videos/creators/amarilla-480.mp4', poster: '/videos/creators/amarilla.jpg', handle: '@amarillasterling' },
 ]
 
 export default function ConnectPage() {
@@ -119,6 +127,7 @@ export default function ConnectPage() {
   const [activePhase, setActivePhase] = useState(0)
   const phaseRefs = useRef<(HTMLDivElement | null)[]>([])
   const mediaRefs = useRef<(HTMLVideoElement | null)[]>([])
+  const mobileMediaRefs = useRef<(HTMLVideoElement | null)[]>([])
 
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -135,14 +144,21 @@ export default function ConnectPage() {
     return () => io.disconnect()
   }, [])
 
-  // Only the visible clip plays — four looping videos behind an opacity fade
-  // would otherwise all decode at once for no visual gain.
+  /* Only the visible clip plays — four looping videos behind an opacity fade
+     would otherwise all decode at once for no visual gain.
+
+     Both sets are in the DOM at every width: the sticky desktop panel and the
+     inline mobile clips are each hidden by a breakpoint utility, not unmounted.
+     A display:none <video> will still play if asked, so `offsetParent` decides
+     which of the two copies of the same clip is the one actually on screen. */
   useEffect(() => {
-    mediaRefs.current.forEach((v, i) => {
-      if (!v) return
-      if (i === activePhase) void v.play().catch(() => {})
-      else v.pause()
-    })
+    for (const refs of [mediaRefs, mobileMediaRefs]) {
+      refs.current.forEach((v, i) => {
+        if (!v) return
+        if (i === activePhase && v.offsetParent !== null) void v.play().catch(() => {})
+        else v.pause()
+      })
+    }
   }, [activePhase])
 
   return (
@@ -188,7 +204,7 @@ export default function ConnectPage() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={c.photo}
-                    alt={`${c.name} — Bad Brain Connect creator`}
+                    alt={`${c.name} - Bad Brain Connect creator`}
                     decoding="async"
                     className="absolute inset-0 w-full h-full object-cover"
                     style={{
@@ -217,8 +233,12 @@ export default function ConnectPage() {
                 <p className="text-label font-semibold text-black truncate">
                   {creators[lit].name}
                 </p>
+                {/* Non-breaking space, not a collapsed line: the headshot grid
+                    above is the flex child that absorbs any height change here,
+                    so a creator with no niche yet would resize the whole sheet
+                    as the spotlight rotates onto them. */}
                 <p className="text-label tracking-label text-black/60 uppercase mt-0.5 truncate">
-                  {creators[lit].niche}
+                  {creators[lit].niche || '\u00A0'}
                 </p>
               </div>
               <p className="text-label tracking-label uppercase text-black/60 shrink-0">
@@ -300,7 +320,7 @@ export default function ConnectPage() {
 
       {/* ── What Connect delivers — the brand-side offer, grouped by campaign
              phase ── */}
-      <section id="delivers" className="relative py-14 md:py-24 bg-bb-fill border-t border-black/10">
+      <section id="delivers" className="relative py-14 md:py-24 bg-bb-grey border-t border-black/10">
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
 
           <div className="flex items-baseline justify-between mb-8 md:mb-12 pb-6 border-b border-black/20">
@@ -320,28 +340,56 @@ export default function ConnectPage() {
 
             {/* Phases, stacked */}
             <div>
-              {delivers.map(({ phase, when, items }, phaseIdx) => (
+              {delivers.map(({ phase, items }, phaseIdx) => (
                 <div
                   key={phase}
                   ref={(el) => { phaseRefs.current[phaseIdx] = el }}
-                  className="pb-10 md:pb-14 last:pb-0"
+                  /* Stable hook for the review screenshot script, which needs to
+                     frame a single phase on the mobile shot. It used to select
+                     the stagger utility class, which vanished with the indent. */
+                  data-phase={phaseIdx}
+                  /* Flush left, all four. The phases were previously indented a
+                     step further right each — a descending staircase — which
+                     read as decorative once the copy inside was balanced: two
+                     ragged edges arguing with each other. The separation the
+                     staircase was carrying is done by the `pb-12 md:pb-20`
+                     below, which is why that stays.
+
+                     No entrance animation, deliberately. One was built here and
+                     removed: the section already has motion in the sticky panel,
+                     which swaps clip as you move between phases, and a second
+                     moving thing next to it was doing nothing the panel wasn't
+                     already doing better. Static copy beside a changing video
+                     reads as intentional; both moving reads as busy. */
+                  className="pb-12 md:pb-20 last:pb-0"
                 >
                   {/* Media inline above each phase below lg, where there is no
-                      room for a side panel */}
+                      room for a side panel. These were stills; they now run, on
+                      the same rule as the desktop panel — the phase crossing the
+                      middle of the viewport is the one that plays, so a phone is
+                      never decoding more than one clip. `preload="none"` keeps
+                      that promise on the network too: the poster carries the
+                      panel until its phase is reached. */}
                   <div className="lg:hidden mb-6 border border-black/15 bg-black">
                     <WindowTitleBar
                       name={`${phase.toLowerCase().replace(/[^a-z]+/g, '-')}.mov`}
                       className="bg-bb-grey px-3 py-2"
                     />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={phaseMedia[phaseIdx].poster}
-                      alt=""
+                    <video
+                      ref={(el) => { mobileMediaRefs.current[phaseIdx] = el }}
+                      src={phaseMedia[phaseIdx].src}
+                      poster={phaseMedia[phaseIdx].poster}
+                      muted
+                      loop
+                      playsInline
+                      preload="none"
                       aria-hidden="true"
-                      loading="lazy"
-                      decoding="async"
                       className="w-full aspect-[16/10] object-cover object-[50%_30%]"
                     />
+                    {/* Creator credit, same as the desktop panel's footer */}
+                    <p className="px-3 py-2 bg-white border-t border-black/15 text-label tracking-label text-black/70 truncate">
+                      {phaseMedia[phaseIdx].handle}
+                    </p>
                   </div>
 
                   {/* Phase header — numeral leads, so the four phases read as a
@@ -354,18 +402,39 @@ export default function ConnectPage() {
                       {String(phaseIdx + 1).padStart(2, '0')}
                     </span>
                     <h3 className="text-body-sm font-bold text-black uppercase tracking-label">{phase}</h3>
-                    <span className="ml-auto text-label tracking-label uppercase text-black/60 text-right">
-                      {when}
-                    </span>
                   </div>
 
                   {items.map(({ lead, desc }) => (
                     <div
                       key={lead}
-                      className="group/row py-4 border-b border-black/10 transition-colors duration-150"
+                      className="py-4 border-b border-black/10"
                     >
-                      <p className="text-body-sm text-black/70 border-l-2 border-transparent pl-0 group-hover/row:border-bb-blue group-hover/row:pl-4 transition-all duration-200 max-w-[46rem]">
-                        <strong className="text-black font-semibold">{lead}:</strong> {desc}
+                      {/* leading-[1.42] against the body-sm token's 1.6: at this
+                          measure most of these run to two lines, and the looser
+                          default left the second line reading as an orphan rather
+                          than as part of the same block.
+
+                          `text-balance` is the second half of that fix, and the
+                          one doing the real work: the measure alone can't stop a
+                          short last line, because where the break falls depends
+                          on the sentence. Balancing squeezes
+                          each item to its own width so both lines come out level
+                          — measured across 375/768/1024/1440, every item's last
+                          line went from as little as 6% of the block to 85-100%,
+                          and none of the nine gained a line. `max-w-40rem` is now
+                          only a ceiling for the longest item; below it balance
+                          sets the width.
+
+                          No hover treatment. Each row used to grow a blue left
+                          rule and shift its text 1rem right on hover, which
+                          moved the copy out from under the cursor — and once the
+                          text is balanced that is worse than a slide, because a
+                          width change re-breaks every line, so the whole block
+                          reflowed. The rows aren't interactive, so nothing is
+                          lost with it gone; the motion lives on the phase
+                          block's scroll entrance now. */}
+                      <p className="text-body-sm leading-[1.42] text-balance text-black/70 max-w-[40rem]">
+                        <strong className="text-black font-semibold">{lead}:</strong> {bindDashes(desc)}
                       </p>
                     </div>
                   ))}
@@ -417,10 +486,10 @@ export default function ConnectPage() {
                       />
                     ))}
                   </div>
-                  {/* Stage readout — the panel says which phase it is tracking */}
+                  {/* Footer — credits the creator whose reel is playing */}
                   <div className="flex items-baseline justify-between gap-4 px-4 py-2.5 bg-white border-t border-black/15">
-                    <span className="text-label tracking-label uppercase text-black/60 truncate">
-                      {delivers[activePhase].when}
+                    <span className="text-label tracking-label truncate text-black/70">
+                      {phaseMedia[activePhase].handle}
                     </span>
                     <span className="text-label tabular-nums text-black/40 shrink-0">
                       {String(activePhase + 1).padStart(2, '0')}
@@ -438,14 +507,15 @@ export default function ConnectPage() {
       {/* ── Client testimonial — shared site-wide quote treatment ── */}
       <ClientQuote
         quote="Bad Brain were a pleasure to work with from start to finish. They immediately grasped what our brand was all about, as well as our strengths, weaknesses and untapped opportunities… They were also able to source an extensive and diverse range of creators in our very niche field and onboard them seamlessly."
-        attribution="Jake Massey, Head of Socials — BLD BRO"
+        attribution="Jake Massey, Head of Socials - BLD BRO"
+        logo={{ src: '/images/clients/bldbro.png', alt: 'BLD BRO' }}
         accent="text-bb-grey"
       />
 
       {/* ── CTA — cool-grey block moment ── */}
       <ServiceCTA
         heading="Bring us the brief."
-        cta="Let's talk"
+        cta="Let's Talk"
         bg="bg-bb-grey"
         hoverText="hover:text-bb-grey"
       />

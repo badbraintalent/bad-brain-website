@@ -21,7 +21,7 @@ const walter = localFont({
   display: "swap",
 });
 
-const TITLE = "Bad Brain | Creator Economy Specialists";
+const TITLE = "Bad Brain | Social Entertainment Agency";
 const DESCRIPTION =
   "We're a specialist agency for brands, creators and artists. Four connected services for the entertainment era of social.";
 

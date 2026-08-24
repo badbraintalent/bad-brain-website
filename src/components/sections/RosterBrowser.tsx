@@ -86,13 +86,17 @@ export default function RosterBrowser() {
                     >
                       {creator.name}
                     </h3>
-                    <p className="text-label tracking-label uppercase text-white/40 mt-1.5 truncate">
-                      {creator.niche}
-                    </p>
+                    {creator.niche && (
+                      <p className="text-label tracking-label uppercase text-white/40 mt-1.5 truncate">
+                        {creator.niche}
+                      </p>
+                    )}
                     {/* Inline stats — mobile only (the viewer shows them on lg) */}
-                    <p className="lg:hidden text-label tracking-label uppercase text-white/60 mt-1.5">
-                      {creator.stats.map((s) => `${s.count} ${s.platform}`).join(' · ')}
-                    </p>
+                    {creator.stats?.length ? (
+                      <p className="lg:hidden text-label tracking-label uppercase text-white/60 mt-1.5">
+                        {creator.stats.map((s) => `${s.count} ${s.platform}`).join(' · ')}
+                      </p>
+                    ) : null}
                   </div>
 
                 </div>
@@ -123,14 +127,14 @@ export default function RosterBrowser() {
                 {/* Properties readout */}
                 <div className="mt-5 flex items-baseline justify-between gap-4">
                   <p className="text-label tracking-label uppercase text-white/40">
-                    {creators[active].niche}
+                    {creators[active].niche ?? ''}
                   </p>
                   <p className="text-label tabular-nums text-bb-mint shrink-0">
                     {creators[active].num}
                   </p>
                 </div>
                 <div className="mt-3 border-t border-white/15">
-                  {creators[active].stats.map((s) => (
+                  {(creators[active].stats ?? []).map((s) => (
                     <div
                       key={s.platform}
                       className="flex items-baseline justify-between gap-4 py-2.5 border-b border-white/10"

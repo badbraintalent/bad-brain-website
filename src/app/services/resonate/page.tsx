@@ -13,6 +13,51 @@ const EQ_BARS = 16
    items are full sentences, not two-word tags. */
 const CELL_H = '250px'
 
+/* ── Halftone wash, one crop of the brand artwork behind each coverage cell ────
+   The waveform in resonate_16x9_gray.png sits in the right-hand two-thirds of a
+   1920×1080 frame and in its lower half; everything outside that is blank paper.
+   Crops picked by eye off the whole frame kept landing on the paper, which is
+   what read as white patches in the grid — so these eight are pinned instead.
+   Each is measured a twelfth of a window at a time rather than as an average: a
+   crop can carry plenty of dots overall and still hang a bare column down one
+   edge, which reads as the same fault at cell size.
+
+   Sized off the cell's HEIGHT, not its width: the cell is a fixed 250px tall at
+   every breakpoint but its width is not, and a width-relative zoom would let the
+   window grow tall enough on a phone to reach the blank half of the frame. The
+   zoom is a multiple of the artwork's height everywhere, and only the window's
+   width narrows on the 2-column grid — which stays inside the inked region.
+
+   `zoom` varies per cell as well, which is what stops the grid reading as one
+   picture stamped eight times: the dot matrix comes out coarser or finer, so two
+   cells differ in texture and not just in which peak they caught. `flip` mirrors
+   the crop, which reverses the direction the waveform climbs — the cheapest way
+   to make two windows over the same busy stretch of artwork look unrelated.
+
+   x/y are background-position values, i.e. percentages of the image overhang
+   rather than of the image, so they read higher than the crop's actual position
+   in the frame. Both breakpoints' windows were checked at every entry. */
+const WAVE_CROPS = [
+  { zoom: 460, x: 0.58, y: 0.70, flip: false },
+  { zoom: 400, x: 0.80, y: 0.80, flip: false },
+  { zoom: 350, x: 0.70, y: 1.00, flip: false },
+  { zoom: 300, x: 0.60, y: 0.84, flip: false },
+  { zoom: 350, x: 0.84, y: 0.92, flip: true },
+  { zoom: 460, x: 0.58, y: 0.72, flip: true },
+  { zoom: 400, x: 0.80, y: 0.80, flip: true },
+  { zoom: 300, x: 0.74, y: 0.98, flip: true },
+]
+
+function waveStyle(i: number) {
+  const { zoom, x, y, flip } = WAVE_CROPS[i % WAVE_CROPS.length]
+  return {
+    backgroundImage: "url('/images/brand/halftones/resonate_16x9_gray.png')",
+    backgroundSize: `auto ${zoom}%`,
+    backgroundPosition: `${x * 100}% ${y * 100}%`,
+    transform: flip ? 'scaleX(-1)' : undefined,
+  }
+}
+
 /* Three marks, mapped onto Make / Move / Grow. Drawn edge-to-edge in a 40×40
    box. */
 const iconProps = {
@@ -64,25 +109,25 @@ const coverage = [
     name: 'Make',
     Icon: MakeIcon,
     items: [
-      'Build a creative vision that looks and sounds like you — across every channel.',
+      'Build a creative vision that looks and sounds like you - across every channel.',
       'Get content calendars and format ideas planned around your music.',
-      'Walk away with creator toolkits — formats, templates and rollout guides — to make social less of a grind.',
+      'Walk away with creator toolkits - formats, templates and rollout guides - to make social less of a grind.',
     ],
   },
   {
     name: 'Move',
     Icon: MoveIcon,
     items: [
-      'Get your tracks moving through TikTok — fans, creators, everyday users.',
-      'Open doors through the Bad Brain ecosystem — platforms, partnerships and industry connections.',
-      'Have social listening working in the background — so you know what’s moving before it trends.',
+      'Get your tracks moving through TikTok - fans, creators, everyday users.',
+      'Open doors through the Bad Brain ecosystem - platforms, partnerships and industry connections.',
+      'Have social listening working in the background - so you know what’s moving before it trends.',
     ],
   },
   {
     name: 'Grow',
     Icon: GrowIcon,
     items: [
-      'Get rollout plans built around your release — pre-release, launch and beyond.',
+      'Get rollout plans built around your release - pre-release, launch and beyond.',
       'Use paid media to push what’s already landing to more of the right people.',
     ],
   },
@@ -134,7 +179,19 @@ export default function ResonatePage() {
 
     const io = new IntersectionObserver(([entry]) => {
       gridInViewRef.current = entry.isIntersecting
-      if (!entry.isIntersecting) {
+      if (entry.isIntersecting) {
+        /* The cells cycle through six brand animations totalling ~11MB. They
+           need to be buffered before a hover or the attract cycle reaches them,
+           but fetching that at page load starved the hero and made scrolling
+           down to here stutter. Upgrade from preload="none" on first entry
+           instead, which is early enough to be warm by the first hover. */
+        videoRefs.current.forEach((v) => {
+          if (v && v.preload !== 'auto') {
+            v.preload = 'auto'
+            v.load()
+          }
+        })
+      } else {
         setSpotlight(null)
         // Off-screen cells must actually stop decoding, not just fade out
         videoRefs.current.forEach((v) => v?.pause())
@@ -259,26 +316,27 @@ export default function ResonatePage() {
           className="relative flex-1 flex flex-col min-h-0 max-w-7xl mx-auto w-full px-6 lg:px-8"
           style={{ paddingBottom: 'clamp(3rem, 10vw, 9rem)' }}
         >
-          {/* Headline + mark — one lockup, bottom-anchored together so the pair
-              stays coupled at any viewport size (mark was previously pinned
-              top-right and drifted away from the headline on big screens) */}
-          <div className="flex-1 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8 pt-8 sm:pt-0 pb-10 min-h-0">
-            <h1
-              className="title-outline uppercase text-display-2"
-              style={{
-                ['--title-stroke' as never]: '0.3em',
-              }}
-            >
-              <span className="block" style={enter('0.28s')}>Find your</span>
-              <span className="block" style={enter('0.38s')}>people.</span>
-            </h1>
+          {/* Mark + headline — the other three service heroes' lockup (mark
+              above, left-aligned, gap-5 lg:gap-7), but scaled 1.5x off their
+              w-[8rem] lg:w-[10rem]: this hero carries no left panel and no
+              pillar cells, so the mark holds more of the frame here. Unlike
+              those pages there is no panel to sit in, so the column is
+              bottom-anchored with justify-end over the waveform. */}
+          <div className="flex-1 flex flex-col justify-end items-start gap-5 lg:gap-7 pt-8 sm:pt-0 pb-10 min-h-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/brand/marks/Resonate.svg"
               alt="Bad Brain Resonate"
-              className="order-first sm:order-last min-w-0 w-[11rem] lg:w-[15rem] h-auto sm:mb-6"
-              style={enter('0.5s')}
+              className="shrink-0 w-[12rem] lg:w-[15rem] h-auto"
+              style={enter('0.28s')}
             />
+            {/* Solid, not outlined. Outline type is reserved for CTA and quote
+                moments (ServiceCTA, the testimonials pull quote); page H1s are
+                solid — see the Blueprint/Connect/Studio heroes. */}
+            <h1 className="uppercase text-display-2 text-black">
+              <span className="block" style={enter('0.38s')}>Find your</span>
+              <span className="block" style={enter('0.48s')}>people.</span>
+            </h1>
           </div>
 
           <div
@@ -390,7 +448,7 @@ export default function ResonatePage() {
                   The part nobody tells you:{' '}
                   <strong className="text-black font-semibold">not everybody is a potential fan</strong>.
                   Being discovered by the right audience takes a plan, not just a phone and good
-                  intentions. We build it with you — starting with your story, your sound, and your goals.
+                  intentions. We build it with you - starting with your story, your sound, and your goals.
                 </p>
               </div>
             </div>
@@ -432,6 +490,7 @@ export default function ResonatePage() {
               <img
                 src="/images/resonate/jen-long.jpg"
                 alt="Jen Long, Resonate Co-Founder"
+                loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{ objectPosition: 'center 52%' }}
               />
@@ -477,7 +536,7 @@ export default function ResonatePage() {
               </>],
               ['Management', <>
                 Founder, <strong className="text-black font-semibold">Take Care Management</strong>. Current
-                roster includes <strong className="text-black font-semibold">jasmine.4.t</strong> — BBC 6
+                roster includes <strong className="text-black font-semibold">jasmine.4.t</strong> - BBC 6
                 Music Artist of the Year 2025, first UK signee to Saddest Factory Records.
               </>],
             ].map(([label, body], i) => (
@@ -520,7 +579,7 @@ export default function ResonatePage() {
 
       {/* ── What Resonate covers — Make/Move/Grow clusters, each row opening
              with a black header cell, items keeping the brand-animation hover ── */}
-      <section className="bg-white resonate-services-section border-t border-black/10">
+      <section className="relative bg-white resonate-services-section border-t border-black/10">
 
         {/* Contained to the same gutter as every other section — the grid was
             full-bleed, which made it the one element on the page not lining up
@@ -590,31 +649,27 @@ export default function ResonatePage() {
                     onMouseEnter={() => void videoRefs.current[i]?.play().catch(() => {})}
                     onMouseLeave={() => videoRefs.current[i]?.pause()}
                   >
-                    {/* Faint waveform strip — echoes the hero halftone; each cell
-                        shows a different slice so the row reads like a sequence */}
+                    {/* Waveform wash — a different crop of the brand halftone
+                        fills each cell, so the grid reads as a run of one
+                        artwork. Held at 45% so the copy sits on top of it
+                        rather than in it. */}
                     <div
                       aria-hidden="true"
-                      className={`absolute inset-x-0 bottom-0 pointer-events-none transition-opacity duration-700 ${lit ? 'opacity-0' : 'opacity-70 group-hover:opacity-0'}`}
-                      style={{
-                        backgroundImage: "url('/images/brand/halftones/resonate_16x9_gray.png')",
-                        /* zoom, strip height and slice vary per cell so the grid
-                           reads as eight different waveform crops; y stays in the
-                           40–60% band where the art lives, so no slice is blank */
-                        height: `${36 + (i * 17) % 32}px`,
-                        backgroundSize: `${240 + (i % 3) * 90}% auto`,
-                        backgroundPosition: `${(29 + i * 37) % 100}% ${44 + (i * 7) % 16}%`,
-                      }}
+                      className={`absolute inset-0 pointer-events-none transition-opacity duration-700 ${lit ? 'opacity-0' : 'opacity-45 group-hover:opacity-0'}`}
+                      style={waveStyle(i)}
                     />
                     {/* Brand animation — hidden until hover/spotlight, and only
                         plays then too: no autoPlay, or every clip decodes
-                        continuously for the whole session even while off-screen */}
+                        continuously for the whole session even while off-screen.
+                        preload is upgraded to "auto" when the grid scrolls into
+                        view (see the observer above), not at page load. */}
                     <video
                       ref={(el) => { videoRefs.current[i] = el }}
                       src={videoSrcs[i % videoSrcs.length]}
                       loop
                       muted
                       playsInline
-                      preload="auto"
+                      preload="none"
                       className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${lit ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
                     />
                     {/* Scrim — keeps the label legible over the bright animation */}
@@ -636,22 +691,9 @@ export default function ResonatePage() {
             </Fragment>
           ))}
 
-          {/* Grow has one fewer item than the other two clusters, so the 4×3 is
-              one short. Held as black negative space rather than a hole at the
-              corner. (The wordmark was tried here and inverts to an illegible
-              blob on black.) */}
-          <div
-            aria-hidden="true"
-            className="relative bg-black overflow-hidden border-r border-b border-black/15"
-            style={{ height: CELL_H }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/brand/halftones/resonate_16x9_green.png"
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
-            />
-          </div>
+          {/* Grow has one fewer item than the other two clusters, so the last
+              slot of the 4×3 goes unfilled. Nothing is drawn there — no cell, no
+              border — so the grid just stops short of the corner. */}
         </div>
         </div>
 
@@ -662,7 +704,7 @@ export default function ResonatePage() {
         heading="Get discovered."
         bg="bg-bb-mint"
         hoverText="hover:text-bb-mint"
-        cta="Find your people"
+        cta="Let's Talk"
       />
 
       <Footer />

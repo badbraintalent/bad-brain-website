@@ -3,11 +3,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 
 /* Tiles render ~112px wide on a phone (the grid collapses to one column, so
-   three slot columns share the full width) and ~200px at lg. The 540x960
-   masters are 5x oversized for the former, which dominated load on mobile —
-   ~9.8MB across the six reels. A 270x480 rendition suffices below lg and
-   costs ~3.1MB. Mirrors the hero's -960 split. */
-const mobileRendition = (src: string) => src.replace(/\.mp4$/, '-480.mp4')
+   three slot columns share the full width) and ~184px at lg. Neither width
+   justifies the 540x960 masters: the phone tile is 5x oversized, the desktop
+   tile still 1.5x oversized at 2x DPR. Both tiers are purpose-cut, and both
+   are capped at 30fps — two of the masters run at 50/60, which is decode cost
+   nobody can see on a tile this size and with up to a dozen playing at once.
+
+   270x480 below lg (~1.9MB across the six reels), 384x682 at lg and up
+   (~5.1MB, down from ~9.4MB). Mirrors the hero's -960 split. */
+const rendition = (src: string, narrow: boolean) =>
+  src.replace(/\.mp4$/, narrow ? '-480.mp4' : '-384.mp4')
 
 // Real creator reels — transcoded to web mp4 (+ poster). Cycled through the
 // slot columns; each column shows a 4-up window into this set, doubled for the loop.
@@ -64,13 +69,7 @@ const VideoSlotColumn = ({
           <div key={i} className="slot-video-wrapper relative aspect-[9/16]">
             <video
               data-slot-video
-              src={
-                narrow === null
-                  ? undefined
-                  : narrow
-                    ? mobileRendition(item.src)
-                    : item.src
-              }
+              src={narrow === null ? undefined : rendition(item.src, narrow)}
               poster={item.poster}
               muted
               loop

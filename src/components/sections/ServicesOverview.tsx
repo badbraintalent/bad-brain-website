@@ -21,7 +21,7 @@ const services = [
     desc: (
       <>
         Get your creator and social strategy working as one. Blueprint is where
-        most Bad Brain clients start — <strong>audits, workshops and programme
+        most Bad Brain clients start - <strong>audits, workshops and programme
         design</strong> that everything else builds from.
       </>
     ),
@@ -35,12 +35,12 @@ const services = [
     category: 'For brands and creators',
     desc: (
       <>
-        <strong>For brands</strong> — Bring in the team who gets the creator
+        <strong>For brands</strong> - Bring in the team who gets the creator
         economy from the inside. End-to-end delivery: sourcing, briefing,
         contracts, content rights, performance. Everything.
         <br />
-        <strong>For creators</strong> — Build a career without losing control.
-        Representation that flexes with you — from inbox management to full
+        <strong>For creators</strong> - Build a career without losing control.
+        Representation that flexes with you - from inbox management to full
         partnership. Three tiers, no forced exclusivity.
       </>
     ),
