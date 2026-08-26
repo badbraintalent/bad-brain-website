@@ -6,8 +6,14 @@ import WindowTitleBar from '@/components/ui/WindowTitleBar'
 import ServiceCTA from '@/components/sections/ServiceCTA'
 import ClientQuote from '@/components/sections/ClientQuote'
 import { creators } from '@/lib/creators'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { enter, winShadow } from '@/lib/y2k'
+
+// Scroll-driven animation properties not yet in @types/react
+type ScrollCSS = CSSProperties & {
+  animationTimeline?: string
+  animationRange?: string
+}
 
 
 /* The brand-side offer — four campaign phases. */
@@ -56,7 +62,7 @@ const delivers = [
     ],
   },
   {
-    phase: 'Close',
+    phase: 'Wrap',
     items: [
       {
         lead: 'Reporting',
@@ -338,8 +344,17 @@ export default function ConnectPage() {
               sits in a sticky panel that follows the phase you're reading. */}
           <div className="grid lg:grid-cols-[1fr_32%] lg:gap-x-16">
 
-            {/* Phases, stacked */}
-            <div>
+            {/* Phases, stacked.
+
+                `overflow-x: clip` is what makes the entrance below safe: the
+                phases sit in the left grid column, and a block starting 80vw to
+                the right would otherwise sweep across the sticky media panel on
+                its way in (and widen the document while it does). Clipping to
+                the column means each phase enters from its own right edge and
+                never crosses the panel. `clip` rather than `hidden` — `hidden`
+                would make this a scroll container, which breaks both the
+                `view()` lookup and the panel's stickiness. */}
+            <div style={{ overflowX: 'clip' }}>
               {delivers.map(({ phase, items }, phaseIdx) => (
                 <div
                   key={phase}
@@ -353,15 +368,21 @@ export default function ConnectPage() {
                      read as decorative once the copy inside was balanced: two
                      ragged edges arguing with each other. The separation the
                      staircase was carrying is done by the `pb-12 md:pb-20`
-                     below, which is why that stays.
-
-                     No entrance animation, deliberately. One was built here and
-                     removed: the section already has motion in the sticky panel,
-                     which swaps clip as you move between phases, and a second
-                     moving thing next to it was doing nothing the panel wasn't
-                     already doing better. Static copy beside a changing video
-                     reads as intentional; both moving reads as busy. */
+                     below, which is why that stays. */
                   className="pb-12 md:pb-20 last:pb-0"
+                  /* Entrance matches the homepage service rows: alternating
+                     horizontal slide, each block on its own `view()` timeline so
+                     it tracks independently, finishing the moment it is fully on
+                     screen (`entry 0%` → `entry 100%`). Running to `contain` any
+                     further would leave phase 04 still settling after 01 had
+                     scrolled off. */
+                  style={{
+                    animationName: phaseIdx % 2 === 0 ? 'slide-from-left' : 'slide-from-right',
+                    animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
+                    animationFillMode: 'both',
+                    animationTimeline: 'view()',
+                    animationRange: 'entry 0% entry 100%',
+                  } as ScrollCSS}
                 >
                   {/* Media inline above each phase below lg, where there is no
                       room for a side panel. These were stills; they now run, on

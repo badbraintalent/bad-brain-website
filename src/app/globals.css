@@ -847,8 +847,11 @@ html {
   animation-range: cover 10% cover 55%;
 }
 
+/* The duration here is only the pre-hydration fallback — Testimonials.tsx
+   measures the track and overwrites it so the crawl holds a constant px/s
+   whatever the track's width or the viewport. */
 .testimonial-marquee-track {
-  animation: marquee-scroll 20s linear infinite;
+  animation: marquee-scroll 40s linear infinite;
 }
 
 @keyframes marquee-scroll {

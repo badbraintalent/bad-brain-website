@@ -5,8 +5,8 @@ import React, { useEffect, useRef, useState } from 'react'
 /* ── Data ─ real quotes ── */
 
 /* The featured quote is the one with a named person, a role and a logo; the
-   grid quotes below are text-only. The featured companies and the logo crawl
-   are kept as disjoint sets. */
+   grid quotes below carry the same attribution shape. The crawl and the quoted
+   companies overlap — every company with a quote also runs in the crawl. */
 const heroTestimonial = {
   quote: "Bad Brain thinks differently. Sharp creative, sharp strategy, with an expert’s read on the creator economy that shows in everything they make. Their focus on Social Entertainment is exactly the kind of thinking we want in the room.",
   name: 'Aaron Brooks',
@@ -16,12 +16,27 @@ const heroTestimonial = {
 }
 
 /* `logo` puts the mark alongside the name on a grid quote. Omit it and the
-   footer falls back to the name alone. */
-const gridTestimonials: { quote: string; company: string; logo?: string }[] = [
+   footer falls back to the name alone.
+
+   `name`/`role` attribute the quote to a person, the same shape as the hero
+   testimonial's footer. Both are optional and must move together: a role with
+   no name attributes nothing. Omit both and the footer shows the company
+   alone. */
+const gridTestimonials: {
+  quote: string
+  company: string
+  logo?: string
+  name?: string
+  role?: string
+}[] = [
   {
     quote: "In the space of three months, Bad Brain helped us build a bespoke UGC platform on the other side of the world, launching a new brand to 15 international markets - and doing so to the highest possible standard. The type of feat I only thought possible through a large agency!",
     company: 'The Warren',
     logo: '/images/clients/the-warren.png',
+    // Same attribution as the standalone Warren quote on the Studio page; keep
+    // the two in step.
+    name: 'Guy Crozier',
+    role: 'Founder & Director',
   },
   {
     quote: "Bad Brain combines creator-side experience and creative strategy with a strong grasp of data, attribution, and commercial value. That blend of creativity and sharp commercial thinking is rare and really stood out.",
@@ -54,15 +69,46 @@ const GRID_LOGO_MAX_H = 34
 const LOGO_MAX_W = 150
 const LOGO_MAX_H = 68
 
+/* Every client mark runs here, quoted above or not. The box above takes them
+   all without a special case: Vamp is 1.5:1 and so caps on height rather than
+   width, which is why `vamp.svg` needs intrinsic `width`/`height` attributes —
+   with only a `viewBox` it has a ratio and no size to scale from, and lands at
+   0x0 under auto/auto. */
 const clients = [
   { company: 'Smoking Gun', src: '/images/clients/smoking-gun.png' },
   { company: 'BLDBRO', src: '/images/clients/bldbro.png' },
   { company: 'Learn Canadian', src: '/images/clients/learn-canadian.png' },
+  { company: 'Awin', src: '/images/clients/awin.png' },
+  { company: 'The Warren', src: '/images/clients/the-warren.png' },
+  { company: 'Vamp', src: '/images/clients/vamp.svg' },
 ]
 
 // Repeated so the track is wide enough; the render doubles it again into
 // two identical halves for the seamless -50% loop.
 const allClients = [...clients, ...clients]
+
+/* Two things the -50% loop depends on, both easy to break:
+
+   The track must be `w-max`. `translateX(-50%)` resolves its percentage
+   against the *border box* of the element it is on, not against the content
+   inside it. A block-level flex track takes the width of its overflow-hidden
+   parent, so -50% was travelling half the viewport rather than half the logo
+   run — a few hundred pixels, then a snap back. Sizing the track to its own
+   content makes the two measurements the same thing again.
+
+   The spacing must be a right padding on each item, not a flex `gap`. With
+   `gap` the last item has no trailing space, so the run is one gap short of
+   two whole repeats and the loop lands half a gap out. Padding travels with
+   the item, which makes the second half an exact copy of the first. */
+const MARQUEE_ITEM_PAD = 'pr-16'
+
+/* Speed in px/s, with the duration derived from the measured track. A fixed
+   `animation-duration` sets the *time per lap* instead, so the speed moves
+   whenever the track's width does — which it does on every viewport, and again
+   whenever a logo is added. */
+const MARQUEE_PX_PER_SEC_DESKTOP = 30
+const MARQUEE_PX_PER_SEC_MOBILE = 63
+const MARQUEE_MOBILE_MQ = '(max-width: 767px)'
 
 /* ── Component ── */
 
@@ -82,6 +128,32 @@ const Testimonials = () => {
     )
     io.observe(track)
     return () => io.disconnect()
+  }, [])
+
+  /* Hold the crawl to a constant px/s. The keyframe runs to -50% of the track's
+     own border box, so `offsetWidth / 2` is the distance one lap covers —
+     `scrollWidth` is the same number only because the track is `w-max`, and
+     `offsetWidth` is what the percentage actually resolves against. Re-measured
+     on a ResizeObserver because the logos are plain <img> with auto dimensions:
+     the track is narrower than its final width until they have all decoded. */
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return
+    const mq = window.matchMedia(MARQUEE_MOBILE_MQ)
+    const apply = () => {
+      const distance = track.offsetWidth / 2
+      if (!distance) return
+      const speed = mq.matches ? MARQUEE_PX_PER_SEC_MOBILE : MARQUEE_PX_PER_SEC_DESKTOP
+      track.style.animationDuration = `${(distance / speed).toFixed(2)}s`
+    }
+    apply()
+    const ro = new ResizeObserver(apply)
+    ro.observe(track)
+    mq.addEventListener('change', apply)
+    return () => {
+      ro.disconnect()
+      mq.removeEventListener('change', apply)
+    }
   }, [])
 
   // Slow the logo marquee to half speed on hover. Driven via WAAPI so the speed
@@ -190,6 +262,12 @@ We didn&rsquo;t<br />write these.
                   )}
                   <div className="text-label">
                     <span className="text-black font-medium block">{t.company}</span>
+                    {t.name && (
+                      <span className="text-black/60 block">
+                        {t.name}
+                        {t.role ? `, ${t.role}` : ''}
+                      </span>
+                    )}
                   </div>
                 </footer>
               </blockquote>
@@ -205,14 +283,14 @@ We didn&rsquo;t<br />write these.
         >
           <div
             ref={trackRef}
-            className="testimonial-marquee-track flex items-center gap-16 whitespace-nowrap"
+            className="testimonial-marquee-track flex items-center w-max whitespace-nowrap"
             style={{ animationPlayState: marqueeInView ? 'running' : 'paused' }}
           >
             {/* Doubled for seamless loop */}
             {[...allClients, ...allClients].map((client, i) => (
               <div
                 key={i}
-                className="flex items-center flex-shrink-0"
+                className={`flex items-center flex-shrink-0 ${MARQUEE_ITEM_PAD}`}
                 onMouseEnter={() => setHoveredLogo(i)}
                 onMouseLeave={() => setHoveredLogo(null)}
               >

@@ -17,7 +17,7 @@ const services = [
     num: '01',
     name: 'Blueprint',
     logo: '/images/brand/marks/Blueprint.svg',
-    category: 'For brands, agencies and networks',
+    category: 'Strategic Consultancy',
     desc: (
       <>
         Get your creator and social strategy working as one. Blueprint is where
@@ -32,7 +32,7 @@ const services = [
     num: '02',
     name: 'Connect',
     logo: '/images/brand/marks/Connect.svg',
-    category: 'For brands and creators',
+    category: 'Creator Marketing Services',
     desc: (
       <>
         <strong>For brands</strong> - Bring in the team who gets the creator
@@ -51,7 +51,7 @@ const services = [
     num: '03',
     name: 'Studio',
     logo: '/images/brand/marks/Studio.svg',
-    category: 'For brands',
+    category: 'Content Production',
     desc: (
       <>
         Turn your organic social strategy into content that holds attention
@@ -66,7 +66,7 @@ const services = [
     num: '04',
     name: 'Resonate',
     logo: '/images/brand/marks/Resonate.svg',
-    category: 'For artists, labels and managers',
+    category: 'Band / Artist Socials',
     desc: (
       <>
         Get discovered on your own terms. Co-founded by music insider{' '}

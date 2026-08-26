@@ -39,10 +39,14 @@ const CHANNELS: Channel[] = [
     type: 'Quickfire',
     label: 'Fast & Reactive Content',
     desc: 'Snappy content to grab genuine reactions - vox-pops, quick reviews, on-the-spot takes.',
-    // Same footage the Connect page ships as lance-480; this is the 540×960
-    // rendition, since the rack slot is ~647px wide.
-    video: '/videos/creators/lance.mp4',
-    focus: '22%',
+    /* Rack-specific cut, not the reel the rest of the site runs. The monitor is
+       ~2.4:1 and a 9:16 clip shows barely a quarter of its frame height, so the
+       full reel — which works everywhere it plays whole — landed on empty
+       street for most of its length here and never read as a vox-pop. This cut
+       stays on the interview for its whole 14s. The reel itself is untouched:
+       Connect and the homepage showcase still use `creators/lance.mp4`. */
+    video: '/videos/studio/quickfire-voxpop.mp4',
+    focus: '14%',
   },
   {
     num: '02',
