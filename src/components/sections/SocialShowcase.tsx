@@ -142,20 +142,19 @@ const SocialShowcase = () => {
 
           {/* Left Column - CTA */}
           <div className="space-y-8">
-            {/* "Entertainment" is 13 characters of Gravity Wide — at the stock
-                display-2 ceiling (60px) it measures 684px against a 576px
-                column, so it ran into the reel grid. Below lg the column is
-                full-width and display-2 fits, so only lg+ is re-scaled: the
-                column is narrowest at exactly 1024px (448px, where the two-up
-                grid starts) and widens to 576px, hence the vw-tracking clamp
-                rather than a flat size.
+            {/* Three lines, so the longest is "Entertainment". Setting
+                "Social Entertainment" as one line is the same headline at
+                roughly two thirds the size: in Gravity Wide that string
+                measures 16.35x its own font-size, so it only clears a 576px
+                column at ~34px, against the 48px this holds.
 
-                The breaks are hard for the same reason the size is clamped:
-                "Social Entertainment" set on one line is 20 characters, which
-                needs ~33px to fit the column — half the display size, and the
-                section's opening statement can't carry that. Splitting after
-                "Social" keeps the longest line at "Entertainment", the width
-                the clamp above is derived from. */}
+                "Entertainment" is 13 characters — at the stock display-2
+                ceiling (60px) it measures 684px against that 576px column, so
+                it ran into the reel grid. Below lg the column is full-width and
+                display-2 fits, so only lg+ is re-scaled: the column is
+                narrowest at exactly 1024px (448px, where the two-up grid
+                starts) and widens to 576px, hence the vw-tracking clamp rather
+                than a flat size. */}
             <h2 className="social-text-1 text-display-2 lg:text-[clamp(2.25rem,calc(4.2vw_-_9px),3rem)]">
               For the age of<br />Social<br />Entertainment
             </h2>
