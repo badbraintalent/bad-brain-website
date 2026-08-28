@@ -13,6 +13,8 @@ type ScrollCSS = CSSProperties & {
   viewTimelineAxis?: string
   animationTimeline?: string
   animationRange?: string
+  // Marks the element for the scroll-scrub fallback — see ScrollScrub.tsx.
+  '--scrub'?: number
 }
 
 /* The FFF funnel — three descending tiers, widest at the top. Widths are
@@ -382,13 +384,14 @@ Your audience wants a world to belong to.
                   animationFillMode: 'both',
                   animationTimeline: '--fff-funnel',
                   animationRange: `cover ${8 + i * 7}% cover ${33 + i * 7}%`,
+                  '--scrub': 1,
                 } as ScrollCSS}
               >
                 {/* The stacked lines carry their own tightened leading below sm —
                     the type tokens' 1.6 is set for running paragraphs and is what
                     made these blocks tall. None of the three has a descender to
                     protect at this size. */}
-                <span className="text-body-md font-bold uppercase tracking-label leading-none sm:leading-normal">
+                <span className="text-body-md uppercase tracking-label leading-none sm:leading-normal">
                   {name}
                 </span>
                 <span aria-hidden="true" className="hidden sm:block w-px h-5 bg-white/25 shrink-0" />
@@ -446,10 +449,15 @@ Your audience wants a world to belong to.
                     </span>
                   </div>
 
-                  {/* 2 — Caption: the tier's promise, set apart in italic */}
-                  <p className="text-body-md text-black/60 italic mt-5 mb-2 max-w-2xl">{intro}</p>
+                  {/* 2 — Caption: the tier's promise, set apart by a left rule.
+                      Not italic — Walter Neue ships no italic face and
+                      `font-synthesis: none` suppresses the synthesised oblique,
+                      so `italic` here rendered upright and did nothing. */}
+                  <p className="text-body-md text-black/60 mt-5 mb-2 max-w-2xl border-l-2 border-black/15 pl-4">
+                    {intro}
+                  </p>
 
-                  {/* 3/4 — Items: bold lead clause, lighter detail clause */}
+                  {/* 3/4 — Items: lead clause carried by colour, lighter detail clause */}
                   {items.map(({ lead, detail }, j) => (
                     <div
                       key={lead}
@@ -459,7 +467,7 @@ Your audience wants a world to belong to.
                         {String(offset + j + 1).padStart(2, '0')}
                       </span>
                       <p className="text-body-md max-w-3xl">
-                        <span className="text-black font-semibold">{lead}</span>
+                        <span className="text-black">{lead}</span>
                         <span className="text-black/70"> - {detail}</span>
                       </p>
                     </div>

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import WindowTitleBar from '@/components/ui/WindowTitleBar'
@@ -348,7 +349,7 @@ export default function ResonatePage() {
               <div className="p-6">
                 <p className="text-black/70 text-body-sm mb-6">
                   Build your audience with{' '}
-                  <strong className="text-black font-semibold">as much care as you make your music</strong>.
+                  <strong className="text-black">as much care as you make your music</strong>.
                   We value connection over likes, fans over followers. Resonate helps you create strategies
                   that stay true to you.
                 </p>
@@ -438,7 +439,7 @@ export default function ResonatePage() {
             <div className="resonate-problem-copy grid lg:grid-cols-2 gap-8 lg:gap-20 text-black/70 text-body-md">
               <div>
                 <p>
-                  <strong className="text-black font-semibold">Discovery has never been more open.</strong>{' '}
+                  <strong className="text-black">Discovery has never been more open.</strong>{' '}
                   Anyone online today could be hearing your music for the first time, whether
                   you&apos;re a signed artist or not.
                 </p>
@@ -446,7 +447,7 @@ export default function ResonatePage() {
               <div>
                 <p>
                   The part nobody tells you:{' '}
-                  <strong className="text-black font-semibold">not everybody is a potential fan</strong>.
+                  <strong className="text-black">not everybody is a potential fan</strong>.
                   Being discovered by the right audience takes a plan, not just a phone and good
                   intentions. We build it with you - starting with your story, your sound, and your goals.
                 </p>
@@ -486,12 +487,12 @@ export default function ResonatePage() {
               className="relative overflow-hidden bg-black order-first"
               style={{ aspectRatio: '4 / 3' }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/images/resonate/jen-long.jpg"
                 alt="Jen Long, Resonate Co-Founder"
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover"
+                fill
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="object-cover"
                 style={{ objectPosition: 'center 52%' }}
               />
             </div>
@@ -526,17 +527,17 @@ export default function ResonatePage() {
           <div className="grid md:grid-cols-3 gap-10 lg:gap-16">
             {[
               ['Broadcasting', <>
-                Presented <strong className="text-black font-semibold">BBC Introducing on Radio 1</strong>,
+                Presented <strong className="text-black">BBC Introducing on Radio 1</strong>,
                 helping break new artists at a national level. Glastonbury festival coverage for BBC Three.
               </>],
               ['Industry', <>
-                <strong className="text-black font-semibold">Music Editor at DICE</strong>, helping launch
+                <strong className="text-black">Music Editor at DICE</strong>, helping launch
                 the platform. Contributing Editor and Partnerships at{' '}
-                <strong className="text-black font-semibold">The Line of Best Fit</strong> since 2009.
+                <strong className="text-black">The Line of Best Fit</strong> since 2009.
               </>],
               ['Management', <>
-                Founder, <strong className="text-black font-semibold">Take Care Management</strong>. Current
-                roster includes <strong className="text-black font-semibold">jasmine.4.t</strong> - BBC 6
+                Founder, <strong className="text-black">Take Care Management</strong>. Current
+                roster includes <strong className="text-black">jasmine.4.t</strong> - BBC 6
                 Music Artist of the Year 2025, first UK signee to Saddest Factory Records.
               </>],
             ].map(([label, body], i) => (

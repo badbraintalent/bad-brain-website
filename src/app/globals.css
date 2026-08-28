@@ -121,6 +121,19 @@
     /* Explicit rather than relying on `auto` — the measurement above only
        reconciles with the PDF if kern pairs are applied. */
     font-kerning: normal;
+    /* Load-bearing. Each face ships as a single weight file registered at 400
+       (Walter Neue's outlines are already Semibold artwork; Gravity Wide ships
+       one weight only). Any `font-weight` above 400 or any `italic` would
+       otherwise be synthesised — the browser smearing or shearing those
+       outlines — and the synthesis algorithms differ between Blink, Gecko and
+       WebKit, so brand type would render three different ways. `none` makes
+       every engine draw the real outlines instead.
+
+       Consequence: weight and style utilities are inert sitewide. Emphasis is
+       carried by colour (`text-black` against the parent's `text-black/70`),
+       not by weight. Do not reintroduce `font-semibold`/`font-bold`/`italic`
+       expecting a visual change, and do not remove this line to make one
+       work — that reintroduces faux bold everywhere at once. */
     font-synthesis: none;
   }
 
@@ -446,6 +459,18 @@ html {
   }
 }
 
+/* Non-inheriting, so only the element the rule names is marked. Custom
+   properties inherit by default, which had ScrollScrub scanning 200 descendants
+   on the homepage instead of the 13 animated elements — harmless, since a
+   descendant has no animation of its own to scrub, but wasteful and misleading
+   to anyone reading the scan. Falls back to inheriting where `@property` is
+   unsupported, which still behaves correctly. */
+@property --scrub {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
 /* Register --fill so the browser can interpolate it as a percentage */
 @property --fill {
   syntax: '<percentage>';
@@ -707,6 +732,60 @@ html {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   SCROLL-DRIVEN ANIMATIONS — read before editing any rule below.
+
+   Two patterns live in this file. Everything below uses the first; the Social
+   Showcase uses the second, and the rest will follow if it proves out.
+
+   ── Pattern 1: single rule, no duration (services, testimonials) ──
+   Sets `animation-name` (or the `animation` shorthand) with
+   `animation-fill-mode: both`, an `animation-timeline`, an `animation-range` —
+   and NO `animation-duration`.
+
+   The missing duration is load-bearing, not an oversight. In an engine that
+   supports scroll-driven animations, the timeline supplies the progress and
+   duration is irrelevant. In an engine that does NOT, `animation-timeline` is
+   dropped but the name and fill-mode survive; duration then falls back to its
+   initial `0s`, so `fill: both` resolves the element to its 100% keyframe
+   immediately. Entrances therefore land at opacity 1 / translate 0 — visible
+   and static, rather than stuck at the 0% keyframe and invisible.
+
+   Adding an `animation-duration` to any of these rules turns that graceful
+   fallback into a page of content that fades in once and never appears in
+   unsupporting engines. If a duration is genuinely needed, guard the rule with
+   `@supports (animation-timeline: view())` and give the unsupported branch an
+   explicit visible end state.
+
+   The `prefers-reduced-motion` block above is safe for the same reason from
+   the other direction: `animation: none` removes the animation entirely, so
+   fill-mode never applies and elements render from base CSS, which declares
+   no opacity.
+
+   ── Pattern 2: two paths, `@supports` + observer (Social Showcase) ──
+   Pattern 1 keeps content visible without native support, but it can only ever
+   be static — Firefox has not shipped scroll-driven animations (MDN compat has
+   every Firefox entry at "preview"; release needs
+   `layout.css.scroll-driven-animations.enabled`), so no visitor on it sees an
+   entrance. Pattern 2 splits the rule: `@supports (animation-timeline: view())`
+   keeps the scroll-driven version for Chromium, and `@supports not (...)` gives
+   everyone else a time-based animation triggered by an IntersectionObserver in
+   the component.
+
+   The hidden state in that second branch is gated on `html.js-anim`, set by an
+   inline <head> script in layout.tsx only when the property is missing AND JS
+   is running, so content is never hidden with nothing left to reveal it.
+
+   Two traps, both hit while building it:
+   - A static `opacity: 0` is NOT covered by the reduced-motion rule above.
+     `animation: none !important` removes the reveal and leaves the hidden
+     declaration standing. Every pattern-2 block needs its own reduced-motion
+     branch handing the opacity back.
+   - `entry`-anchored ranges end when the element is fully inside the viewport,
+     which is at the bottom edge — measurably too early to see. Pattern 2's
+     ranges are `cover`-anchored for that reason; see the note there.
+   ───────────────────────────────────────────────────────────────────────── */
+
 /* Social Showcase — scroll-driven entrance animations.
    Text slides in from the left, staggered. The slot machine
    scales up from compressed + faded. Uses the grid wrapper's
@@ -749,40 +828,43 @@ html {
   }
 }
 
-/* Text elements — stagger from left */
+/* The slot machine's scale wraps ~24 <video> elements, up to a dozen of them
+   playing. Left unpromoted the compositor re-rasters that whole subtree —
+   video textures included — on every frame the scale advances. Needed on both
+   paths below, so it sits outside them. */
+.social-slots {
+  will-change: transform;
+}
+
+/* Ranges are anchored on `cover`, not `entry`. An `entry`-anchored range ends
+   the moment the element is fully inside the viewport, which for these three
+   is at the very bottom edge — `.social-text-2` began AND finished below the
+   fold, so its entrance was never visible at any scroll position. Measured
+   against the timeline element (`.social-showcase-grid`), `cover 0%` is the
+   grid's first pixel entering and one percent is ~14px of scroll, which is
+   what the numbers below are in terms of.
+
+   Re-measure rather than reason about these if the section's height changes:
+   they are positions in the grid's cover range, so they move with it. */
 .social-text-1 {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: --social-showcase;
-  animation-range: entry 0% cover 22%;
+  animation-range: cover 8% cover 34%;
+  --scrub: 1;
 }
 
 .social-text-2 {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: --social-showcase;
-  animation-range: entry 5% cover 26%;
+  animation-range: cover 14% cover 42%;
+  --scrub: 1;
 }
 
-.social-text-3 {
-  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --social-showcase;
-  animation-range: entry 10% cover 30%;
-}
-
-.social-text-4 {
-  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --social-showcase;
-  animation-range: entry 15% cover 34%;
-}
-
-/* Slot machine — scales up from compact.
-   The scale wraps ~24 <video> elements, up to a dozen of them playing. Left
-   unpromoted the compositor re-rasters that whole subtree — video textures
-   included — on every scroll frame the scale advances. */
 .social-slots {
   animation: scale-reveal cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: --social-showcase;
-  animation-range: entry 5% cover 30%;
-  will-change: transform;
+  animation-range: cover 10% cover 40%;
+  --scrub: 1;
 }
 
 /* Testimonials — scroll-driven fade-up animations + infinite marquee.
@@ -805,6 +887,7 @@ html {
   animation-fill-mode: both;
   animation-timeline: view();
   animation-range: cover 15% cover 60%;
+  --scrub: 1;
 }
 
 .testimonial-hero {
@@ -813,6 +896,7 @@ html {
   animation-fill-mode: both;
   animation-timeline: view();
   animation-range: cover 10% cover 55%;
+  --scrub: 1;
 }
 
 .testimonial-col-1 {
@@ -821,6 +905,7 @@ html {
   animation-fill-mode: both;
   animation-timeline: view();
   animation-range: cover 10% cover 55%;
+  --scrub: 1;
 }
 
 .testimonial-col-2 {
@@ -829,6 +914,7 @@ html {
   animation-fill-mode: both;
   animation-timeline: view();
   animation-range: cover 15% cover 60%;
+  --scrub: 1;
 }
 
 .testimonial-col-3 {
@@ -837,6 +923,7 @@ html {
   animation-fill-mode: both;
   animation-timeline: view();
   animation-range: cover 20% cover 65%;
+  --scrub: 1;
 }
 
 .testimonial-marquee-wrapper {
@@ -845,6 +932,7 @@ html {
   animation-fill-mode: both;
   animation-timeline: view();
   animation-range: cover 10% cover 55%;
+  --scrub: 1;
 }
 
 /* The duration here is only the pre-hydration fallback — Testimonials.tsx
@@ -886,87 +974,70 @@ html {
   animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 35%;
+  --scrub: 1;
 }
 
 .consulting-problem-copy {
   animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 
-/* Services manifest — named timeline stagger */
+/* Services manifest — each row on its own `view()` timeline.
+   It used to share a `--consulting-services` timeline declared here, with a
+   percentage stagger per row. That double-counts: the rows are already
+   sequenced by their own vertical spacing, so the stagger added ~250px of
+   lateness per step and rows 3 and 4 finished at top 879 and 1129 — below the
+   fold, on a 900px viewport. Per-row timelines anchor each to its own entry,
+   and the small range spread below keeps a cascade without the drift.
+
+   `overflow: clip` stays — `hidden` would make this a scroll container and
+   break the timeline lookup. */
 .consulting-services-section {
   overflow: clip;
-}
-
-.consulting-services-list {
-  view-timeline-name: --consulting-services;
-  view-timeline-axis: block;
 }
 
 .consulting-services-header {
   animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 
 .consulting-service-1 {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --consulting-services;
+  animation-timeline: view();
   animation-range: entry 0% cover 28%;
+  --scrub: 1;
 }
 
 .consulting-service-2 {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --consulting-services;
-  animation-range: entry 5% cover 33%;
+  animation-timeline: view();
+  animation-range: entry 0% cover 30%;
+  --scrub: 1;
 }
 
 .consulting-service-3 {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --consulting-services;
-  animation-range: entry 10% cover 38%;
+  animation-timeline: view();
+  animation-range: entry 0% cover 32%;
+  --scrub: 1;
 }
 
 .consulting-service-4 {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --consulting-services;
-  animation-range: entry 15% cover 43%;
-}
-
-.consulting-service-5 {
-  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --consulting-services;
-  animation-range: entry 20% cover 48%;
-}
-
-.consulting-service-6 {
-  animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --consulting-services;
-  animation-range: entry 25% cover 53%;
+  animation-timeline: view();
+  animation-range: entry 0% cover 34%;
+  --scrub: 1;
 }
 
 /* ============================================================
    Talent page — scroll-driven animations
-   Problem: scroll-driven view() per element
-   Roster: dark section, alternating left/right per row
-   Services: named view-timeline, slides from right
+   Roster: dark section, the roster.exe window lifts in as it enters
    ============================================================ */
 
-/* Problem section */
-.talent-pull-quote {
-  animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 35%;
-}
-
-.talent-problem-copy {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 40%;
-}
-
-/* Roster section */
 .talent-roster-section {
   overflow: clip;
 }
@@ -975,6 +1046,7 @@ html {
   animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 
 /* roster.exe window lifts in once as it enters the viewport (the window is
@@ -983,47 +1055,7 @@ html {
   animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% entry 60%;
-}
-
-/* Services section */
-.talent-services-section {
-  overflow: clip;
-}
-
-.talent-services-header {
-  animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 40%;
-}
-
-.talent-services-list {
-  view-timeline-name: --talent-services;
-  view-timeline-axis: block;
-}
-
-/* Services slide from right — opposite to consulting's left */
-.talent-service-1 {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-services;
-  animation-range: entry 0% cover 30%;
-}
-
-.talent-service-2 {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-services;
-  animation-range: entry 10% cover 38%;
-}
-
-.talent-service-3 {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-services;
-  animation-range: entry 20% cover 46%;
-}
-
-.talent-service-4 {
-  animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-timeline: --talent-services;
-  animation-range: entry 30% cover 54%;
+  --scrub: 1;
 }
 
 /* ============================================================
@@ -1036,18 +1068,21 @@ html {
   animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 35%;
+  --scrub: 1;
 }
 
 .studio-problem-copy {
   animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 
 .studio-paradigm {
   animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 42%;
+  --scrub: 1;
 }
 
 /* The paradigm diagram's blue signal pass — a quantised left→right wipe that
@@ -1076,6 +1111,7 @@ html {
   animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 
 .studio-approach-list {
@@ -1087,18 +1123,21 @@ html {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: --studio-approach;
   animation-range: entry 0% cover 35%;
+  --scrub: 1;
 }
 
 .studio-approach-2 {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: --studio-approach;
   animation-range: entry 10% cover 43%;
+  --scrub: 1;
 }
 
 .studio-approach-3 {
   animation: slide-from-left cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: --studio-approach;
   animation-range: entry 20% cover 51%;
+  --scrub: 1;
 }
 
 /* ============================================================
@@ -1110,24 +1149,28 @@ html {
   animation: testimonial-heading-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 35%;
+  --scrub: 1;
 }
 
 .resonate-problem-copy {
   animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 
 .resonate-photo {
   animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 
 .resonate-bio {
   animation: slide-from-right cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 
 .resonate-services-section {
@@ -1138,5 +1181,6 @@ html {
   animation: consulting-up-in cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-timeline: view();
   animation-range: entry 0% cover 40%;
+  --scrub: 1;
 }
 

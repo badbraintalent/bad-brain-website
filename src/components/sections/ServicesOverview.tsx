@@ -5,10 +5,10 @@ import Link from 'next/link'
 
 // Extended type to allow CSS scroll-driven animation properties not yet in @types/react
 type ScrollCSS = React.CSSProperties & {
-  viewTimelineName?: string
-  viewTimelineAxis?: string
   animationTimeline?: string
   animationRange?: string
+  // Marks the element for the scroll-scrub fallback — see ScrollScrub.tsx.
+  '--scrub'?: number
 }
 
 /* ── Official sub-brand logomarks (interconnected-dot system) ── */
@@ -82,18 +82,7 @@ const services = [
 const ServicesOverview = () => {
   return (
     <section id="services" className="services-scroll-section bg-white border-t border-black/10">
-      {/*
-        Inner wrapper carries the named view-timeline so all children
-        animate relative to this block entering the viewport —
-        same pattern as .services-scroll-grid and .social-showcase-grid.
-      */}
-      <div
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-        style={{
-          viewTimelineName: '--services-overview',
-          viewTimelineAxis: 'block',
-        } as ScrollCSS}
-      >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header copy removed — the section now opens straight on the service rows */}
         <div className="pt-12 md:pt-20 border-b border-black/10" />
@@ -120,6 +109,7 @@ const ServicesOverview = () => {
                   animationFillMode: 'both',
                   animationTimeline: 'view()',
                   animationRange: 'entry 0% entry 100%',
+                  '--scrub': 1,
                 } as ScrollCSS}
               >
                 {/* The number's gutter is narrow on mobile — 44px of column plus a

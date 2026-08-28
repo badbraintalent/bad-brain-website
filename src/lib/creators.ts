@@ -7,7 +7,13 @@
 // dossier. Keeping one array means the roster is edited in a single place.
 export type Creator = {
   num: string
+  /**
+   * Not rendered — the roster displays `handle`. Kept because it is what the
+   * photos' alt text should say, and the handle is not a substitute for a
+   * person's name to a screen reader.
+   */
   name: string
+  handle: string
   photo: string
   /**
    * Shown in the Connect hero readout as well as the dossier, so a missing one
@@ -27,6 +33,7 @@ export const creators: Creator[] = [
   {
     num: '01',
     name: 'Marygrace Tropeano',
+    handle: '@MarygraceTropeano',
     niche: 'Model · Beauty · Lifestyle',
     photo: '/images/creators/marygrace-tropeano.jpg',
     stats: [
@@ -38,6 +45,7 @@ export const creators: Creator[] = [
   {
     num: '02',
     name: 'Carrie Patsalis',
+    handle: '@CarriePatsalis',
     niche: 'Travel · Tech · Lifestyle',
     photo: '/images/creators/carrie-patsalis.jpg',
     stats: [
@@ -49,6 +57,7 @@ export const creators: Creator[] = [
   {
     num: '03',
     name: 'Time Drops',
+    handle: '@TimeDrops',
     niche: 'Horology · Lifestyle',
     photo: '/images/creators/time-drops.jpg',
     stats: [
@@ -60,6 +69,7 @@ export const creators: Creator[] = [
   {
     num: '04',
     name: 'Paul Johnston Naylor',
+    handle: '@PaulJohnstonNaylor',
     niche: 'Humour · Family · Movies',
     photo: '/images/creators/paul-johnston-naylor.jpg',
     stats: [
@@ -71,6 +81,7 @@ export const creators: Creator[] = [
   {
     num: '05',
     name: 'Lapheal Sterling',
+    handle: '@LaphealSterling',
     niche: 'Fashion · Lifestyle',
     photo: '/images/creators/lapheal-sterling.jpg',
     stats: [
@@ -81,6 +92,7 @@ export const creators: Creator[] = [
   {
     num: '06',
     name: 'Amiizmus',
+    handle: '@AmarillaSterling',
     niche: 'Fashion · Lifestyle',
     photo: '/images/creators/amiizmus.jpg',
     stats: [
@@ -91,6 +103,7 @@ export const creators: Creator[] = [
   {
     num: '07',
     name: 'Monika Rosie Young',
+    handle: '@MonikaRosieYoung',
     niche: 'Fashion · Beauty · Lifestyle',
     photo: '/images/creators/monika-rosie-young.jpg',
     stats: [
@@ -101,6 +114,7 @@ export const creators: Creator[] = [
   {
     num: '08',
     name: 'Sam Kojo Plummer',
+    handle: '@Sam_Kojo',
     niche: 'Sport · Fitness · Tech',
     photo: '/images/creators/sam-kojo-plummer.jpg',
     stats: [
@@ -111,6 +125,7 @@ export const creators: Creator[] = [
   {
     num: '09',
     name: 'Thick CutChipz',
+    handle: '@ThickCutChipz',
     niche: 'Fashion · Lifestyle',
     photo: '/images/creators/thick-cutchipz.jpg',
     stats: [{ platform: 'Instagram', count: '9,000' }],
@@ -118,6 +133,7 @@ export const creators: Creator[] = [
   {
     num: '10',
     name: 'HiggoUK',
+    handle: '@HiggoUK',
     niche: 'Music · Tech',
     photo: '/images/creators/higgouk.jpg',
     stats: [
@@ -128,19 +144,18 @@ export const creators: Creator[] = [
   {
     num: '11',
     name: 'Strength Sweat Succeed',
+    handle: '@StrengthSweatSucceed',
     niche: 'Fitness · Tech',
     photo: '/images/creators/strength-sweat-succeed.jpg',
     stats: [{ platform: 'YouTube', count: '10,200' }],
   },
   {
-    // `name` is the account's profile name, not the handle — every other entry
-    // here displays a name, and `@jamesbondlifestyle` stood out as the odd one.
-    //
     // `stats` is deliberately absent rather than pending — see the note on the
     // type below. `niche` follows the file's ordering habit of ending on the
     // broad term, which is also the confident half of the pair here.
     num: '12',
     name: 'Bond Lifestyle',
+    handle: '@JamesBondLifestyle',
     niche: 'Film · Lifestyle',
     photo: '/images/creators/jamesbondlifestyle.jpg',
   },

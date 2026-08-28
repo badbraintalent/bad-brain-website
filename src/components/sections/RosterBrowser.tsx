@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import PixelDitherFrame from '@/components/ui/PixelDitherFrame'
 import WindowTitleBar from '@/components/ui/WindowTitleBar'
 import { creators } from '@/lib/creators'
@@ -60,13 +61,15 @@ export default function RosterBrowser() {
                     active === i ? 'lg:bg-white/[0.06]' : ''
                   }`}
                 >
-                  {/* Thumb — the list IS the roster below lg */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  {/* Thumb — the list IS the roster below lg. The sources are
+                      445-627px square; at 72px on screen the intrinsic file is
+                      ~8x the pixels needed, so this is sized explicitly. */}
+                  <Image
                     src={creator.photo}
                     alt={creator.name}
-                    loading="lazy"
-                    decoding="async"
+                    width={72}
+                    height={72}
+                    sizes="72px"
                     className="lg:hidden w-[4.5rem] h-[4.5rem] object-cover row-span-2"
                   />
                   {/* Index number (lg+) */}
@@ -80,11 +83,15 @@ export default function RosterBrowser() {
 
                   <div className="min-w-0">
                     <h3
-                      className={`font-display uppercase lg:truncate text-display-4 transition-colors duration-200 ${
+                      /* No `uppercase` here, unlike the other display
+                         headings: a handle's internal capitals are part of how
+                         it is written, and all-caps loses the word breaks in
+                         one with no separators. */
+                      className={`font-display lg:truncate text-display-4 transition-colors duration-200 ${
                         active === i ? 'lg:text-bb-mint text-white' : 'text-white'
                       }`}
                     >
-                      {creator.name}
+                      {creator.handle}
                     </h3>
                     {creator.niche && (
                       <p className="text-label tracking-label uppercase text-white/40 mt-1.5 truncate">
@@ -110,14 +117,13 @@ export default function RosterBrowser() {
                 {/* Photo stack — active creator faded in, dither pattern re-seeds per creator */}
                 <div className="relative aspect-square overflow-hidden bg-black">
                   {creators.map((c, i) => (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
+                    <Image
                       key={c.num}
                       src={c.photo}
                       alt={i === active ? c.name : ''}
-                      loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+                      fill
+                      sizes="(min-width: 1024px) 22vw, 100vw"
+                      className="object-cover transition-opacity duration-300"
                       style={{ opacity: i === active ? 1 : 0 }}
                     />
                   ))}

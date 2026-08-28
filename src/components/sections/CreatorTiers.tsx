@@ -58,7 +58,7 @@ export default function CreatorTiers() {
                   <span className="text-label text-black/35">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <h3 className="text-body-sm font-bold text-black uppercase tracking-label">
+                  <h3 className="text-body-sm text-black uppercase tracking-label">
                     {name}
                   </h3>
                 </div>

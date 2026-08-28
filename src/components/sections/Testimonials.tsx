@@ -42,11 +42,15 @@ const gridTestimonials: {
     quote: "Bad Brain combines creator-side experience and creative strategy with a strong grasp of data, attribution, and commercial value. That blend of creativity and sharp commercial thinking is rare and really stood out.",
     company: 'Awin',
     logo: '/images/clients/awin.png',
+    name: 'Paul Stewart',
+    role: 'VP Strategic Partnerships',
   },
   {
     quote: "Bad Brain immediately grasped what our brand was all about, as well as our strengths, weaknesses and untapped opportunities. Communication was open and honest from the get-go, which was a refreshing change from working with other agencies.",
     company: 'Canadian Bureau for International Education',
     logo: '/images/clients/learn-canadian.png',
+    name: 'Sabrina Heinekey',
+    role: 'Director of Global Campaign Initiatives',
   },
 ]
 
@@ -58,7 +62,7 @@ const GRID_LOGO_MAX_W = 92
 const GRID_LOGO_MAX_H = 34
 
 /* Real client logos, rendered monochrome black to sit quietly on the blue
-   band (Smoking Gun's red would otherwise fight it); hover flips to white.
+   band (Smoking Gun's red would otherwise fight it).
 
    Sized by contain-fitting one shared box, not to a common height. These
    wordmarks run from 0.7:1 (BLDBRO, 168x240) to 7.9:1 (Smoking Gun, 410x52),
@@ -114,7 +118,6 @@ const MARQUEE_MOBILE_MQ = '(max-width: 767px)'
 
 const Testimonials = () => {
   const trackRef = useRef<HTMLDivElement>(null)
-  const [hoveredLogo, setHoveredLogo] = useState<number | null>(null)
   const [marqueeInView, setMarqueeInView] = useState(false)
 
   // Run the marquee only while it's on-screen — an infinite compositor
@@ -208,7 +211,7 @@ We didn&rsquo;t<br />write these.
               />
               <span aria-hidden="true" className="w-px h-8 md:h-10 bg-black/25 shrink-0" />
               <div className="text-body-sm">
-                <span className="text-black font-medium block">{heroTestimonial.name}</span>
+                <span className="text-black block">{heroTestimonial.name}</span>
                 <span className="text-black/60">{heroTestimonial.role}</span>
               </div>
             </footer>
@@ -261,7 +264,7 @@ We didn&rsquo;t<br />write these.
                     </>
                   )}
                   <div className="text-label">
-                    <span className="text-black font-medium block">{t.company}</span>
+                    <span className="text-black block">{t.company}</span>
                     {t.name && (
                       <span className="text-black/60 block">
                         {t.name}
@@ -291,8 +294,6 @@ We didn&rsquo;t<br />write these.
               <div
                 key={i}
                 className={`flex items-center flex-shrink-0 ${MARQUEE_ITEM_PAD}`}
-                onMouseEnter={() => setHoveredLogo(i)}
-                onMouseLeave={() => setHoveredLogo(null)}
               >
                 {/* Plain <img>: the marquee contain-fits logos to a box with
                     both dimensions auto, which next/image can't express without
@@ -308,10 +309,8 @@ We didn&rsquo;t<br />write these.
                     maxHeight: LOGO_MAX_H,
                     width: 'auto',
                     height: 'auto',
-                    filter: hoveredLogo === i ? 'brightness(0) invert(1)' : 'brightness(0)',
-                    opacity: hoveredLogo === i ? 1 : 0.75,
-                    transform: hoveredLogo === i ? 'scale(1.12)' : 'scale(1)',
-                    transition: 'transform 160ms steps(3), filter 140ms steps(2), opacity 140ms steps(2)',
+                    filter: 'brightness(0)',
+                    opacity: 0.75,
                   }}
                 />
               </div>

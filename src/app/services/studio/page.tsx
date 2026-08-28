@@ -328,7 +328,7 @@ export default function StudioPage() {
                     style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.65))' }}
                   >
                     <p
-                      className="text-label font-semibold uppercase tracking-label"
+                      className="text-label uppercase tracking-label"
                       style={{ color: live ? '#fff' : 'rgba(255,255,255,0.45)', transition: 'color 0.25s steps(3, end)' }}
                     >
                       {p.label}
@@ -386,9 +386,9 @@ export default function StudioPage() {
             >
               <p className="text-black/70 text-body-sm mb-6 max-w-[30rem]">
                 The social feed&apos;s a{' '}
-                <strong className="text-black font-semibold">TV channel now.</strong> People skip the
+                <strong className="text-black">TV channel now.</strong> People skip the
                 ads, and keep hopping until something&apos;s worth stopping for.{' '}
-                <strong className="text-black font-semibold">Studio brings you that content.</strong>
+                <strong className="text-black">Studio brings you that content.</strong>
               </p>
               <a
                 href="#approach"
@@ -427,9 +427,9 @@ export default function StudioPage() {
             {/* Body copy */}
             <div className="studio-problem-copy space-y-5 text-black/70 text-body-md pt-2">
               <p>
-                <strong className="text-black font-semibold">Views are easy</strong> - ride a trend and
+                <strong className="text-black">Views are easy</strong> - ride a trend and
                 you&apos;ll get a spike, but that attention was never really about your brand.{' '}
-                <strong className="text-black font-semibold">Viewership is harder:</strong> people who
+                <strong className="text-black">Viewership is harder:</strong> people who
                 come back for your own story, not someone else&apos;s moment.
               </p>
               <p>
@@ -471,7 +471,7 @@ export default function StudioPage() {
                 description column. */}
             <div className="mt-8 mb-8 md:mb-12 grid grid-cols-[2.5rem_1fr] md:grid-cols-[2.5rem_1fr_1fr] gap-x-8 gap-y-4 text-black/70 text-body-md">
               <p className="col-start-1 col-span-2">
-                <strong className="text-black font-semibold">
+                <strong className="text-black">
                   Build your own content formats and media IP.
                 </strong>{' '}
                 Entertainment-first content produced by Bad Brain Studio.
@@ -496,7 +496,7 @@ export default function StudioPage() {
                 className={`studio-approach-${i + 1} grid grid-cols-[2.5rem_1fr] md:grid-cols-[2.5rem_1fr_1fr] lg:grid-cols-[2.5rem_1fr_1fr_13rem] gap-x-8 gap-y-2 py-8 border-b border-black/10 group`}
               >
                 <span className="text-black/40 text-label tabular-nums pt-[0.2em]">{s.num}</span>
-                <h3 className="text-body-sm font-bold text-black uppercase tracking-label group-hover:text-black/60 transition-colors duration-300">
+                <h3 className="text-body-sm text-black uppercase tracking-label group-hover:text-black/60 transition-colors duration-300">
                   {s.title}
                 </h3>
                 <p className="text-body-sm text-black/60 col-start-2 md:col-start-3 mt-1 md:mt-0">

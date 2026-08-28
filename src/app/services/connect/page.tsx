@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import WindowTitleBar from '@/components/ui/WindowTitleBar'
@@ -13,6 +14,8 @@ import { enter, winShadow } from '@/lib/y2k'
 type ScrollCSS = CSSProperties & {
   animationTimeline?: string
   animationRange?: string
+  // Marks the element for the scroll-scrub fallback — see ScrollScrub.tsx.
+  '--scrub'?: number
 }
 
 
@@ -207,12 +210,13 @@ export default function ConnectPage() {
                   onMouseEnter={canHover ? () => setSheetHover(i) : undefined}
                   className="relative overflow-hidden bg-white"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={c.photo}
                     alt={`${c.name} - Bad Brain Connect creator`}
-                    decoding="async"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    fill
+                    /* 6 across the panel below lg, 3 across from lg */
+                    sizes="(min-width: 1024px) 15vw, 17vw"
+                    className="object-cover"
                     style={{
                       // Greyscale alone carries the state — the sheet used to
                       // dim unselected cells too, but stacked on top of B&W that
@@ -231,13 +235,13 @@ export default function ConnectPage() {
               ))}
             </div>
 
-            {/* Readout — names whichever face is lit. No head count here: the
+            {/* Readout — handles whichever face is lit. No head count here: the
                 number moves constantly, and people sit in various states of
                 representation. */}
             <div className="shrink-0 px-4 py-2 lg:py-3 flex items-end justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-label font-semibold text-black truncate">
-                  {creators[lit].name}
+                <p className="text-label text-black truncate">
+                  {creators[lit].handle}
                 </p>
                 {/* Non-breaking space, not a collapsed line: the headshot grid
                     above is the flex child that absorbs any height change here,
@@ -382,6 +386,7 @@ export default function ConnectPage() {
                     animationFillMode: 'both',
                     animationTimeline: 'view()',
                     animationRange: 'entry 0% entry 100%',
+                    '--scrub': 1,
                   } as ScrollCSS}
                 >
                   {/* Media inline above each phase below lg, where there is no
@@ -422,7 +427,7 @@ export default function ConnectPage() {
                     >
                       {String(phaseIdx + 1).padStart(2, '0')}
                     </span>
-                    <h3 className="text-body-sm font-bold text-black uppercase tracking-label">{phase}</h3>
+                    <h3 className="text-body-sm text-black uppercase tracking-label">{phase}</h3>
                   </div>
 
                   {items.map(({ lead, desc }) => (
@@ -455,7 +460,7 @@ export default function ConnectPage() {
                           lost with it gone; the motion lives on the phase
                           block's scroll entrance now. */}
                       <p className="text-body-sm leading-[1.42] text-balance text-black/70 max-w-[40rem]">
-                        <strong className="text-black font-semibold">{lead}:</strong> {bindDashes(desc)}
+                        <strong className="text-black">{lead}:</strong> {bindDashes(desc)}
                       </p>
                     </div>
                   ))}
