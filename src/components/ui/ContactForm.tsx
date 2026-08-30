@@ -124,8 +124,43 @@ const ContactForm = ({
   const glyphBoxClass =
     'flex-shrink-0 font-display text-display-3 w-[1cap] h-[1cap] mt-[calc(0.7883em-1cap-0.5px)] border border-black flex items-center justify-center leading-none'
 
+  /* The tick and cross are drawn, not typed.
+
+     As text they sat 2px high in the box, and no amount of flex centring
+     fixes that: flex centres the glyph's LINE box, but its ink sits on the
+     baseline with descender space beneath, so the ink lands above centre.
+     The size of that error is a property of whichever font supplies the
+     character — and neither brand face has ✓ or ✕, so it is a per-platform
+     fallback that also renders them as emoji in some stacks. A hardcoded
+     nudge would only be right on the machine it was measured on.
+
+     Drawn to the box, the marks are centred by construction and identical
+     everywhere. 55% leaves the mark reading as ink inside a frame rather
+     than filling it; the 10-unit viewBox keeps the coordinates whole. */
+  const markProps = {
+    viewBox: '0 0 10 10',
+    className: 'w-[55%] h-[55%]',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'square' as const,
+  }
+
+  /* The form area keeps the form's height once submitted (see `lockedHeight`),
+     so the short result dialog would otherwise sit at the top of a tall empty
+     box. On a phone the submit button is near the bottom of that box, so a
+     top-aligned confirmation lands above the viewport and reads as nothing
+     having happened. Centre it in the reserved space below md; the wide layout
+     is short enough on desktop to stay top-aligned. */
+  const resultAreaClass =
+    status === 'idle' ? '' : 'flex flex-col justify-center md:block'
+
   return (
-    <div ref={formAreaRef} className={className} style={{ minHeight: lockedHeight }}>
+    <div
+      ref={formAreaRef}
+      className={`${resultAreaClass} ${className}`}
+      style={{ minHeight: lockedHeight }}
+    >
       {status === 'sent' ? (
         /* Digital system-confirmation dialog — message.exe */
         <div className={dialogClass} style={dialogStyle} role="status" aria-live="polite">
@@ -133,8 +168,10 @@ const ContactForm = ({
             <WindowTitleBar name="message.exe" className="border-b border-black/15 px-3 py-2" />
           )}
           <div className={`flex items-start gap-4 ${compact ? 'py-7' : 'px-6 py-7'}`}>
-            <span className={`${glyphBoxClass} bg-bb-mint`} aria-hidden="true">
-              <span className="text-[0.45em] text-black">✓</span>
+            <span className={`${glyphBoxClass} bg-bb-mint text-black`} aria-hidden="true">
+              <svg {...markProps}>
+                <path d="M1.5 5.2 L4 7.7 L8.5 2.3" />
+              </svg>
             </span>
             <div>
               <h3 className="text-display-3 text-black mb-1.5">Message sent.</h3>
@@ -159,8 +196,10 @@ const ContactForm = ({
             <WindowTitleBar name="message.exe" className="border-b border-black/15 px-3 py-2" />
           )}
           <div className={`flex items-start gap-4 ${compact ? 'py-7' : 'px-6 py-7'}`}>
-            <span className={`${glyphBoxClass} bg-bb-mint`} aria-hidden="true">
-              <span className="text-[0.45em] text-black">✕</span>
+            <span className={`${glyphBoxClass} bg-bb-mint text-black`} aria-hidden="true">
+              <svg {...markProps}>
+                <path d="M2 2 L8 8 M8 2 L2 8" />
+              </svg>
             </span>
             <div>
               <h3 className="text-display-3 text-black mb-1.5">Not sent.</h3>
