@@ -5,7 +5,7 @@ import BootIntro from "@/components/ui/BootIntro";
 import DvdIdle from "@/components/ui/DvdIdle";
 import PixelTrail from "@/components/ui/PixelTrail";
 import ScrollScrub from "@/components/ui/ScrollScrub";
-import { SITE_URL } from "@/lib/site";
+import { DESCRIPTION, SITE_URL, TITLE } from "@/lib/site";
 import "./globals.css";
 
 // ABC Gravity / ABC Walter Neue served as licensed DINAMO web fonts (woff2 —
@@ -28,28 +28,48 @@ const walter = localFont({
   display: "block",
 });
 
-const TITLE = "Bad Brain | Social Entertainment Agency";
-const DESCRIPTION =
-  "We're a specialist agency for brands, creators and artists. Four connected services for the entertainment era of social.";
+/* `template` is what the per-route layouts lean on: each one sets a bare
+   title ("Blueprint") and Next expands it here, so the suffix is written
+   once. `default` is the homepage's own title, and the one inherited by any
+   route that sets none.
+
+   The template is repeated on openGraph and twitter deliberately — Next does
+   not carry the document title's template across to them, so without these a
+   page that sets only `title` would ship a correct <title> and a share card
+   still captioned with the site default. */
+const titleTemplate = {
+  default: TITLE,
+  template: "%s | Bad Brain",
+};
 
 export const metadata: Metadata = {
   // metadataBase makes the file-based opengraph-image.png resolve to an
   // absolute URL — without it Next can't build the share card and warns at
   // build time. On preview builds this points at the deployment's own host.
   metadataBase: new URL(SITE_URL),
-  title: TITLE,
+  title: titleTemplate,
   description: DESCRIPTION,
+  alternates: { canonical: "/" },
   openGraph: {
-    title: TITLE,
+    title: titleTemplate,
     description: DESCRIPTION,
     siteName: "Bad Brain",
     locale: "en_GB",
     type: "website",
+    url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: TITLE,
+    title: titleTemplate,
     description: DESCRIPTION,
+  },
+  /* Sets the caption under the icon when the site is saved to an iOS home
+     screen — otherwise iOS uses the document title and shows "Bad Brain | So…".
+     `capable` is deliberately not set: iOS reads `display` from the manifest
+     for that, so the launch mode is configured in one place rather than two
+     that can disagree. */
+  appleWebApp: {
+    title: "Bad Brain",
   },
 };
 
