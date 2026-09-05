@@ -5,6 +5,7 @@ import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import WindowTitleBar from '@/components/ui/WindowTitleBar'
 import ServiceCTA from '@/components/sections/ServiceCTA'
+import ClientQuote from '@/components/sections/ClientQuote'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { enter } from '@/lib/y2k'
 
@@ -699,6 +700,14 @@ export default function ResonatePage() {
         </div>
 
       </section>
+
+      {/* ── Client testimonial — shared site-wide quote treatment ── */}
+      <ClientQuote
+        quote="Bad Brain operates at the forefront without losing touch with what actually matters: the artist, the music, the story. What impressed us most was how deeply they engage with their partners: patient enough to really understand, creative enough to do something meaningful with it. It never felt like briefing an agency. It felt like working with people who genuinely care."
+        attribution="Stine Mühle, Head of Label & Brand Management - Clouds Hill"
+        logo={{ src: '/images/clients/clouds-hill.svg', alt: 'Clouds Hill' }}
+        accent="text-bb-mint"
+      />
 
       {/* ── CTA — mint block moment ── */}
       <ServiceCTA

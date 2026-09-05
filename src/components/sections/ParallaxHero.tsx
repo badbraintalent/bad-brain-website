@@ -2,12 +2,26 @@
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 
-/* The full reel is ~7MB — far too heavy for phones on cellular (it dominated
-   the mobile Lighthouse LCP). Serve a 960px rendition below the lg breakpoint;
-   the poster paints the first frame while either file downloads. */
+/* Three renditions, each with its own poster so the painted first frame matches
+   the file that follows it.
+
+   The full reel is ~7MB — far too heavy for phones on cellular (it dominated
+   the mobile Lighthouse LCP), so narrow viewports get a lighter rendition.
+
+   Portrait viewports get the 9:16 master instead of a downscaled 16:9. The
+   video is `object-fit: cover`, so a 16:9 source on a phone is shown as a
+   centre strip blown up ~4x — most of the frame is thrown away and what
+   survives is soft. The 9:16 cut fills the same screen close to 1:1. It is a
+   longer edit than the 16:9 (51s vs 13s) and so a bigger file, but it streams
+   progressively: the up-front cost is the first seconds, not the whole thing.
+
+   Landscape phones and tablets keep the 960px 16:9 file — the 9:16 would crop
+   to a sliver there, which is the same fault in the other axis. */
 const MAIN_VIDEO = "/videos/brand/hero-main.mp4";
 const MOBILE_VIDEO = "/videos/brand/hero-main-960.mp4";
+const PORTRAIT_VIDEO = "/videos/brand/hero-main-916.mp4";
 const POSTER = "/videos/brand/hero-main-poster.jpg";
+const PORTRAIT_POSTER = "/videos/brand/hero-main-916-poster.jpg";
 
 // Full horizontal logo (mark + wordmark), all-white knockout art.
 const HERO_LOGO = "/images/brand/logo/BB_Horizontal.svg";
@@ -60,10 +74,32 @@ const ParallaxHero = () => {
   const logoRef = useRef<HTMLDivElement>(null);
   // src is chosen client-side so SSR can't bake the wrong rendition into the
   // HTML; until then the poster holds the frame.
-  const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
+  const [rendition, setRendition] = useState<{ src?: string; poster: string }>({
+    poster: POSTER,
+  });
 
   useEffect(() => {
-    setVideoSrc(window.matchMedia("(max-width: 1024px)").matches ? MOBILE_VIDEO : MAIN_VIDEO);
+    const narrow = window.matchMedia("(max-width: 1024px)");
+    const portrait = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
+    const pick = () => {
+      if (portrait.matches) return { src: PORTRAIT_VIDEO, poster: PORTRAIT_POSTER };
+      if (narrow.matches) return { src: MOBILE_VIDEO, poster: POSTER };
+      return { src: MAIN_VIDEO, poster: POSTER };
+    };
+    // Re-picked on rotation: a phone turned landscape would otherwise hold the
+    // 9:16 file and show a cropped sliver of it. The swap restarts playback,
+    // which is the cheaper of the two faults.
+    const apply = () => setRendition((prev) => {
+      const next = pick();
+      return next.src === prev.src ? prev : next;
+    });
+    apply();
+    narrow.addEventListener("change", apply);
+    portrait.addEventListener("change", apply);
+    return () => {
+      narrow.removeEventListener("change", apply);
+      portrait.removeEventListener("change", apply);
+    };
   }, []);
 
   // Scroll-driven pixel-field fade + logo print-in
@@ -125,7 +161,15 @@ const ParallaxHero = () => {
   return (
     <section className="parallax-hero">
       <div className="parallax-hero-sticky">
-        <video className="parallax-hero-video" src={videoSrc} poster={POSTER} muted loop autoPlay playsInline />
+        <video
+          className="parallax-hero-video"
+          src={rendition.src}
+          poster={rendition.poster}
+          muted
+          loop
+          autoPlay
+          playsInline
+        />
         <div className="parallax-hero-bg-fill" ref={fillRef} />
         <HeroLogo clipRef={logoRef} />
       </div>

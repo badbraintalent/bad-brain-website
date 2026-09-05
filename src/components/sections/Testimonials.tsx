@@ -85,6 +85,9 @@ const clients = [
   { company: 'Awin', src: '/images/clients/awin.png' },
   { company: 'The Warren', src: '/images/clients/the-warren.png' },
   { company: 'Vamp', src: '/images/clients/vamp.svg' },
+  // Same intrinsic-size caveat as Vamp: the supplied SVG carried only a
+  // viewBox, so width/height were added to the copy in public/.
+  { company: 'Clouds Hill', src: '/images/clients/clouds-hill.svg' },
 ]
 
 // Repeated so the track is wide enough; the render doubles it again into
